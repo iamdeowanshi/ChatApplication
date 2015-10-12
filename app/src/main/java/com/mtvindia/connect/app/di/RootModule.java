@@ -3,7 +3,6 @@ package com.mtvindia.connect.app.di;
 import android.content.Context;
 
 import com.mtvindia.connect.app.MtvConnectApplication;
-import com.mtvindia.connect.ui.activity.SampleActivity;
 
 import javax.inject.Singleton;
 
@@ -25,7 +24,7 @@ import dagger.Provides;
                 MtvConnectApplication.class,
 
                 // View specific classes - activities, fragments, adapters etc
-                SampleActivity.class,
+
         }
 )
 public class RootModule {

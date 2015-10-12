@@ -2,4 +2,7 @@
     <string name="app_name">MTV Connect</string>
     <string name="app_description">Find, chat &amp; go with your dates</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_launch">MTvConnect</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>
