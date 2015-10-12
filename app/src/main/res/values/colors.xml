@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="purple">#651367</color>
+    <color name="red">#e8204e</color>
+    <color name="blue">#00cccc</color>
+    <color name="yellow">#ffcc00</color>
 </resources>
