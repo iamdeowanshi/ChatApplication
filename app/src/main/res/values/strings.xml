@@ -5,4 +5,5 @@
     <string name="title_activity_launch">MTvConnect</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_login">LoginActivity</string>
 </resources>
