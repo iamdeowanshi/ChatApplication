@@ -45,7 +45,7 @@
     <ImageView
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/power_icon"
+        android:src="@drawable/img_power"
         android:background="@null"
         android:id="@+id/power_icon"
         android:layout_below="@+id/txt_sign"
