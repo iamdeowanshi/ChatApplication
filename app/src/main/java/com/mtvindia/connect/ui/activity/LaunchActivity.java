@@ -8,7 +8,7 @@ import com.mtvindia.connect.app.base.BaseActivity;
 
 public class LaunchActivity extends BaseActivity {
 
-    private static int timeOut = 3000;
+    private static int timeOut = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +21,7 @@ public class LaunchActivity extends BaseActivity {
             public void run() {
                 startActivity(LoginActivity.class, null);
             }
+
         }, timeOut);
     }
 
