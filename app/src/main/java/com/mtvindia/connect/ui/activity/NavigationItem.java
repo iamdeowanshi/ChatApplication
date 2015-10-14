@@ -22,7 +22,7 @@ public class NavigationItem {
         return text;
     }
 
-    NavigationItem(String name, int icon) {
+    public NavigationItem(String name, int icon) {
         this.icon = icon;
         text = name;
     }

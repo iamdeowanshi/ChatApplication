@@ -10,6 +10,9 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.ui.activity.NavigationItem;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by Sibi on 13/10/15.
  */
@@ -40,13 +43,12 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
-        ImageView imageView;
+        @Bind(R.id.text) TextView textView;
+        @Bind(R.id.icon) ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView.findViewById(R.id.text);
-            imageView = (ImageView) itemView.findViewById(R.id.icon);
+            ButterKnife.bind(this, itemView);
         }
     }
 
