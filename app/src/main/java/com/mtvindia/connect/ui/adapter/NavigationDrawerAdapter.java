@@ -13,23 +13,23 @@ import java.util.List;
 /**
  * Created by Sibi on 13/10/15.
  */
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDrawerAdapter.ViewHolder> {
 
     private List<NavigationItem> list;
 
-    public RecyclerViewAdapter(List<NavigationItem> data) {
+    public NavigationDrawerAdapter(List<NavigationItem> data) {
         list = data;
     }
 
     @Override
-    public RecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NavigationDrawerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_recycler_view_item, parent, false);
 
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(NavigationDrawerAdapter.ViewHolder holder, int position) {
         holder.textView.setText(list.get(position).getText());
         holder.imageView.setImageResource(list.get(position).getIcon());
     }

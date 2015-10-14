@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.ui.activity.NavigationItem;
-import com.mtvindia.connect.ui.adapter.RecyclerViewAdapter;
+import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class NavigationDrawerFragment extends BaseFragment {
         drawerList.setLayoutManager(layoutManager);
         drawerList.setHasFixedSize(true);
 
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(drawerItems);
+        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(drawerItems);
         drawerList.setAdapter(adapter);
 
         return view;
