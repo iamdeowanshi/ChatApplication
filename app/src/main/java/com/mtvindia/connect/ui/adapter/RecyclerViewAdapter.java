@@ -6,10 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.ui.activity.NavigationItem;
-
 import java.util.List;
 
 /**
