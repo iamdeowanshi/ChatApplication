@@ -41,11 +41,13 @@ public class NavigationActivity extends AppCompatActivity implements NavigationC
     @Override
     public void onBackPressed() {
     /* Close navigation drawer, if open */
-        if (navigationDrawerFragment.isDrawerOpen())
+        if (navigationDrawerFragment.isDrawerOpen()) {
             navigationDrawerFragment.closeDrawer();
-        else
+        } else {
             super.onBackPressed();
+        }
     }
+    
 
     @Override
     public void onItemSelected(int position) {
