@@ -6,4 +6,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+
+    <string name="drawer_open">List Opened</string>
+    <string name="drawer_close">List Closed</string>
 </resources>
