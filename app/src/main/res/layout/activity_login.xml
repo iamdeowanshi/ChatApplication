@@ -73,6 +73,7 @@
         android:layout_marginTop="25dp"
         android:textSize="13sp"
         android:textColor="#fff"
+        android:textAllCaps="false"
         android:background="@drawable/btn_border"/>
 
     <Button
@@ -85,7 +86,7 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/btn_border"
         android:textColor="#fff"
-
+        android:textAllCaps="false"
         android:layout_marginTop="15dp"/>
 
 

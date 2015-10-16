@@ -15,6 +15,7 @@
         android:layout_centerInParent="true"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
-        android:src="@drawable/img_logo" />
+        android:src="@drawable/img_logo"
+        android:id="@+id/imageView" />
 
 </RelativeLayout>

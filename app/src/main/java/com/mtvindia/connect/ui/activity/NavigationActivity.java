@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
+import com.mtvindia.connect.ui.fragment.PreferenceFragment;
 
 import java.util.List;
 
@@ -54,8 +55,10 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         if (drawerItems == null || drawerItems.size() == 0) {
             return;
         }
-        // Fragment fragment = NavigationDrawerFragment.getInstance(bundle);
-        //addFragment(fragment);
+        Bundle bundle = new Bundle();
+
+         Fragment fragment = PreferenceFragment.getInstance(bundle);
+        addFragment(fragment);
     }
 
     private void addFragment(Fragment fragment) {
