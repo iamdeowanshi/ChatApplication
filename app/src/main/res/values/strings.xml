@@ -10,4 +10,16 @@
 
     <string name="drawer_open">List Opened</string>
     <string name="drawer_close">List Closed</string>
+
+    <string-array name="interested_array">
+        <item>Dating</item>
+        <item>Friendship</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="meet_array">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
 </resources>

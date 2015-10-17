@@ -1,5 +1,7 @@
 package com.mtvindia.connect.ui.fragment;
 
+import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
@@ -14,9 +16,11 @@ import android.view.ViewGroup;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
+import com.mtvindia.connect.ui.activity.NavigationCallBack;
 import com.mtvindia.connect.ui.activity.NavigationItem;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
 
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -24,13 +28,19 @@ import butterknife.Bind;
 /**
  * Created by Sibi on 13/10/15.
  */
-public class NavigationDrawerFragment extends BaseFragment {
+public class NavigationDrawerFragment extends BaseFragment implements NavigationCallBack {
+
+    @Bind(R.id.recycler_view)
+    RecyclerView drawerList;
 
     private View fragmentContainerView;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
+
     private List<NavigationItem> drawerItems;
-    @Bind(R.id.recycler_view) RecyclerView drawerList;
+    private NavigationCallBack navigationCallBack;
+
+    private NavigationItem selectedItem;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,13 +53,33 @@ public class NavigationDrawerFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        drawerItems = NavigationItem.getNavigationListItems();
+        drawerItems = Arrays.asList(NavigationItem.values());
         drawerList.setLayoutManager(layoutManager);
         drawerList.setHasFixedSize(true);
 
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(drawerItems);
+        adapter.setNavigationCallbacks(this);
         drawerList.setAdapter(adapter);
+
+        onItemSelected(NavigationItem.PREFERENCE);
     }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            navigationCallBack = (NavigationCallBack) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        navigationCallBack = null;
+    }
+
 
     public void initDrawer(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
         fragmentContainerView = getActivity().findViewById(fragmentId);
@@ -60,6 +90,10 @@ public class NavigationDrawerFragment extends BaseFragment {
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 getActivity().invalidateOptionsMenu();
+
+                if (navigationCallBack != null) {
+                    navigationCallBack.onItemSelected(selectedItem);
+                }
             }
 
             @Override
@@ -68,6 +102,7 @@ public class NavigationDrawerFragment extends BaseFragment {
                 getActivity().invalidateOptionsMenu();
             }
         };
+
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
         this.drawerLayout.post(new Runnable() {
             @Override
@@ -94,5 +129,28 @@ public class NavigationDrawerFragment extends BaseFragment {
             return false;
         }
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        actionBarDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onItemSelected(NavigationItem item) {
+
+        if (drawerLayout != null) {
+            drawerLayout.closeDrawer(fragmentContainerView);
+        }
+
+        selectedItem = item;
+
+        if (navigationCallBack != null) {
+            navigationCallBack.onItemSelected(item);
+        }
+
+        ((NavigationDrawerAdapter) drawerList.getAdapter()).setSelectedItem(item);
+    }
+
 
 }
