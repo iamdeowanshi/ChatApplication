@@ -11,5 +11,5 @@
             android:src="@drawable/img_background"
             android:alpha=".5"/>
     </item>
-    
+
 </layer-list>
