@@ -39,6 +39,7 @@ public class PreferenceFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_preference, container, false);
         ButterKnife.bind(this, view);
+
         return view;
     }
 
@@ -79,6 +80,13 @@ public class PreferenceFragment extends BaseFragment {
                     }
                 });
                 builder.show();
+            }
+        });
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
     }

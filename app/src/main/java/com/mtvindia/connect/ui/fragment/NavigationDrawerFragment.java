@@ -1,5 +1,7 @@
 package com.mtvindia.connect.ui.fragment;
 
+import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
@@ -7,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
+import com.mtvindia.connect.ui.activity.NavigationCallBacks;
 import com.mtvindia.connect.ui.activity.NavigationItem;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
 
@@ -24,17 +28,30 @@ import butterknife.Bind;
 /**
  * Created by Sibi on 13/10/15.
  */
-public class NavigationDrawerFragment extends BaseFragment {
+public class NavigationDrawerFragment extends BaseFragment implements NavigationCallBacks {
+
+    @Bind(R.id.recycler_view)
+    RecyclerView drawerList;
 
     private View fragmentContainerView;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
+
     private List<NavigationItem> drawerItems;
-    @Bind(R.id.recycler_view) RecyclerView drawerList;
+    private NavigationCallBacks callbacks;
+
+    private int selectedPosition = 2;
+    private int currentSelectedPosition;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.layout_drawer, container, false);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callbacks = null;
     }
 
     @Override
@@ -48,7 +65,9 @@ public class NavigationDrawerFragment extends BaseFragment {
         drawerList.setHasFixedSize(true);
 
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(drawerItems);
+        adapter.setNavigationCallbacks(this);
         drawerList.setAdapter(adapter);
+        selectRow(selectedPosition);
     }
 
     public void initDrawer(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
@@ -60,6 +79,10 @@ public class NavigationDrawerFragment extends BaseFragment {
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 getActivity().invalidateOptionsMenu();
+
+                if (callbacks != null) {
+                    callbacks.onItemSelected(selectedPosition);
+                }
             }
 
             @Override
@@ -92,6 +115,41 @@ public class NavigationDrawerFragment extends BaseFragment {
             return true;
         } else {
             return false;
+        }
+    }
+
+    void selectRow(int position) {
+        Log.d("selectRow", "position   " + position);
+        currentSelectedPosition = position;
+        if (drawerLayout != null) {
+            drawerLayout.closeDrawer(fragmentContainerView);
+        }
+
+        selectedPosition = position;
+        if (callbacks != null) {
+            callbacks.onItemSelected(position);
+        }
+        ((NavigationDrawerAdapter) drawerList.getAdapter()).setSelectedRow(position);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        actionBarDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onItemSelected(int position) {
+        selectRow(position);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            callbacks = (NavigationCallBacks) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
         }
     }
 
