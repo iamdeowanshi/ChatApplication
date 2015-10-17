@@ -10,12 +10,12 @@
     tools:context="com.mtvindia.connect.ui.activity.LaunchActivity">
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
-        android:src="@drawable/img_logo"
-        android:id="@+id/imageView" />
+        android:src="@drawable/img_logo" />
 
 </RelativeLayout>

@@ -13,7 +13,11 @@
         <activity
             android:name=".ui.activity.LaunchActivity"
             android:noHistory="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.activity.LoginActivity"
@@ -21,11 +25,6 @@
         <activity
             android:name=".ui.activity.NavigationActivity"
             android:label="@string/title_activity_navigation" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

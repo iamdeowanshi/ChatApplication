@@ -9,7 +9,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,10 +16,11 @@ import android.view.ViewGroup;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
-import com.mtvindia.connect.ui.activity.NavigationCallBacks;
+import com.mtvindia.connect.ui.activity.NavigationCallBack;
 import com.mtvindia.connect.ui.activity.NavigationItem;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
 
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -28,7 +28,7 @@ import butterknife.Bind;
 /**
  * Created by Sibi on 13/10/15.
  */
-public class NavigationDrawerFragment extends BaseFragment implements NavigationCallBacks {
+public class NavigationDrawerFragment extends BaseFragment implements NavigationCallBack {
 
     @Bind(R.id.recycler_view)
     RecyclerView drawerList;
@@ -38,20 +38,13 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
     private List<NavigationItem> drawerItems;
-    private NavigationCallBacks callbacks;
+    private NavigationCallBack navigationCallBack;
 
-    private int selectedPosition = 2;
-    private int currentSelectedPosition;
+    private NavigationItem selectedItem;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.layout_drawer, container, false);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        callbacks = null;
     }
 
     @Override
@@ -60,15 +53,33 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        drawerItems = NavigationItem.getNavigationListItems();
+        drawerItems = Arrays.asList(NavigationItem.values());
         drawerList.setLayoutManager(layoutManager);
         drawerList.setHasFixedSize(true);
 
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(drawerItems);
         adapter.setNavigationCallbacks(this);
         drawerList.setAdapter(adapter);
-        selectRow(selectedPosition);
+
+        onItemSelected(NavigationItem.PREFERENCE);
     }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            navigationCallBack = (NavigationCallBack) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        navigationCallBack = null;
+    }
+
 
     public void initDrawer(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
         fragmentContainerView = getActivity().findViewById(fragmentId);
@@ -80,8 +91,8 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
                 super.onDrawerClosed(drawerView);
                 getActivity().invalidateOptionsMenu();
 
-                if (callbacks != null) {
-                    callbacks.onItemSelected(selectedPosition);
+                if (navigationCallBack != null) {
+                    navigationCallBack.onItemSelected(selectedItem);
                 }
             }
 
@@ -91,6 +102,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
                 getActivity().invalidateOptionsMenu();
             }
         };
+
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
         this.drawerLayout.post(new Runnable() {
             @Override
@@ -118,20 +130,6 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         }
     }
 
-    void selectRow(int position) {
-        Log.d("selectRow", "position   " + position);
-        currentSelectedPosition = position;
-        if (drawerLayout != null) {
-            drawerLayout.closeDrawer(fragmentContainerView);
-        }
-
-        selectedPosition = position;
-        if (callbacks != null) {
-            callbacks.onItemSelected(position);
-        }
-        ((NavigationDrawerAdapter) drawerList.getAdapter()).setSelectedRow(position);
-    }
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -139,18 +137,20 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     }
 
     @Override
-    public void onItemSelected(int position) {
-        selectRow(position);
+    public void onItemSelected(NavigationItem item) {
+
+        if (drawerLayout != null) {
+            drawerLayout.closeDrawer(fragmentContainerView);
+        }
+
+        selectedItem = item;
+
+        if (navigationCallBack != null) {
+            navigationCallBack.onItemSelected(item);
+        }
+
+        ((NavigationDrawerAdapter) drawerList.getAdapter()).setSelectedItem(item);
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            callbacks = (NavigationCallBacks) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
-        }
-    }
 
 }

@@ -2,4 +2,4 @@
     style="@style/ToolBarStyle"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:minHeight="?attr/actionBarSize"/>
+    android:minHeight="?attr/actionBarSize" />

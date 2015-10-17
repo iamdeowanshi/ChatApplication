@@ -19,7 +19,6 @@ public class LaunchActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         new Handler().postDelayed(new Runnable() {
-
             @Override
             public void run() {
                 startActivity(LoginActivity.class, null);

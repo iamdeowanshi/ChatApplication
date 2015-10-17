@@ -9,20 +9,24 @@ import android.support.v7.widget.Toolbar;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
+import com.mtvindia.connect.ui.fragment.AboutFragment;
+import com.mtvindia.connect.ui.fragment.ChatFragment;
+import com.mtvindia.connect.ui.fragment.FindMorePeopleFragment;
+import com.mtvindia.connect.ui.fragment.LogoutFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
 import com.mtvindia.connect.ui.fragment.PreferenceFragment;
-
-import java.util.List;
+import com.mtvindia.connect.ui.fragment.ProfileFragment;
 
 import butterknife.Bind;
 
-public class NavigationActivity extends BaseActivity implements NavigationCallBacks {
+public class NavigationActivity extends BaseActivity implements NavigationCallBack {
 
-    @Bind(R.id.toolbar_actionbar) Toolbar toolbar;
-    @Bind(R.id.drawer) DrawerLayout drawerLayout;
+    @Bind(R.id.toolbar_actionbar)
+    Toolbar toolbar;
+    @Bind(R.id.drawer)
+    DrawerLayout drawerLayout;
 
     private NavigationDrawerFragment navigationDrawerFragment;
-    private List<NavigationItem> drawerItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +39,9 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         getSupportActionBar().setTitle(null);
 
         navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
-        drawerItems = NavigationItem.getNavigationListItems();
         navigationDrawerFragment.initDrawer(R.id.fragment_drawer, drawerLayout, toolbar);
 
-        onItemSelected(0);
+        onItemSelected(NavigationItem.PREFERENCE);
     }
 
     @Override
@@ -51,14 +54,36 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     }
 
     @Override
-    public void onItemSelected(int position) {
-        if (drawerItems == null || drawerItems.size() == 0) {
-            return;
-        }
+    public void onItemSelected(NavigationItem item) {
+        Fragment fragment;
         Bundle bundle = new Bundle();
 
-         Fragment fragment = PreferenceFragment.getInstance(bundle);
-        addFragment(fragment);
+        switch (item) {
+            case FIND_PEOPLE:
+                fragment = FindMorePeopleFragment.getInstance(bundle);
+                addFragment(fragment);
+                break;
+            case PROFILE:
+                fragment = ProfileFragment.getInstance(bundle);
+                addFragment(fragment);
+                break;
+            case PREFERENCE:
+                fragment = PreferenceFragment.getInstance(bundle);
+                addFragment(fragment);
+                break;
+            case CHAT:
+                fragment = ChatFragment.getInstance(bundle);
+                addFragment(fragment);
+                break;
+            case ABOUT:
+                fragment = AboutFragment.getInstance(bundle);
+                addFragment(fragment);
+                break;
+            case LOGOUT:
+                fragment = LogoutFragment.getInstance(bundle);
+                addFragment(fragment);
+                break;
+        }
     }
 
     private void addFragment(Fragment fragment) {

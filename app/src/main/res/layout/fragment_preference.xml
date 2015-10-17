@@ -111,7 +111,6 @@
 
     </LinearLayout>
 
-
     <RelativeLayout
         android:id="@+id/layout_dialog_meet"
         android:layout_width="250dp"
@@ -153,7 +152,7 @@
         android:layout_below="@id/layout_dialog_meet"
         android:layout_marginLeft="60dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/btn_border"
+        android:background="@drawable/btn_background"
         android:text="Save"
         android:textAllCaps="false"
         android:textColor="#fff"
