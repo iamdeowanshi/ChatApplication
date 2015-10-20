@@ -12,7 +12,6 @@ import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
 import com.mtvindia.connect.ui.fragment.ChatFragment;
 import com.mtvindia.connect.ui.fragment.FindMorePeopleFragment;
-import com.mtvindia.connect.ui.fragment.LogoutFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
 import com.mtvindia.connect.ui.fragment.PreferenceFragment;
 import com.mtvindia.connect.ui.fragment.ProfileFragment;
@@ -80,8 +79,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 addFragment(fragment);
                 break;
             case LOGOUT:
-                fragment = LogoutFragment.getInstance(bundle);
-                addFragment(fragment);
+                finish();
                 break;
         }
     }
