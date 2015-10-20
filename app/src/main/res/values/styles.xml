@@ -4,7 +4,12 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
         <item name="android:windowFullscreen">true</item>
+        <item name="android:datePickerStyle">@style/MyDatePicker</item>
         <!--<item name="colorPrimaryDark">#dd204b</item>-->
+    </style>
+
+    <style name="MyDatePicker" parent="android:Widget.Material.DatePicker">
+        <item name="android:datePickerMode">spinner</item>
     </style>
 
     <style name="ToolBarStyle" parent="">
@@ -21,6 +26,20 @@
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
         <item name="color">@android:color/white</item>
+    </style>
+
+    <style name="Theme.SelectDate" parent="@android:style/Theme.Holo.NoActionBar">
+        <item name="android:editTextStyle">@style/Widget.EditText.Black</item>
+        <item name="android:verticalDivider">@style/vertical</item>
+    </style>
+
+    <style name="vertical" parent="@android:style/Widget.EditText">
+        <item name="android:background">#fff</item>
+    </style>
+
+    <style name="Widget.EditText.Black" parent="@android:style/Widget.EditText">
+        <item name="android:textColor">#fff</item>
+        <item name="android:thumbTextPadding">5dp</item>
     </style>
 
 </resources>

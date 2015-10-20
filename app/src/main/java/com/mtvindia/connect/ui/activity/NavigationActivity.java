@@ -86,7 +86,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         }
     }
 
-    private void addFragment(Fragment fragment) {
+    public void addFragment(Fragment fragment) {
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction ft = fragmentManager.beginTransaction();

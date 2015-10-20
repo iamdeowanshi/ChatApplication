@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
+import com.mtvindia.connect.ui.activity.NavigationActivity;
+import com.mtvindia.connect.ui.activity.NavigationItem;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -87,6 +89,12 @@ public class PreferenceFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
 
+                NavigationActivity navigationActivity = (NavigationActivity) getContext();
+                Fragment fragment = ProfileFragment.getInstance(null);
+                navigationActivity.addFragment(fragment);
+
+                NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+                navigationDrawerFragment.onItemSelected(NavigationItem.PROFILE);
             }
         });
     }
