@@ -3,10 +3,7 @@ package com.mtvindia.connect.ui.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -27,8 +24,11 @@ import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Sibi on 16/10/15.
@@ -66,13 +66,8 @@ public class ProfileFragment extends BaseFragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         displayImage = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
+
         Picasso.with(getContext()).load(R.drawable.img_dp).fit().transform(displayImage).into(imageDp);
-        imageDp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectImage();
-            }
-        });
 
     }
 
@@ -83,8 +78,9 @@ public class ProfileFragment extends BaseFragment {
         return profileFragment;
     }
 
-    private void selectImage() {
-        final CharSequence[] items = {"Take Photo", "Choose from Gallery"};
+    @OnClick(R.id.image_dp)
+    void selectImage() {
+        final CharSequence[] items = { "Take Photo", "Choose from Gallery"};
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Add Photo!");
@@ -105,35 +101,24 @@ public class ProfileFragment extends BaseFragment {
         builder.show();
     }
 
-    private boolean isDeviceSupportCamera() {
-        if (getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
-                imageDp.setImageBitmap(photo);
-            }
+        if (resultCode != Activity.RESULT_OK) {
+            return;
         }
 
-        if (requestCode == MEDIA_TYPE_IMAGE && resultCode == Activity.RESULT_OK) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        switch (requestCode) {
+            case CAMERA_CAPTURE_IMAGE_REQUEST_CODE:
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(), photo, "Title", null);
+                Uri uri = Uri.parse(path);
+                Picasso.with(getContext()).load(uri).transform(displayImage).fit().into(imageDp);
+                break;
 
-            Cursor cursor = getContext().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            imageDp.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-            // Picasso.with(getContext()).load(BitmapFactory.decodeFile(picturePath).resize(200, 200).into(relativeLayout);
+            case MEDIA_TYPE_IMAGE:
+                Uri selectedImage = data.getData();
+                Picasso.with(getContext()).load(selectedImage).transform(displayImage).fit().into(imageDp);
         }
     }
 
