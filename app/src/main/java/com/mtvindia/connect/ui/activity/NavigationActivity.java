@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 
+import com.facebook.login.LoginManager;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
@@ -79,12 +80,15 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 addFragment(fragment);
                 break;
             case LOGOUT:
-                finish();
+                if(LoginManager.getInstance() != null){
+                    LoginManager.getInstance().logOut();
+                    finish();
+                }
                 break;
         }
     }
 
-    private void addFragment(Fragment fragment) {
+    public void addFragment(Fragment fragment) {
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction ft = fragmentManager.beginTransaction();
