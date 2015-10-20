@@ -30,11 +30,11 @@ public class PreferenceFragment extends BaseFragment {
     RelativeLayout layoutDialogInterested;
     @Bind(R.id.layout_dialog_meet)
     RelativeLayout layoutDialogMeet;
-    @Bind(R.id.save)
+    @Bind(R.id.btn_save)
     Button save;
-    @Bind(R.id.text_interested)
+    @Bind(R.id.txt_interested)
     TextView textInterested;
-    @Bind(R.id.text_meet)
+    @Bind(R.id.txt_meet)
     TextView textMeet;
 
     @Override
@@ -102,6 +102,7 @@ public class PreferenceFragment extends BaseFragment {
     public static Fragment getInstance(Bundle bundle) {
         PreferenceFragment preferenceFragment = new PreferenceFragment();
         preferenceFragment.setArguments(bundle);
+
         return preferenceFragment;
     }
 

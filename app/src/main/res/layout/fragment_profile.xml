@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/txt_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -18,19 +18,19 @@
         android:textSize="21sp" />
 
     <ImageView
-        android:id="@+id/image_dp"
+        android:id="@+id/img_dp"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/txt_view"
         android:layout_marginLeft="165dp"
         android:layout_marginTop="15dp"
         android:src="@drawable/img_dp" />
 
     <EditText
-        android:id="@+id/edit_name"
+        android:id="@+id/edt_name"
         android:layout_width="270dp"
         android:layout_height="30dp"
-        android:layout_below="@+id/image_dp"
+        android:layout_below="@+id/img_dp"
         android:layout_marginLeft="60dp"
         android:layout_marginTop="15dp"
         android:background="@drawable/edt_background"
@@ -43,7 +43,7 @@
         android:id="@+id/layout_birthday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edit_name"
+        android:layout_below="@+id/edt_name"
         android:layout_marginTop="35dp"
         android:gravity="center"
         android:orientation="horizontal">
@@ -57,7 +57,7 @@
             android:src="@drawable/icon_gift" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/txt_view2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/icon_interested"
@@ -103,7 +103,7 @@
             android:src="@drawable/icon_about_me" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/txt_view3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/icon_about"
@@ -133,7 +133,7 @@
         android:textSize="13sp" />
 
     <Button
-        android:id="@+id/save"
+        android:id="@+id/btn_save"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/edt_about"

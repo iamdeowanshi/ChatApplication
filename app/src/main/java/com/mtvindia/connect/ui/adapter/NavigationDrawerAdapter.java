@@ -114,7 +114,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.text)
+        @Bind(R.id.txt)
         TextView textView;
         @Bind(R.id.icon)
 

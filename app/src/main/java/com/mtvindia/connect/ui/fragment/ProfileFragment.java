@@ -24,8 +24,6 @@ import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,15 +33,15 @@ import butterknife.OnClick;
  */
 public class ProfileFragment extends BaseFragment {
 
-    @Bind(R.id.image_dp)
-    ImageView imageDp;
-    @Bind(R.id.edit_name)
-    EditText editName;
+    @Bind(R.id.img_dp)
+    ImageView imgDp;
+    @Bind(R.id.edt_name)
+    EditText edtName;
     @Bind(R.id.datePicker)
     DatePicker datePicker;
     @Bind(R.id.edt_about)
     EditText edtAbout;
-    @Bind(R.id.save)
+    @Bind(R.id.btn_save)
     Button save;
 
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
@@ -67,7 +65,7 @@ public class ProfileFragment extends BaseFragment {
 
         displayImage = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
 
-        Picasso.with(getContext()).load(R.drawable.img_dp).fit().transform(displayImage).into(imageDp);
+        Picasso.with(getContext()).load(R.drawable.img_dp).fit().transform(displayImage).into(imgDp);
 
     }
 
@@ -78,7 +76,7 @@ public class ProfileFragment extends BaseFragment {
         return profileFragment;
     }
 
-    @OnClick(R.id.image_dp)
+    @OnClick(R.id.img_dp)
     void selectImage() {
         final CharSequence[] items = { "Take Photo", "Choose from Gallery"};
 
@@ -110,15 +108,14 @@ public class ProfileFragment extends BaseFragment {
         switch (requestCode) {
             case CAMERA_CAPTURE_IMAGE_REQUEST_CODE:
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(), photo, "Title", null);
                 Uri uri = Uri.parse(path);
-                Picasso.with(getContext()).load(uri).transform(displayImage).fit().into(imageDp);
+                Picasso.with(getContext()).load(uri).transform(displayImage).fit().into(imgDp);
                 break;
 
             case MEDIA_TYPE_IMAGE:
                 Uri selectedImage = data.getData();
-                Picasso.with(getContext()).load(selectedImage).transform(displayImage).fit().into(imageDp);
+                Picasso.with(getContext()).load(selectedImage).transform(displayImage).fit().into(imgDp);
         }
     }
 

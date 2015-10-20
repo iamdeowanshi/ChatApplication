@@ -79,7 +79,7 @@
         android:textSize="13sp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_g"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btn_fb"
