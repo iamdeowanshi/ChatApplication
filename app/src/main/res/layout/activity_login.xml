@@ -72,20 +72,20 @@
         android:layout_below="@+id/txt_social"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
-        android:background="@drawable/btn_background"
+        android:background="@drawable/bg_button_state"
         android:text="Facebook"
         android:textAllCaps="false"
         android:textColor="#fff"
         android:textSize="13sp" />
 
     <Button
-        android:id="@+id/btn_g"
+        android:id="@+id/btn_gPlus"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btn_fb"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:background="@drawable/btn_background"
+        android:background="@drawable/bg_button_state"
         android:text="Google"
         android:textAllCaps="false"
         android:textColor="#fff"

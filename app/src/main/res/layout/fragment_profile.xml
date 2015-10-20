@@ -33,7 +33,7 @@
         android:layout_below="@+id/img_dp"
         android:layout_marginLeft="60dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/edt_background"
+        android:background="@drawable/bg_text_name"
         android:gravity="center"
         android:text="Priyanka Sachdeva"
         android:textColor="#fff"
@@ -72,7 +72,7 @@
     </LinearLayout>
 
     <DatePicker
-        android:id="@+id/datePicker"
+        android:id="@+id/date_picker"
         android:layout_width="270dp"
         android:layout_height="83dp"
         android:layout_below="@+id/layout_birthday"
@@ -90,7 +90,7 @@
         android:id="@+id/layout_about"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/datePicker"
+        android:layout_below="@+id/date_picker"
         android:layout_marginTop="35dp"
         android:gravity="center"
         android:orientation="horizontal">
@@ -124,7 +124,7 @@
         android:layout_below="@id/layout_about"
         android:layout_marginLeft="60dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/edt_background_about"
+        android:background="@drawable/bg_text_about"
         android:gravity="top"
         android:hint="Tell us something about you"
         android:paddingLeft="7dp"
@@ -140,7 +140,7 @@
         android:layout_below="@id/edt_about"
         android:layout_marginLeft="60dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/btn_background"
+        android:background="@drawable/bg_button_state"
         android:text="Save"
         android:textAllCaps="false"
         android:textColor="#fff"

@@ -37,7 +37,7 @@ public class ProfileFragment extends BaseFragment {
     ImageView imgDp;
     @Bind(R.id.edt_name)
     EditText edtName;
-    @Bind(R.id.datePicker)
+    @Bind(R.id.date_picker)
     DatePicker datePicker;
     @Bind(R.id.edt_about)
     EditText edtAbout;

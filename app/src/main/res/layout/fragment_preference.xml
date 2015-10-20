@@ -152,7 +152,7 @@
         android:layout_below="@id/layout_dialog_meet"
         android:layout_marginLeft="60dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/btn_background"
+        android:background="@drawable/bg_button_state"
         android:text="Save"
         android:textAllCaps="false"
         android:textColor="#fff"
