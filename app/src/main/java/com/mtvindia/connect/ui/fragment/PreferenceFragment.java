@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
+import com.mtvindia.connect.ui.activity.NavigationActivity;
+import com.mtvindia.connect.ui.activity.NavigationItem;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,16 +30,16 @@ public class PreferenceFragment extends BaseFragment {
     RelativeLayout layoutDialogInterested;
     @Bind(R.id.layout_dialog_meet)
     RelativeLayout layoutDialogMeet;
-    @Bind(R.id.save)
+    @Bind(R.id.btn_save)
     Button save;
-    @Bind(R.id.text_interested)
+    @Bind(R.id.txt_interested)
     TextView textInterested;
-    @Bind(R.id.text_meet)
+    @Bind(R.id.txt_meet)
     TextView textMeet;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_preference, container, false);
+        View view = inflater.inflate(R.layout.preference_fragment, container, false);
         ButterKnife.bind(this, view);
 
         return view;
@@ -87,6 +89,12 @@ public class PreferenceFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
 
+                NavigationActivity navigationActivity = (NavigationActivity) getContext();
+                Fragment fragment = ProfileFragment.getInstance(null);
+                navigationActivity.addFragment(fragment);
+
+                NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+                navigationDrawerFragment.onItemSelected(NavigationItem.PROFILE);
             }
         });
     }
@@ -94,6 +102,7 @@ public class PreferenceFragment extends BaseFragment {
     public static Fragment getInstance(Bundle bundle) {
         PreferenceFragment preferenceFragment = new PreferenceFragment();
         preferenceFragment.setArguments(bundle);
+
         return preferenceFragment;
     }
 

@@ -23,7 +23,6 @@ public class LaunchActivity extends BaseActivity {
             public void run() {
                 startActivity(LoginActivity.class, null);
             }
-
         }, timeOut);
     }
 

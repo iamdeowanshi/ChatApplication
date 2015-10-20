@@ -13,8 +13,8 @@ public class LoginActivity extends BaseActivity {
 
     @Bind(R.id.btn_fb)
     Button btnFb;
-    @Bind(R.id.button)
-    Button btnGoogle;
+    @Bind(R.id.btn_gPlus)
+    Button btnGplus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

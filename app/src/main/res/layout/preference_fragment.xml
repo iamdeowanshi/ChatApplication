@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/txt_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -20,7 +20,7 @@
         android:id="@+id/layout_interested"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/txt_view"
         android:layout_marginTop="35dp"
         android:gravity="center"
         android:orientation="horizontal">
@@ -34,7 +34,7 @@
             android:src="@drawable/icon_interested" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/txt_view2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/icon_interested"
@@ -57,7 +57,7 @@
         android:gravity="center">
 
         <TextView
-            android:id="@+id/text_interested"
+            android:id="@+id/txt_interested"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Dating"
@@ -76,7 +76,7 @@
             android:id="@+id/view1"
             android:layout_width="250dp"
             android:layout_height="1dp"
-            android:layout_below="@+id/text_interested"
+            android:layout_below="@+id/txt_interested"
             android:background="#e9e9e9" />
 
     </RelativeLayout>
@@ -91,7 +91,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/image_meet"
+            android:id="@+id/img_meet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/view1"
@@ -100,7 +100,7 @@
             android:src="@drawable/icon_meet" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/txt_view3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -121,7 +121,7 @@
         android:gravity="center">
 
         <TextView
-            android:id="@+id/text_meet"
+            android:id="@+id/txt_meet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Men"
@@ -140,19 +140,19 @@
             android:id="@+id/view2"
             android:layout_width="250dp"
             android:layout_height="1dp"
-            android:layout_below="@+id/text_meet"
+            android:layout_below="@+id/txt_meet"
             android:background="#e9e9e9" />
 
     </RelativeLayout>
 
     <Button
-        android:id="@+id/save"
+        android:id="@+id/btn_save"
         android:layout_width="250dp"
         android:layout_height="35dp"
         android:layout_below="@id/layout_dialog_meet"
         android:layout_marginLeft="60dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/btn_background"
+        android:background="@drawable/bg_button_state"
         android:text="Save"
         android:textAllCaps="false"
         android:textColor="#fff"

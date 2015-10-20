@@ -152,5 +152,4 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         ((NavigationDrawerAdapter) drawerList.getAdapter()).setSelectedItem(item);
     }
 
-
 }
