@@ -91,5 +91,14 @@
         android:textColor="#fff"
         android:textSize="13sp" />
 
+    <ProgressBar
+        android:id="@+id/progress_sign_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateTint="@color/purple"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="invisible" />
+
 
 </RelativeLayout>
