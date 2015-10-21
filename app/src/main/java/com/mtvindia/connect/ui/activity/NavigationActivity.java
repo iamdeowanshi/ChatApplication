@@ -80,10 +80,8 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 addFragment(fragment);
                 break;
             case LOGOUT:
-                if(LoginManager.getInstance() != null){
-                    LoginManager.getInstance().logOut();
-                    finish();
-                }
+                LoginManager.getInstance().logOut();
+                finish();
                 break;
         }
     }
