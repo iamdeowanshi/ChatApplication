@@ -48,9 +48,8 @@ public class CircleStrokeTransformation implements Transformation {
 
         float strokeInset = strokeWidth / 2f;
         rect.inset(strokeInset, strokeInset);
-        float strokeRadius = radius - strokeInset;
+        float strokeRadius = radius + strokeInset;
         canvas.drawRoundRect(rect, strokeRadius, strokeRadius, strokePaint);
-
         bitmap.recycle();
         return rounded;
     }

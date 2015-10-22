@@ -21,6 +21,8 @@ import android.widget.ImageView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
+import com.mtvindia.connect.ui.activity.NavigationActivity;
+import com.mtvindia.connect.ui.activity.NavigationItem;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.squareup.picasso.Picasso;
 
@@ -47,12 +49,11 @@ public class ProfileFragment extends BaseFragment {
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     public static final int MEDIA_TYPE_IMAGE = 1;
 
-    private CircleStrokeTransformation displayImage;
+    private CircleStrokeTransformation circleStrokeTransformation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile_fragment, container, false);
-        ButterKnife.bind(this, view);
 
         return view;
     }
@@ -63,10 +64,20 @@ public class ProfileFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        displayImage = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
+        circleStrokeTransformation = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
 
-        Picasso.with(getContext()).load(R.drawable.img_dp).fit().transform(displayImage).into(imgDp);
+        Picasso.with(getContext()).load(R.drawable.img_dp).fit().transform(circleStrokeTransformation).into(imgDp);
 
+    }
+
+    @OnClick(R.id.btn_save)
+    void save() {
+        NavigationActivity navigationActivity = (NavigationActivity) getContext();
+        Fragment fragment = PrimaryQuestionFragment.getInstance(null);
+        navigationActivity.addFragment(fragment);
+
+        NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+        navigationDrawerFragment.onItemSelected(NavigationItem.FIND_PEOPLE);
     }
 
     public static Fragment getInstance(Bundle bundle) {
@@ -78,7 +89,7 @@ public class ProfileFragment extends BaseFragment {
 
     @OnClick(R.id.img_dp)
     void selectImage() {
-        final CharSequence[] items = { "Take Photo", "Choose from Gallery"};
+        final CharSequence[] items = {"Take Photo", "Choose from Gallery"};
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Add Photo!");
@@ -110,12 +121,12 @@ public class ProfileFragment extends BaseFragment {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(), photo, "Title", null);
                 Uri uri = Uri.parse(path);
-                Picasso.with(getContext()).load(uri).transform(displayImage).fit().into(imgDp);
+                Picasso.with(getContext()).load(uri).transform(circleStrokeTransformation).fit().into(imgDp);
                 break;
 
             case MEDIA_TYPE_IMAGE:
                 Uri selectedImage = data.getData();
-                Picasso.with(getContext()).load(selectedImage).transform(displayImage).fit().into(imgDp);
+                Picasso.with(getContext()).load(selectedImage).transform(circleStrokeTransformation).fit().into(imgDp);
         }
     }
 

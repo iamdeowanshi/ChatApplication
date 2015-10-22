@@ -12,10 +12,10 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
 import com.mtvindia.connect.ui.fragment.ChatFragment;
-import com.mtvindia.connect.ui.fragment.FindMorePeopleFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
 import com.mtvindia.connect.ui.fragment.PreferenceFragment;
 import com.mtvindia.connect.ui.fragment.ProfileFragment;
+import com.mtvindia.connect.ui.fragment.PrimaryQuestionFragment;
 
 import butterknife.Bind;
 
@@ -60,7 +60,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
 
         switch (item) {
             case FIND_PEOPLE:
-                fragment = FindMorePeopleFragment.getInstance(bundle);
+                fragment = PrimaryQuestionFragment.getInstance(bundle);
                 addFragment(fragment);
                 break;
             case PROFILE:
