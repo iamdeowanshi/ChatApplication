@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_purple_blue"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txt_choose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        android:text="TIME TO CHOOSE!"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+    <RelativeLayout
+        android:id="@+id/option_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_choose"
+        android:layout_marginTop="40dp">
+
+        <ImageView
+            android:id="@+id/img_1"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginLeft="40dp"
+            android:src="@drawable/img_dp_big" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/img_1"
+            android:layout_alignRight="@+id/img_1"
+            android:layout_below="@id/img_1"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Priyanka Sachdeva"
+            android:textColor="#fff"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/img_2"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@+id/img_1"
+            android:src="@drawable/img_dp_big" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/img_2"
+            android:layout_alignRight="@+id/img_2"
+            android:layout_below="@id/img_2"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Priyanka Sachdeva"
+            android:textColor="#fff"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_skip"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/option_layout"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/bg_button_state"
+        android:text="Skip"
+        android:textAllCaps="false"
+        android:textColor="#fff" />
+
+</RelativeLayout>

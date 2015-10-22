@@ -35,10 +35,10 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/bg_text_name"
         android:gravity="center"
+        android:inputType="textNoSuggestions"
         android:text="Priyanka Sachdeva"
         android:textColor="#fff"
-        android:textSize="15sp"
-        android:inputType="textNoSuggestions"/>
+        android:textSize="15sp" />
 
     <LinearLayout
         android:id="@+id/layout_birthday"

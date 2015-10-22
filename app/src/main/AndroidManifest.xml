@@ -40,8 +40,9 @@
             android:label="@string/title_activity_login" />
         <activity
             android:name=".ui.activity.NavigationActivity"
-            android:label="@string/title_activity_navigation">
-            android:windowSoftInputMode="stateVisible|adjustPan"</activity>
+            android:label="@string/title_activity_navigation"
+            android:windowSoftInputMode="adjustPan">
+            </activity>
     </application>
 
 </manifest>

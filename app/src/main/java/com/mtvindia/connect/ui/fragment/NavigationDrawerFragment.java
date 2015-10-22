@@ -138,7 +138,6 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
 
     @Override
     public void onItemSelected(NavigationItem item) {
-
         if (drawerLayout != null) {
             drawerLayout.closeDrawer(fragmentContainerView);
         }

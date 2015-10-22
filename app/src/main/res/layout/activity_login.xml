@@ -31,7 +31,8 @@
         android:layout_marginTop="40dp"
         android:text="Hello!"
         android:textColor="#fff"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:fontFamily="ubuntu"/>
 
     <TextView
         android:id="@+id/txt_sign"

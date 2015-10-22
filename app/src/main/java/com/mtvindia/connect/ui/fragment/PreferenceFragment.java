@@ -40,7 +40,6 @@ public class PreferenceFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.preference_fragment, container, false);
-        ButterKnife.bind(this, view);
 
         return view;
     }
@@ -88,7 +87,6 @@ public class PreferenceFragment extends BaseFragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 NavigationActivity navigationActivity = (NavigationActivity) getContext();
                 Fragment fragment = ProfileFragment.getInstance(null);
                 navigationActivity.addFragment(fragment);
