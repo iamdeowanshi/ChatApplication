@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_yellow_red"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/img_dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:src="@drawable/img_dp" />
+
+    <TextView
+        android:id="@+id/txt_hello"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/img_dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="Hello Siddharth!"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/txt_find_match"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_hello"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="Let's find you a perfect match."
+        android:textColor="#fff" />
+
+
+    <TextView
+        android:id="@+id/txt_first_high"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_find_match"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:text="First high level question to tag user\nto paticular category?"
+        android:textColor="#fff"
+        android:textSize="15sp" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="1dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/txt_first_high"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="65dp"
+        android:background="#d5d5d5" />
+
+    <ImageView
+        android:id="@+id/img_dp_big_1"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/txt_first_high"
+        android:layout_marginTop="30dp"
+        android:layout_toLeftOf="@+id/view"
+        android:src="@drawable/img_dp_big" />
+
+    <ImageView
+        android:id="@+id/img_dp_big_2"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/img_dp_big_1"
+        android:layout_toRightOf="@+id/view"
+        android:src="@drawable/img_dp_big" />
+
+    <TextView
+        android:id="@+id/txt_question_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/img_dp_big_1"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="First high level\nquestion to tag\nuser to particular\ncategory?"
+        android:textColor="#fff"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/txt_question_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/view"
+        android:layout_below="@+id/img_dp_big_2"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="First high level\nquestion to tag\nuser to particular\ncategory?"
+        android:textColor="#fff"
+        android:textSize="12sp" />
+
+</RelativeLayout>
