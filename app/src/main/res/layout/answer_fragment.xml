@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_yellow_red"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txt_first_high"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:gravity="center"
+        android:text="First high level question to tag user\nto paticular category?"
+        android:textColor="#fff"
+        android:textSize="15sp" />
+
+    <ImageView
+        android:id="@+id/img_dp_big_1"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_below="@+id/txt_first_high"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/img_dp_big" />
+
+    <TextView
+        android:id="@+id/txt_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/img_dp_big_1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="First high level question to tag\nuser to particular category?"
+        android:textColor="#fff"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/txt_other_people"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_question"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="136 other people chose option 01"
+        android:textColor="#fff"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_other_people"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/circle1"
+            android:layout_width="@dimen/circle_size"
+            android:layout_height="@dimen/circle_size"
+            android:background="@drawable/draw_circle" />
+
+        <View
+            android:layout_width="@dimen/line_width"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:background="#fca919" />
+
+        <View
+            android:id="@+id/circle2"
+            android:layout_width="@dimen/circle_size"
+            android:layout_height="@dimen/circle_size"
+            android:background="@drawable/draw_circle" />
+
+        <View
+            android:layout_width="@dimen/line_width"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:background="#fca919" />
+
+        <View
+            android:id="@+id/circle3"
+            android:layout_width="@dimen/circle_size"
+            android:layout_height="@dimen/circle_size"
+            android:background="@drawable/draw_circle" />
+
+        <View
+            android:layout_width="@dimen/line_width"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:background="#fca919" />
+
+        <View
+            android:id="@+id/circle4"
+            android:layout_width="@dimen/circle_size"
+            android:layout_height="@dimen/circle_size"
+            android:background="@drawable/draw_circle" />
+
+        <View
+            android:layout_width="@dimen/line_width"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:background="#fca919" />
+
+        <View
+            android:id="@+id/circle5"
+            android:layout_width="@dimen/circle_size"
+            android:layout_height="@dimen/circle_size"
+            android:background="@drawable/draw_circle" />
+
+        <View
+            android:layout_width="@dimen/line_width"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:background="#fca919" />
+
+        <View
+            android:id="@+id/circle6"
+            android:layout_width="@dimen/circle_size"
+            android:layout_height="@dimen/circle_size"
+            android:background="@drawable/draw_circle" />
+
+        <View
+            android:layout_width="@dimen/line_width"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:background="#fca919" />
+
+        <View
+            android:id="@+id/circle7"
+            android:layout_width="@dimen/circle_size"
+            android:layout_height="@dimen/circle_size"
+            android:background="@drawable/draw_circle" />
+
+        <View
+            android:layout_width="@dimen/line_width"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:background="#fca919" />
+
+        <View
+            android:id="@+id/circle8"
+            android:layout_width="@dimen/circle_size"
+            android:layout_height="@dimen/circle_size"
+            android:background="@drawable/draw_circle" />
+
+        <View
+            android:layout_width="@dimen/line_width"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:background="#fca919" />
+
+        <View
+            android:id="@+id/circle9"
+            android:layout_width="@dimen/circle_size"
+            android:layout_height="@dimen/circle_size"
+            android:background="@drawable/draw_circle" />
+
+        <View
+            android:layout_width="@dimen/line_width"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:background="#fca919" />
+
+        <View
+            android:id="@+id/circle10"
+            android:layout_width="@dimen/circle_size"
+            android:layout_height="@dimen/circle_size"
+            android:background="@drawable/draw_circle" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progress_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="8 more to go"
+        android:textColor="#fff" />
+
+    <Button
+        android:id="@+id/btn_continue"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progress_bar"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/bg_button_state"
+        android:text="Continue"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="15sp" />
+
+</RelativeLayout>
