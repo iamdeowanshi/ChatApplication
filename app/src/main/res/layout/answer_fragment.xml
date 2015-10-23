@@ -5,7 +5,7 @@
     android:background="@drawable/gradient_yellow_red"
     android:orientation="vertical">
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_first_high"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:layout_marginTop="30dp"
         android:src="@drawable/img_dp_big" />
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
         android:textColor="#fff"
         android:textSize="15sp" />
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_other_people"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -173,7 +173,7 @@
 
     </LinearLayout>
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/progress_bar"
@@ -182,7 +182,7 @@
         android:text="8 more to go"
         android:textColor="#fff" />
 
-    <Button
+    <com.mtvindia.connect.ui.custom.UbuntuButton
         android:id="@+id/btn_continue"
         android:layout_width="260dp"
         android:layout_height="wrap_content"

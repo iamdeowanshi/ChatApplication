@@ -13,7 +13,7 @@
         android:layout_marginTop="60dp"
         android:src="@drawable/img_dp" />
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_hello"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         android:textColor="#fff"
         android:textSize="20sp" />
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_find_match"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
         android:textColor="#fff" />
 
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_first_high"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
         android:layout_toRightOf="@+id/view"
         android:src="@drawable/img_dp_big" />
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_question_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
         android:textColor="#fff"
         android:textSize="12sp" />
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_question_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

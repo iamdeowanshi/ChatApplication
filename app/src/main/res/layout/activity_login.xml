@@ -22,7 +22,7 @@
         android:paddingRight="60dp"
         android:src="@drawable/img_logo" />
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_hello"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         android:textSize="30sp"
         android:fontFamily="ubuntu"/>
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_sign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
         android:background="@null"
         android:src="@drawable/img_power" />
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_social"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
         android:textColor="#fff"
         android:textSize="15sp" />
 
-    <Button
+    <com.mtvindia.connect.ui.custom.UbuntuButton
         android:id="@+id/btn_fb"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
         android:textColor="#fff"
         android:textSize="13sp" />
 
-    <Button
+    <com.mtvindia.connect.ui.custom.UbuntuButton
         android:id="@+id/btn_gPlus"
         android:layout_width="300dp"
         android:layout_height="wrap_content"

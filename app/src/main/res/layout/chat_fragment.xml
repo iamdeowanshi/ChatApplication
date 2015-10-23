@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:background="@drawable/gradient_red_purple">
 
-    <TextView
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Chat Fragment"
