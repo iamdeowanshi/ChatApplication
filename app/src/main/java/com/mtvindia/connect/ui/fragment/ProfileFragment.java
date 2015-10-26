@@ -1,6 +1,7 @@
 package com.mtvindia.connect.ui.fragment;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,17 +15,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.activity.NavigationItem;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
+import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.squareup.picasso.Picasso;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,15 +44,22 @@ public class ProfileFragment extends BaseFragment {
     ImageView imgDp;
     @Bind(R.id.edt_name)
     EditText edtName;
-    @Bind(R.id.date_picker)
-    DatePicker datePicker;
     @Bind(R.id.edt_about)
     EditText edtAbout;
-    @Bind(R.id.btn_save)
-    Button save;
+    @Bind(R.id.txt_day)
+    TextView txtDay;
+    @Bind(R.id.txt_month)
+    UbuntuTextView txtMonth;
+    @Bind(R.id.txt_year)
+    UbuntuTextView txtYear;
+
 
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     public static final int MEDIA_TYPE_IMAGE = 1;
+
+    private int day;
+    private int month;
+    private int year;
 
     private CircleStrokeTransformation circleStrokeTransformation;
 
@@ -55,6 +67,7 @@ public class ProfileFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile_fragment, container, false);
 
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -68,6 +81,28 @@ public class ProfileFragment extends BaseFragment {
 
         Picasso.with(getContext()).load(R.drawable.img_dp).fit().transform(circleStrokeTransformation).into(imgDp);
 
+    }
+
+    @OnClick(R.id.txt_date_picker)
+    void selectDate() {
+        Calendar currentDate = Calendar.getInstance();
+        year = currentDate.get(Calendar.YEAR);
+        month = currentDate.get(Calendar.MONTH);
+        day = currentDate.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePicker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                txtDay.setText(String.valueOf(selectedday));
+                txtMonth.setText(getMonthName(selectedmonth));
+                txtYear.setText(String.valueOf(selectedyear));
+            }
+        }, year, month, day);
+        datePicker.setTitle("Select date");
+        datePicker.getDatePicker().setMaxDate(new Date().getTime());
+        datePicker.getDatePicker().setSpinnersShown(true);
+        datePicker.getDatePicker().getSpinnersShown();
+        datePicker.getDatePicker().setCalendarViewShown(false);
+        datePicker.show();
     }
 
     @OnClick(R.id.btn_save)
@@ -101,13 +136,55 @@ public class ProfileFragment extends BaseFragment {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
                 } else if (items[item].equals("Choose from Gallery")) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");
                     startActivityForResult(Intent.createChooser(intent, "Select File"), MEDIA_TYPE_IMAGE);
                 }
             }
         });
         builder.show();
+    }
+
+    public static String getMonthName(int month) {
+        switch (month + 1) {
+            case 1:
+                return "Jan";
+
+            case 2:
+                return "Feb";
+
+            case 3:
+                return "Mar";
+
+            case 4:
+                return "Apr";
+
+            case 5:
+                return "May";
+
+            case 6:
+                return "Jun";
+
+            case 7:
+                return "Jul";
+
+            case 8:
+                return "Aug";
+
+            case 9:
+                return "Sep";
+
+            case 10:
+                return "Oct";
+
+            case 11:
+                return "Nov";
+
+            case 12:
+                return "Dec";
+        }
+
+        return "";
     }
 
     @Override
