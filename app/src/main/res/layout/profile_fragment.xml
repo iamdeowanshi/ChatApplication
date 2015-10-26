@@ -1,149 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/gradient_red_purple"
-    android:orientation="vertical">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:isScrollContainer="false">
 
-    <com.mtvindia.connect.ui.custom.UbuntuTextView
-        android:id="@+id/txt_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="70dp"
-        android:text="Edit your profile"
-        android:textColor="#fff"
-        android:textSize="21sp" />
-
-    <ImageView
-        android:id="@+id/img_dp"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_below="@+id/txt_view"
-        android:layout_marginLeft="165dp"
-        android:layout_marginTop="15dp"
-        android:src="@drawable/img_dp" />
-
-    <com.mtvindia.connect.ui.custom.UbuntuEditText
-        android:id="@+id/edt_name"
-        android:layout_width="270dp"
-        android:layout_height="30dp"
-        android:layout_below="@+id/img_dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/bg_text_name"
-        android:gravity="center"
-        android:inputType="textNoSuggestions"
-        android:text="Priyanka Sachdeva"
-        android:textColor="#fff"
-        android:textSize="15sp" />
-
-    <LinearLayout
-        android:id="@+id/layout_birthday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/edt_name"
-        android:layout_marginTop="35dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/icon_birthday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:gravity="center"
-            android:src="@drawable/icon_gift" />
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_red_purple"
+        android:orientation="vertical">
 
         <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/txt_view2"
+            android:id="@+id/txt_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/icon_interested"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/icon_interested"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="70dp"
+            android:text="Edit your profile"
+            android:textColor="#fff"
+            android:textSize="21sp" />
+
+        <ImageView
+            android:id="@+id/img_dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_below="@+id/txt_view"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/img_dp" />
+
+        <com.mtvindia.connect.ui.custom.UbuntuEditText
+            android:id="@+id/edt_name"
+            android:layout_width="255dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/img_dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_text_name"
             android:gravity="center"
-            android:text="Birthday"
+            android:inputType="textNoSuggestions"
+            android:text="Priyanka Sachdeva"
             android:textColor="#fff"
             android:textSize="15sp" />
 
-    </LinearLayout>
-
-    <DatePicker
-        android:id="@+id/date_picker"
-        android:layout_width="270dp"
-        android:layout_height="83dp"
-        android:layout_below="@+id/layout_birthday"
-        android:layout_marginLeft="60dp"
-        android:background="@null"
-        android:calendarTextColor="@android:color/white"
-        android:calendarViewShown="false"
-        android:clickable="false"
-        android:datePickerMode="spinner"
-        android:textAlignment="center"
-        android:theme="@style/Theme.SelectDate"
-        android:touchscreenBlocksFocus="true" />
-
-    <LinearLayout
-        android:id="@+id/layout_about"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/date_picker"
-        android:layout_marginTop="35dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/icon_about"
+        <LinearLayout
+            android:id="@+id/layout_birthday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
+            android:layout_below="@+id/edt_name"
+            android:layout_marginTop="35dp"
             android:gravity="center"
-            android:src="@drawable/icon_about_me" />
+            android:orientation="horizontal">
 
-        <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/txt_view3"
+            <ImageView
+                android:id="@+id/icon_birthday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                android:src="@drawable/icon_gift" />
+
+            <com.mtvindia.connect.ui.custom.UbuntuTextView
+                android:id="@+id/txt_view2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/icon_interested"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/icon_interested"
+                android:gravity="center"
+                android:text="Birthday"
+                android:textColor="#fff"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/txt_date_picker"
+            android:layout_width="255dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_birthday"
+            android:layout_marginLeft="60dp"
+            android:orientation="horizontal">
+
+            <com.mtvindia.connect.ui.custom.UbuntuTextView
+                android:id="@+id/txt_day"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Day"
+                android:textColor="#fff" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:background="#d5d5d5" />
+
+            <com.mtvindia.connect.ui.custom.UbuntuTextView
+                android:id="@+id/txt_month"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Month"
+                android:textColor="#fff" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:background="#d5d5d5" />
+
+            <com.mtvindia.connect.ui.custom.UbuntuTextView
+                android:id="@+id/txt_year"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Year"
+                android:textColor="#fff" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_about"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/icon_about"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/icon_interested"
+            android:layout_below="@+id/txt_date_picker"
+            android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="About me"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/icon_about"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                android:src="@drawable/icon_about_me" />
+
+            <com.mtvindia.connect.ui.custom.UbuntuTextView
+                android:id="@+id/txt_view3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/icon_about"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/icon_interested"
+                android:gravity="center"
+                android:text="About me"
+                android:textColor="#fff"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <com.mtvindia.connect.ui.custom.UbuntuEditText
+            android:id="@+id/edt_about"
+            android:layout_width="255dp"
+            android:layout_height="75dp"
+            android:layout_below="@id/layout_about"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_text_about"
+            android:gravity="top"
+            android:hint="Tell us something about you"
+            android:paddingLeft="7dp"
+            android:paddingTop="7dp"
             android:textColor="#fff"
-            android:textSize="15sp" />
+            android:textColorHint="#d1d1d1"
+            android:textSize="13sp" />
 
-    </LinearLayout>
+        <com.mtvindia.connect.ui.custom.UbuntuButton
+            android:id="@+id/btn_save"
+            android:layout_width="255dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edt_about"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_button_state"
+            android:text="Save"
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="13sp" />
 
-    <com.mtvindia.connect.ui.custom.UbuntuEditText
-        android:id="@+id/edt_about"
-        android:layout_width="270dp"
-        android:layout_height="75dp"
-        android:layout_below="@id/layout_about"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/bg_text_about"
-        android:gravity="top"
-        android:hint="Tell us something about you"
-        android:paddingLeft="7dp"
-        android:paddingTop="7dp"
-        android:textColor="#fff"
-        android:textColorHint="#d1d1d1"
-        android:textSize="13sp" />
+    </RelativeLayout>
 
-    <com.mtvindia.connect.ui.custom.UbuntuButton
-        android:id="@+id/btn_save"
-        android:layout_width="270dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edt_about"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/bg_button_state"
-        android:text="Save"
-        android:textAllCaps="false"
-        android:textColor="#fff"
-        android:textSize="13sp" />
-
-</RelativeLayout>
+</ScrollView>
