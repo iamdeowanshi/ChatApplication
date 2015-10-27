@@ -6,6 +6,7 @@ package com.mtvindia.connect.data.model;
 public class User extends BaseModel {
 
     private int id;
+    private int signup;
     private String socialId;
     private String profilePic;
     private String firstName;
@@ -21,6 +22,14 @@ public class User extends BaseModel {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getSignup() {
+        return signup;
+    }
+
+    public void setSignup(int signup) {
+        this.signup = signup;
     }
 
     public String getSocialId() {

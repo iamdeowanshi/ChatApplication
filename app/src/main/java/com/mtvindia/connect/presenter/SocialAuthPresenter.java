@@ -6,7 +6,7 @@ import com.mtvindia.connect.data.model.User;
 /**
  * @author Farhan Ali
  */
-public interface LoginPresenter extends Presenter<LoginViewInteractor> {
+public interface SocialAuthPresenter extends Presenter<SocialAuthViewInteractor> {
 
     void login(User user);
 }

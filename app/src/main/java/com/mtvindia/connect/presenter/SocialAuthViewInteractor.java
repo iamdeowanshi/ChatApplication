@@ -5,7 +5,7 @@ import com.mtvindia.connect.app.base.ViewInteractor;
 /**
  * @author Farhan Ali
  */
-public interface LoginViewInteractor extends ViewInteractor {
+public interface SocialAuthViewInteractor extends ViewInteractor {
 
     void showSomeMessage(String message);
 
