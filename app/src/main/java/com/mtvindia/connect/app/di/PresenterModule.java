@@ -1,7 +1,7 @@
 package com.mtvindia.connect.app.di;
 
-import com.mtvindia.connect.presenter.LoginPresenter;
-import com.mtvindia.connect.presenter.concrete.LoginPresenterImpl;
+import com.mtvindia.connect.presenter.SocialAuthPresenter;
+import com.mtvindia.connect.presenter.concrete.SocialAuthPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -18,8 +18,8 @@ import dagger.Provides;
 public class PresenterModule {
 
     @Provides
-    public LoginPresenter provideSamplePresenter() {
-        return new LoginPresenterImpl();
+    public SocialAuthPresenter provideSamplePresenter() {
+        return new SocialAuthPresenterImpl();
     }
 
 }

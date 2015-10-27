@@ -6,18 +6,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.data.model.User;
+import com.mtvindia.connect.presenter.SocialAuthPresenter;
 import com.mtvindia.connect.util.social.AuthResult;
 import com.mtvindia.connect.util.social.SocialAuth;
 import com.mtvindia.connect.util.social.SocialAuthCallback;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
 
 public class LoginActivitySocial extends BaseActivity implements SocialAuthCallback {
+
+    @Inject SocialAuthPresenter presenter;
 
     @Bind(R.id.btn_fb)
     Button btnFb;
@@ -84,6 +90,7 @@ public class LoginActivitySocial extends BaseActivity implements SocialAuthCallb
         Timber.d("Success: " + authResult.getData());
         Timber.d("AccessToken: " + authResult.getAuthUser().getAccessToken());
         progressSignIn.setVisibility(View.INVISIBLE);
+        presenter.login(user);
         startActivity(NavigationActivity.class, null);
     }
 

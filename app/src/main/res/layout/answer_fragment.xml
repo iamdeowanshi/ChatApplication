@@ -14,7 +14,7 @@
         android:gravity="center"
         android:text="First high level question to tag user\nto paticular category?"
         android:textColor="#fff"
-        android:textSize="15sp" />
+        android:textSize="17.67sp" />
 
     <ImageView
         android:id="@+id/img_dp_big_1"
@@ -35,7 +35,7 @@
         android:gravity="center"
         android:text="First high level question to tag\nuser to particular category?"
         android:textColor="#fff"
-        android:textSize="15sp" />
+        android:textSize="15.67sp" />
 
     <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_other_people"
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_question"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         android:text="136 other people chose option 01"
         android:textColor="#fff"
         android:textStyle="bold" />
@@ -53,8 +53,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_other_people"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="60dp"
         android:orientation="horizontal">
 
         <View
@@ -180,12 +180,13 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="8 more to go"
+        android:textSize="13.67sp"
         android:textColor="#fff" />
 
     <com.mtvindia.connect.ui.custom.UbuntuButton
         android:id="@+id/btn_continue"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
+        android:layout_width="270dp"
+        android:layout_height="45dp"
         android:layout_below="@+id/progress_bar"
         android:layout_marginLeft="60dp"
         android:layout_marginTop="70dp"
@@ -193,6 +194,6 @@
         android:text="Continue"
         android:textAllCaps="false"
         android:textColor="#fff"
-        android:textSize="15sp" />
+        android:textSize="14sp" />
 
 </RelativeLayout>

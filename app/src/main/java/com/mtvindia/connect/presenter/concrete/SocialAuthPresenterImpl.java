@@ -2,14 +2,14 @@ package com.mtvindia.connect.presenter.concrete;
 
 import com.mtvindia.connect.app.base.BasePresenter;
 import com.mtvindia.connect.data.model.User;
-import com.mtvindia.connect.presenter.LoginPresenter;
-import com.mtvindia.connect.presenter.LoginViewInteractor;
+import com.mtvindia.connect.presenter.SocialAuthPresenter;
+import com.mtvindia.connect.presenter.SocialAuthViewInteractor;
 
 /**
  * @author Farhan Ali
  */
-public class LoginPresenterImpl extends BasePresenter<LoginViewInteractor>
-        implements LoginPresenter {
+public class SocialAuthPresenterImpl extends BasePresenter<SocialAuthViewInteractor>
+        implements SocialAuthPresenter {
 
     @Override
     public void login(User user) {

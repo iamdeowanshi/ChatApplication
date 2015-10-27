@@ -22,7 +22,7 @@
         android:layout_marginTop="15dp"
         android:text="Hello Siddharth!"
         android:textColor="#fff"
-        android:textSize="20sp" />
+        android:textSize="23.67sp" />
 
     <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_find_match"
@@ -31,6 +31,7 @@
         android:layout_below="@+id/txt_hello"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
+        android:textSize="15.67sp"
         android:text="Let's find you a perfect match."
         android:textColor="#fff" />
 
@@ -45,7 +46,7 @@
         android:gravity="center"
         android:text="First high level question to tag user\nto paticular category?"
         android:textColor="#fff"
-        android:textSize="15sp" />
+        android:textSize="15.67sp" />
 
     <View
         android:id="@+id/view"
