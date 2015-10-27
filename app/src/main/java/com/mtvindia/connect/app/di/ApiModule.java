@@ -8,7 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.mtvindia.connect.app.Config;
-import com.mtvindia.connect.data.api.AppApi;
+import com.mtvindia.connect.data.api.MtvConnectApi;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,8 +39,8 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    public AppApi provideApi(RestAdapter restAdapter) {
-        return restAdapter.create(AppApi.class);
+    public MtvConnectApi provideApi(RestAdapter restAdapter) {
+        return restAdapter.create(MtvConnectApi.class);
     }
 
     @Provides

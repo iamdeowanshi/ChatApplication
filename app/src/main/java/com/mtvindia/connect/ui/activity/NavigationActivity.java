@@ -7,15 +7,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 
-import com.facebook.login.LoginManager;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
+import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
 import com.mtvindia.connect.ui.fragment.ChatFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
 import com.mtvindia.connect.ui.fragment.PreferenceFragment;
-import com.mtvindia.connect.ui.fragment.ProfileFragment;
 import com.mtvindia.connect.ui.fragment.PrimaryQuestionFragment;
+import com.mtvindia.connect.ui.fragment.ProfileFragment;
 
 import butterknife.Bind;
 
@@ -27,12 +27,14 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     DrawerLayout drawerLayout;
 
     private NavigationDrawerFragment navigationDrawerFragment;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
+        user = getIntent().getParcelableExtra("User");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.icon_logo);
@@ -80,7 +82,6 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 addFragment(fragment);
                 break;
             case LOGOUT:
-                LoginManager.getInstance().logOut();
                 finish();
                 break;
         }
