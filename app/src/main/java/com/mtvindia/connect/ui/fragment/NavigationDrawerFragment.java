@@ -13,17 +13,20 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.ui.activity.NavigationCallBack;
 import com.mtvindia.connect.ui.activity.NavigationItem;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
+import com.mtvindia.connect.ui.custom.UbuntuTextView;
 
 import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by Sibi on 13/10/15.
@@ -32,6 +35,10 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
 
     @Bind(R.id.recycler_view)
     RecyclerView drawerList;
+    @Bind(R.id.icon_interested)
+    ImageView iconInterested;
+    @Bind(R.id.txt_item_name)
+    UbuntuTextView txtItemName;
 
     private View fragmentContainerView;
     private DrawerLayout drawerLayout;
@@ -44,7 +51,9 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.layout_drawer, container, false);
+        View view = inflater.inflate(R.layout.layout_drawer, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
@@ -84,6 +93,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     public void initDrawer(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
         fragmentContainerView = getActivity().findViewById(fragmentId);
         this.drawerLayout = drawerLayout;
+
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(getActivity(), NavigationDrawerFragment.this.drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
             @Override
@@ -149,6 +159,12 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         }
 
         ((NavigationDrawerAdapter) drawerList.getAdapter()).setSelectedItem(item);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
 }

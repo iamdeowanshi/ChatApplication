@@ -9,7 +9,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.mtvindia.connect.ui.activity.LoginActivity">
 
-
     <ImageView
         android:id="@+id/img_logo"
         android:layout_width="wrap_content"
@@ -97,9 +96,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:indeterminateTint="@color/purple"
+        android:indeterminateTint="#c5c5c5"
         android:indeterminateTintMode="src_atop"
         android:visibility="invisible" />
-
 
 </RelativeLayout>
