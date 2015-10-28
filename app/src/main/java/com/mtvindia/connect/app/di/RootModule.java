@@ -3,7 +3,10 @@ package com.mtvindia.connect.app.di;
 import android.content.Context;
 
 import com.mtvindia.connect.app.MtvConnectApplication;
+import com.mtvindia.connect.presenter.concrete.LoginPresenterImpl;
+import com.mtvindia.connect.ui.activity.LoginActivity;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
+import com.mtvindia.connect.util.PreferenceUtil;
 
 import javax.inject.Singleton;
 
@@ -19,6 +22,7 @@ import dagger.Provides;
 @Module(
         includes = {
                 PresenterModule.class,
+                UtilModule.class,
                 ApiModule.class
         },
         injects = {
@@ -26,6 +30,11 @@ import dagger.Provides;
 
                 // View specific classes - activities, fragments, adapters etc
                 NavigationDrawerFragment.class,
+                LoginActivity.class,
+                LoginPresenterImpl.class,
+
+                // Util classes
+                PreferenceUtil.class
 
         }
 )
