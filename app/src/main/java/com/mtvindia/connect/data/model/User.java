@@ -1,20 +1,44 @@
 package com.mtvindia.connect.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Sibi on 26/10/15.
  */
 public class User extends BaseModel {
 
+    @SerializedName("id")
     private int id;
+    @SerializedName("signup")
     private int signup;
+    @SerializedName("socialId")
     private String socialId;
+    @SerializedName("profilePic")
     private String profilePic;
+    @SerializedName("firstName")
     private String firstName;
+    @SerializedName("lastName")
     private String lastName;
+    @SerializedName("email")
     private String email;
+    @SerializedName("birthday")
     private String birthday;
+    @SerializedName("gender")
     private String gender;
+    @SerializedName("accessToken")
     private String accessToken;
+
+    public User() {
+    }
+
+    public User(LoginResponse response) {
+        id = response.getId();
+        firstName = response.getFirstName();
+        lastName = response.getLastName();
+        email = response.getEmail();
+        profilePic = response.getProfilePic();
+        accessToken = response.getAccessToken();
+    }
 
     public int getId() {
         return id;
