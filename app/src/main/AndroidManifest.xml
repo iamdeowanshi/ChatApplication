@@ -25,7 +25,7 @@
             android:exported="true" />
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:theme="@style/FullyTranslucent"
             android:label="@string/app_name" />
         <activity
             android:name=".ui.activity.LaunchActivity"
@@ -36,7 +36,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.LoginActivitySocial"
+            android:name=".ui.activity.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
             android:name=".ui.activity.NavigationActivity"

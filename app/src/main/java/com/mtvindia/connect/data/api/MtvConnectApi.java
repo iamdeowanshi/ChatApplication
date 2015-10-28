@@ -1,10 +1,11 @@
 package com.mtvindia.connect.data.api;
 
 import com.mtvindia.connect.app.Config;
-import com.mtvindia.connect.data.model.User;
+import com.mtvindia.connect.data.model.LoginRequest;
+import com.mtvindia.connect.data.model.LoginResponse;
 
+import retrofit.http.Body;
 import retrofit.http.POST;
-import retrofit.http.Query;
 import rx.Observable;
 
 /**
@@ -13,8 +14,7 @@ import rx.Observable;
 public interface MtvConnectApi {
 
     @POST(Config.USER_LOGIN)
-    Observable<User> login(
-            @Query("q") String query, @Query("page") int page);
+    Observable<LoginResponse> login(@Body LoginRequest request);
 
 
 }

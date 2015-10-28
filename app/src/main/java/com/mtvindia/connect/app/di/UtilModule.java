@@ -1,7 +1,8 @@
 package com.mtvindia.connect.app.di;
 
-import com.mtvindia.connect.presenter.LoginPresenter;
-import com.mtvindia.connect.presenter.concrete.LoginPresenterImpl;
+import com.mtvindia.connect.util.PreferenceUtil;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,11 +16,12 @@ import dagger.Provides;
         complete = false,
         library = true
 )
-public class PresenterModule {
+public class UtilModule {
 
     @Provides
-    public LoginPresenter provideSamplePresenter() {
-        return new LoginPresenterImpl();
+    @Singleton
+    public PreferenceUtil providePreferenceUtil() {
+        return new PreferenceUtil();
     }
 
 }

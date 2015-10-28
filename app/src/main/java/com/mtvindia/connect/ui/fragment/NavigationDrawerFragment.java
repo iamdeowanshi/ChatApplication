@@ -17,13 +17,19 @@ import android.widget.ImageView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
+import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.ui.activity.NavigationCallBack;
 import com.mtvindia.connect.ui.activity.NavigationItem;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
+import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
+import com.mtvindia.connect.util.PreferenceUtil;
+import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -33,10 +39,12 @@ import butterknife.ButterKnife;
  */
 public class NavigationDrawerFragment extends BaseFragment implements NavigationCallBack {
 
+    @Inject PreferenceUtil preferenceUtil;
+
     @Bind(R.id.recycler_view)
     RecyclerView drawerList;
-    @Bind(R.id.icon_interested)
-    ImageView iconInterested;
+    @Bind(R.id.img_dp)
+    ImageView imgDp;
     @Bind(R.id.txt_item_name)
     UbuntuTextView txtItemName;
 
@@ -47,12 +55,20 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     private List<NavigationItem> drawerItems;
     private NavigationCallBack navigationCallBack;
 
+    private CircleStrokeTransformation circleStrokeTransformation;
+
     private NavigationItem selectedItem;
+    private User user;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        injectDependencies();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_drawer, container, false);
-        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -62,9 +78,16 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
+        circleStrokeTransformation = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
+
+        User user = (User) preferenceUtil.read(PreferenceUtil.PREF_USER_KEY, User.class);
+
         drawerItems = Arrays.asList(NavigationItem.values());
         drawerList.setLayoutManager(layoutManager);
         drawerList.setHasFixedSize(true);
+
+        txtItemName.setText(user.getFirstName() + " " + user.getLastName());
+        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDp);
 
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(drawerItems);
         adapter.setNavigationCallbacks(this);
@@ -100,10 +123,10 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 getActivity().invalidateOptionsMenu();
-
+/*
                 if (navigationCallBack != null) {
-                    navigationCallBack.onItemSelected(selectedItem);
-                }
+                    //navigationCallBack.onItemSelected(selectedItem);
+                }*/
             }
 
             @Override
