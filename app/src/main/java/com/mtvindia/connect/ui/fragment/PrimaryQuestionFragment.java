@@ -24,6 +24,7 @@ import butterknife.OnClick;
  */
 public class PrimaryQuestionFragment extends BaseFragment {
 
+
     @Bind(R.id.img_dp)
     ImageView imgDp;
     @Bind(R.id.img_dp_big_1)

@@ -11,9 +11,9 @@
         android:layout_height="100dp">
 
         <ImageView
-            android:id="@+id/icon_interested"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/img_dp"
+            android:layout_width="66.33dp"
+            android:layout_height="66.33dp"
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
             android:layout_marginLeft="15dp"
@@ -24,8 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/icon_interested"
-            android:layout_toRightOf="@+id/icon_interested"
+            android:layout_toEndOf="@+id/img_dp"
+            android:layout_toRightOf="@+id/img_dp"
             android:paddingLeft="10dp"
             android:text="Priyanka Sachdeva"
             android:textColor="@color/purple"

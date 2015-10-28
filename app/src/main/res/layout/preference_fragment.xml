@@ -26,7 +26,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/icon_interested"
+            android:id="@+id/img_dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
@@ -37,9 +37,9 @@
             android:id="@+id/txt_view2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/icon_interested"
+            android:layout_alignTop="@+id/img_dp"
             android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/icon_interested"
+            android:layout_toRightOf="@+id/img_dp"
             android:gravity="center"
             android:text="I&apos;m interested in"
             android:textColor="#fff"

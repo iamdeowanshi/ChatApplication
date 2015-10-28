@@ -21,7 +21,7 @@ public class LaunchActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(LoginActivitySocial.class, null);
+                startActivity(LoginActivity.class, null);
             }
         }, timeOut);
     }
