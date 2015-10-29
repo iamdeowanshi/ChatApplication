@@ -11,8 +11,6 @@ public class User extends BaseModel {
     private int id;
     @SerializedName("signup")
     private int signup;
-    @SerializedName("socialId")
-    private String socialId;
     @SerializedName("profilePic")
     private String profilePic;
     @SerializedName("firstName")
@@ -23,10 +21,14 @@ public class User extends BaseModel {
     private String email;
     @SerializedName("birthday")
     private String birthday;
-    @SerializedName("gender")
-    private String gender;
     @SerializedName("accessToken")
     private String accessToken;
+    @SerializedName("about")
+    private String about;
+    @SerializedName("likeToMeet")
+    private String likeToMeet;
+    @SerializedName("interestedIn")
+    private String interestedIn;
 
     public User() {
     }
@@ -56,36 +58,12 @@ public class User extends BaseModel {
         this.signup = signup;
     }
 
-    public String getSocialId() {
-        return socialId;
+    public String getProfilePic() {
+        return profilePic;
     }
 
-    public void setSocialId(String socialId) {
-        this.socialId = socialId;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 
     public String getFirstName() {
@@ -96,6 +74,22 @@ public class User extends BaseModel {
         this.firstName = firstName;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getBirthday() {
         return birthday;
     }
@@ -104,19 +98,36 @@ public class User extends BaseModel {
         this.birthday = birthday;
     }
 
-    public String getGender() {
-        return gender;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public String getProfilePic() {
-        return profilePic;
+    public String getAbout() {
+        return about;
     }
 
-    public void setProfilePic(String profilePic) {
-        this.profilePic = profilePic;
+    public void setAbout(String about) {
+        this.about = about;
     }
+
+    public String getLikeToMeet() {
+        return likeToMeet;
+    }
+
+    public void setLikeToMeet(String likeToMeet) {
+        this.likeToMeet = likeToMeet;
+    }
+
+    public String getInterestedIn() {
+        return interestedIn;
+    }
+
+    public void setInterestedIn(String interestedIn) {
+        this.interestedIn = interestedIn;
+    }
+
 }
