@@ -17,6 +17,7 @@ public class Config {
     public static final String BASE_URL             = BASE_URL_PRODUCTION;
 
     public static final String USER_LOGIN           = "/login";
+    public static final String USER_UPDATE          = "/update";
 
     // Cache size in bytes, 50 MB = 50 * 1024 KB, 1 KB = 1024 Bytes
     public static final int HTTP_DISK_CACHE_SIZE    = (int) 50 * 1024 * 1024;
