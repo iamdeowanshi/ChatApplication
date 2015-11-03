@@ -121,9 +121,11 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
     @OnClick(R.id.txt_date_picker)
     void selectDate() {
         Calendar currentDate = Calendar.getInstance();
-        year = currentDate.get(Calendar.YEAR);
-        month = currentDate.get(Calendar.MONTH);
-        day = currentDate.get(Calendar.DAY_OF_MONTH);
+        if(year == 0) {
+            year = currentDate.get(Calendar.YEAR);
+            month = currentDate.get(Calendar.MONTH);
+            day = currentDate.get(Calendar.DAY_OF_MONTH);
+        }
 
         DatePickerDialog datePicker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
