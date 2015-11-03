@@ -27,8 +27,7 @@
             android:layout_height="70dp"
             android:layout_below="@+id/txt_view"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:src="@drawable/img_dp" />
+            android:layout_marginTop="15dp" />
 
         <com.mtvindia.connect.ui.custom.UbuntuEditText
             android:id="@+id/edt_name"
@@ -40,7 +39,6 @@
             android:background="@drawable/bg_text_name"
             android:gravity="center"
             android:inputType="textNoSuggestions"
-            android:text="Priyanka Sachdeva"
             android:textColor="#fff"
             android:textSize="15sp" />
 

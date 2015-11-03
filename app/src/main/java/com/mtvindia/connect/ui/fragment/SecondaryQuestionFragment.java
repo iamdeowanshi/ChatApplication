@@ -23,7 +23,6 @@ import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.PreferenceUtil;
-import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -103,8 +102,6 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
         strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
 
-        Picasso.with(getContext()).load(R.drawable.img_dp_big).transform(circleStrokeTransformation).into(imgDpBig);
-        Picasso.with(getContext()).load(R.drawable.img_dp_big).transform(circleStrokeTransformation).into(imgDpBig2);
 
         options = getArguments().getInt("value");
 

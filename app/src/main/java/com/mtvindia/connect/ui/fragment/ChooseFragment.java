@@ -15,7 +15,6 @@ import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.util.PreferenceUtil;
-import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -68,8 +67,6 @@ public class ChooseFragment extends BaseFragment {
         strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
 
-        Picasso.with(getContext()).load(R.drawable.img_dp_big).transform(circleStrokeTransformation).into(img1);
-        Picasso.with(getContext()).load(R.drawable.img_dp_big).transform(circleStrokeTransformation).into(img2);
     }
 
     @OnClick(R.id.img_1)

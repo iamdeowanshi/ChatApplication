@@ -17,7 +17,7 @@
 
     <RelativeLayout
         android:id="@+id/option_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_choose"
         android:layout_marginTop="40dp">
@@ -26,8 +26,7 @@
             android:id="@+id/img_1"
             android:layout_width="130dp"
             android:layout_height="130dp"
-            android:layout_marginLeft="40dp"
-            android:src="@drawable/img_dp_big" />
+            android:layout_marginLeft="40dp"/>
 
         <com.mtvindia.connect.ui.custom.UbuntuTextView
             android:layout_width="wrap_content"
@@ -37,7 +36,6 @@
             android:layout_below="@id/img_1"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="Priyanka Sachdeva"
             android:textColor="#fff"
             android:textSize="12sp" />
 
@@ -46,8 +44,7 @@
             android:layout_width="130dp"
             android:layout_height="130dp"
             android:layout_marginLeft="30dp"
-            android:layout_toRightOf="@+id/img_1"
-            android:src="@drawable/img_dp_big" />
+            android:layout_toRightOf="@+id/img_1" />
 
         <com.mtvindia.connect.ui.custom.UbuntuTextView
             android:layout_width="wrap_content"
@@ -57,7 +54,6 @@
             android:layout_below="@id/img_2"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="Priyanka Sachdeva"
             android:textColor="#fff"
             android:textSize="12sp" />
 

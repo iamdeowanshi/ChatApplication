@@ -98,6 +98,16 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         presenter.setViewInteractor(this);
         user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
 
+        String birthDay = user.getBirthDay();
+       /* if(birthDay != null) {
+            char[] strings = birthDay.toCharArray();
+            txtYear.setText(strings, 0, 4);
+            txtMonth.setText(strings, 5, 7);
+            txtDay.setText(strings, 8, 10);
+
+        }*/
+
+
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
 
         Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDp);
@@ -141,7 +151,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         }
 
         user.setAbout(edtAbout.getText().toString());
-        user.setBirthDay(txtDay + "-" + txtMonth + "-" + txtYear);
+        user.setBirthDay(year + "-" + month + "-" + day);
 
         presenter.update(user);
     }

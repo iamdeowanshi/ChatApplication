@@ -96,8 +96,6 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         txtHello.setText("Hello " + user.getFirstName() + "!");
 
         Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDp);
-        Picasso.with(getContext()).load(R.drawable.img_dp_big).transform(circleStrokeTransformation).into(imgDpBig);
-        Picasso.with(getContext()).load(R.drawable.img_dp_big).transform(circleStrokeTransformation).into(imgDpBig2);
 
 
     }
