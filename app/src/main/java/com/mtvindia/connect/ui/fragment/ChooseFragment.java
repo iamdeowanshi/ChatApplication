@@ -14,7 +14,10 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
+import com.mtvindia.connect.util.PreferenceUtil;
 import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,6 +28,9 @@ import butterknife.OnClick;
  */
 public class ChooseFragment extends BaseFragment {
 
+    @Inject
+    PreferenceUtil preferenceUtil;
+
     @Bind(R.id.img_1)
     ImageView img1;
     @Bind(R.id.img_2)
@@ -34,6 +40,14 @@ public class ChooseFragment extends BaseFragment {
 
     private int strokeColor;
     private CircleStrokeTransformation circleStrokeTransformation;
+
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        injectDependencies();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +62,8 @@ public class ChooseFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, 0);
 
         strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);

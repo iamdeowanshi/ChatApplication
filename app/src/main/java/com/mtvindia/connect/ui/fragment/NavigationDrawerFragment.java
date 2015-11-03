@@ -58,7 +58,6 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     private CircleStrokeTransformation circleStrokeTransformation;
 
     private NavigationItem selectedItem;
-    private User user;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,7 +79,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
 
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
 
-        User user = (User) preferenceUtil.read(PreferenceUtil.PREF_USER_KEY, User.class);
+        User user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
 
         drawerItems = Arrays.asList(NavigationItem.values());
         drawerList.setLayoutManager(layoutManager);
@@ -93,7 +92,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         adapter.setNavigationCallbacks(this);
         drawerList.setAdapter(adapter);
 
-        onItemSelected(NavigationItem.PREFERENCE);
+        //onItemSelected(NavigationItem.PREFERENCE);
     }
 
     @Override
@@ -123,10 +122,6 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 getActivity().invalidateOptionsMenu();
-/*
-                if (navigationCallBack != null) {
-                    //navigationCallBack.onItemSelected(selectedItem);
-                }*/
             }
 
             @Override
@@ -188,6 +183,10 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    public void setActionBarDrawerToggleEnabled(boolean isEnable) {
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(isEnable);
     }
 
 }
