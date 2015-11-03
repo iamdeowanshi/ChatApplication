@@ -9,18 +9,18 @@ public class User extends BaseModel {
 
     @SerializedName("id")
     private int id;
-    @SerializedName("signup")
-    private int signup;
+    @SerializedName("latitude")
+    private double latitude;
+    @SerializedName("longitude")
+    private double longitude;
     @SerializedName("profilePic")
     private String profilePic;
     @SerializedName("firstName")
     private String firstName;
     @SerializedName("lastName")
     private String lastName;
-    @SerializedName("email")
-    private String email;
-    @SerializedName("birthday")
-    private String birthday;
+    @SerializedName("birthDay")
+    private String birthDay;
     @SerializedName("accessToken")
     private String accessToken;
     @SerializedName("about")
@@ -30,18 +30,6 @@ public class User extends BaseModel {
     @SerializedName("interestedIn")
     private String interestedIn;
 
-    public User() {
-    }
-
-    public User(LoginResponse response) {
-        id = response.getId();
-        firstName = response.getFirstName();
-        lastName = response.getLastName();
-        email = response.getEmail();
-        profilePic = response.getProfilePic();
-        accessToken = response.getAccessToken();
-    }
-
     public int getId() {
         return id;
     }
@@ -50,12 +38,20 @@ public class User extends BaseModel {
         this.id = id;
     }
 
-    public int getSignup() {
-        return signup;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setSignup(int signup) {
-        this.signup = signup;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getProfilePic() {
@@ -82,24 +78,20 @@ public class User extends BaseModel {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getBirthDay() {
+        return birthDay;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public void setBirthDay(String birthDay) {
+        this.birthDay = birthDay;
     }
 
     public String getAccessToken() {
         return accessToken;
+    }
+
+    public String getAuthHeader() {
+        return "Bearer " + accessToken;
     }
 
     public void setAccessToken(String accessToken) {

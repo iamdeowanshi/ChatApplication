@@ -6,7 +6,7 @@ import com.mtvindia.connect.util.social.AuthResult;
 /**
  * Created by Sibi on 28/10/15.
  */
-public abstract class LoginRequest {
+public class LoginRequest {
 
     @SerializedName("firstName")
     private String firstName;
@@ -16,6 +16,10 @@ public abstract class LoginRequest {
     private String email;
     @SerializedName("profilePic")
     private String profilePic;
+    @SerializedName("socialType")
+    private String socialType;
+    @SerializedName("socialId")
+    private String socialId;
     @SerializedName("accessToken")
     private String accessToken;
 
@@ -27,15 +31,9 @@ public abstract class LoginRequest {
         lastName = authResult.getAuthUser().getLastName();
         email = authResult.getAuthUser().getEmail();
         profilePic = authResult.getAuthUser().getProfilePic();
+        socialId = authResult.getAuthUser().getSocialId();
+        socialType = authResult.getAuthType().toString();
         accessToken = authResult.getAuthUser().getAccessToken();
-    }
-
-    public LoginRequest(String firstName, String lastName, String email, String profilePic, String accessToken) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.profilePic = profilePic;
-        this.accessToken = accessToken;
     }
 
     public String getFirstName() {
@@ -68,6 +66,22 @@ public abstract class LoginRequest {
 
     public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
+    }
+
+    public String getSocialType() {
+        return socialType;
+    }
+
+    public void setSocialType(String socialType) {
+        this.socialType = socialType;
+    }
+
+    public String getSocialId() {
+        return socialId;
+    }
+
+    public void setSocialId(String socialId) {
+        this.socialId = socialId;
     }
 
     public String getAccessToken() {
