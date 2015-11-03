@@ -99,13 +99,15 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
 
         String birthDay = user.getBirthDay();
-       /* if(birthDay != null) {
-            char[] strings = birthDay.toCharArray();
-            txtYear.setText(strings, 0, 4);
-            txtMonth.setText(strings, 5, 7);
-            txtDay.setText(strings, 8, 10);
-
-        }*/
+        if(birthDay != null) {
+            String[] string = birthDay.split("-");
+            year = Integer.parseInt(string[0]);
+            month = Integer.parseInt(string[1]);
+            day = Integer.parseInt(string[2]);
+            txtYear.setText(string[0]);
+            txtDay.setText(string[2]);
+            txtMonth.setText(getMonthName(month));
+        }
 
 
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
@@ -128,6 +130,9 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
                 txtDay.setText(String.valueOf(selectedday));
                 txtMonth.setText(getMonthName(selectedmonth));
                 txtYear.setText(String.valueOf(selectedyear));
+                year = selectedyear;
+                month = selectedmonth;
+                day = selectedday;
             }
         }, year, month, day);
         datePicker.setTitle("Select date");
