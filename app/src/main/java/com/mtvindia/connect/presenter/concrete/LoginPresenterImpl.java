@@ -1,16 +1,20 @@
 package com.mtvindia.connect.presenter.concrete;
 
+import com.google.gson.Gson;
 import com.mtvindia.connect.app.base.BaseNetworkPresenter;
 import com.mtvindia.connect.data.api.ApiObserver;
 import com.mtvindia.connect.data.api.MtvConnectApi;
 import com.mtvindia.connect.data.model.LoginRequest;
-import com.mtvindia.connect.data.model.LoginResponse;
+import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.presenter.LoginPresenter;
 import com.mtvindia.connect.presenter.LoginViewInteractor;
 
 import javax.inject.Inject;
 
+import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 import rx.Observable;
+import timber.log.Timber;
 
 /**
  * @author Farhan Ali
@@ -19,16 +23,26 @@ public class LoginPresenterImpl extends BaseNetworkPresenter<LoginViewInteractor
         implements LoginPresenter {
 
     @Inject MtvConnectApi mtvConnectApi;
+    @Inject Gson gson;
 
     public LoginPresenterImpl() {
         injectDependencies();
     }
 
-    private ApiObserver<LoginResponse> apiObserver = new ApiObserver<LoginResponse>() {
+    private ApiObserver<Response> apiObserver = new ApiObserver<Response>() {
         @Override
-        public void onResult(LoginResponse result) {
+        public void onResult(Response response) {
             viewInteractor.hideProgress();
-            viewInteractor.loginDone(result);
+
+            boolean isRegister = response.getStatus() == 201;
+
+            String userJson = new String(((TypedByteArray) response.getBody()).getBytes());
+
+            Timber.d(userJson);
+
+            User user = gson.fromJson(userJson, User.class);
+
+            viewInteractor.loginDone(user, isRegister);
         }
 
         @Override
@@ -42,7 +56,7 @@ public class LoginPresenterImpl extends BaseNetworkPresenter<LoginViewInteractor
     public void login(LoginRequest request) {
         viewInteractor.showProgress();
 
-        Observable<LoginResponse> resultObservable = mtvConnectApi.login(request);
+        Observable<Response> resultObservable = mtvConnectApi.login(request);
 
         subscribeForNetwork(resultObservable, apiObserver);
     }

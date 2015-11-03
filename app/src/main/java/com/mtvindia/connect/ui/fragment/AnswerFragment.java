@@ -7,14 +7,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
+import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
+import com.mtvindia.connect.ui.custom.UbuntuTextView;
+import com.mtvindia.connect.util.PreferenceUtil;
 import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,6 +28,9 @@ import butterknife.OnClick;
  * Created by Sibi on 22/10/15.
  */
 public class AnswerFragment extends BaseFragment {
+
+    @Inject
+    PreferenceUtil preferenceUtil;
 
     @Bind(R.id.circle1)
     View circle1;
@@ -45,20 +52,28 @@ public class AnswerFragment extends BaseFragment {
     View circle9;
     @Bind(R.id.circle10)
     View circle10;
-    @Bind(R.id.btn_continue)
-    Button btnContinue;
     @Bind(R.id.img_dp_big_1)
     ImageView imgDpBig;
+    @Bind(R.id.txt_left_questions)
+    UbuntuTextView txtLeftQuestions;
 
     private CircleStrokeTransformation circleStrokeTransformation;
     private int strokeColor;
-    private static int i = 1;
+    private static int count;
     private int option;
+    private View[] progressBarView ;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        injectDependencies();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.answer_fragment, container, false);
 
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -68,10 +83,17 @@ public class AnswerFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
+       progressBarView = new View[]{circle1, circle2, circle3, circle4, circle5, circle6, circle7, circle8, circle9, circle10};
+
+        User user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
+        count = preferenceUtil.readInt(PreferenceUtil.QUESTIONS_ANSWERED, 0);
+        setProgress(count);
+
         strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
 
-        Picasso.with(getContext()).load(R.drawable.img_dp_big).transform(circleStrokeTransformation).into(imgDpBig);
+        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDpBig);
+        txtLeftQuestions.setText((10 - count) + " more to go");
         circle1.setActivated(true);
         option = getArguments().getInt("value");
     }
@@ -85,49 +107,29 @@ public class AnswerFragment extends BaseFragment {
 
     @OnClick(R.id.btn_continue)
     void setBtnContinue() {
-        i++;
-        setProgress(i);
-
         NavigationActivity navigationActivity = (NavigationActivity) getContext();
-        Bundle bundle = new Bundle();
-        Fragment fragment = SecondaryQuestionFragment.getInstance(bundle);
-        bundle.putInt("value", option);
-        fragment.setArguments(bundle);
-        navigationActivity.addFragment(fragment);
+
+        if (count < 10) {
+            Bundle bundle = new Bundle();
+            Fragment fragment = SecondaryQuestionFragment.getInstance(bundle);
+            bundle.putInt("value", option);
+            fragment.setArguments(bundle);
+            navigationActivity.addFragment(fragment);
+        } else if (count == 10) {
+            Bundle bundle = new Bundle();
+            Fragment fragment = ChooseFragment.getInstance(bundle);
+            bundle.putInt("value", option);
+            fragment.setArguments(bundle);
+            navigationActivity.addFragment(fragment);
+        }
     }
 
     void setProgress(int position) {
-        switch (position) {
-            case 1:
-                circle1.setActivated(true);
-                break;
-            case 2:
-                circle2.setActivated(true);
-                break;
-            case 3:
-                circle3.setActivated(true);
-                break;
-            case 4:
-                circle4.setActivated(true);
-                break;
-            case 5:
-                circle5.setActivated(true);
-                break;
-            case 6:
-                circle6.setActivated(true);
-                break;
-            case 7:
-                circle7.setActivated(true);
-                break;
-            case 8:
-                circle8.setActivated(true);
-                break;
-            case 9:
-                circle9.setActivated(true);
-                break;
-            case 10:
-                circle10.setActivated(true);
-                break;
+        int i = 0;
+
+        while(i< position) {
+            progressBarView[i].setActivated(true);
+            i++;
         }
     }
 

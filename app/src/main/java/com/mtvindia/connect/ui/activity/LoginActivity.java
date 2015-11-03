@@ -3,16 +3,12 @@ package com.mtvindia.connect.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
-import com.mtvindia.connect.data.model.FacebookLoginRequest;
-import com.mtvindia.connect.data.model.GoogleLoginRequest;
 import com.mtvindia.connect.data.model.LoginRequest;
-import com.mtvindia.connect.data.model.LoginResponse;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.presenter.LoginPresenter;
 import com.mtvindia.connect.presenter.LoginViewInteractor;
@@ -33,8 +29,6 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     @Inject Gson gson;
     @Inject PreferenceUtil preferenceUtil;
 
-    @Bind(R.id.btn_fb) Button btnFb;
-    @Bind(R.id.btn_gPlus) Button btnGplus;
     @Bind(R.id.progress_sign_in) ProgressBar progressSignIn;
 
     private SocialAuth socialAuth;
@@ -50,9 +44,11 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         socialAuth = new SocialAuth(this);
         socialAuth.setCallback(this);
 
+
         presenter.setViewInteractor(this);
 
     }
+
 
     @OnClick(R.id.btn_fb)
     void facebookLogin() {
@@ -69,7 +65,6 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         socialAuth.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -88,11 +83,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     public void onSuccess(AuthResult authResult) {
         hideProgress();
 
-        LoginRequest loginRequest;
-
-        loginRequest = (authResult.getAuthType() == SocialAuth.SocialType.FACEBOOK)
-                ? new FacebookLoginRequest(authResult)
-                : new GoogleLoginRequest(authResult);
+        LoginRequest loginRequest = new LoginRequest(authResult);
 
         Timber.d("Success: " + authResult.getData());
         Timber.d("AccessToken: " + authResult.getAuthUser().getAccessToken());
@@ -104,12 +95,17 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     @Override
     public void onCancel() {
         Timber.e("cancelled");
+        toastShort("Cancelled");
+        hideProgress();
     }
 
     @Override
     public void onError(Throwable throwable) {
         Timber.e(throwable, "Error");
+        toastShort("Error: " + throwable);
+        hideProgress();
     }
+
 
     @Override
     public void showProgress() {
@@ -122,29 +118,14 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     }
 
     @Override
-    public void loginDone(LoginResponse loginResponse) {
-        Timber.d(gson.toJson(loginResponse));
+    public void loginDone(User response, boolean isRegister) {
+        Timber.d(gson.toJson(response));
 
-        preferenceUtil.save(PreferenceUtil.PREF_USER_KEY, new User(loginResponse));
-
-        /*User user = new User();
-        user.setAccessToken(loginResponse.getAccessToken());
-        user.setId(loginResponse.getId());
-        user.setEmail(loginResponse.getEmail());
-        user.setLastName(loginResponse.getLastName());
-        user.setFirstName(loginResponse.getFirstName());
-        user.setProfilePic(loginResponse.getProfilePic());
-        Log.e("object", user.getLastName());
-
-        SharedPreferences userData;
-        SharedPreferences.Editor editor;
-        userData = getApplicationContext().getSharedPreferences("UserData", Context.MODE_PRIVATE); //1
-        editor = userData.edit();
-        String json = gson.toJson(user);
-        editor.putString("UserData", json);
-        editor.commit();*/
+        preferenceUtil.save(PreferenceUtil.USER, response);
+        preferenceUtil.save(PreferenceUtil.IS_IN_REGISTRATION, isRegister);
 
         startActivity(NavigationActivity.class, null);
     }
+
 
 }

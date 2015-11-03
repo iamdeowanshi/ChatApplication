@@ -1,143 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linear_layout"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_yellow_red"
-    android:orientation="vertical">
+    android:background="@drawable/gradient_yellow_red">
 
-    <View
-        android:id="@+id/blank_view"
+    <LinearLayout
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="80dp" />
-
-    <RelativeLayout
-        android:id="@+id/layer1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/txt_first_high"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_find_match"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:text="First high level question to tag user\nto paticular category?"
-            android:textColor="#fff"
-            android:textSize="16.67sp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <View
-            android:id="@+id/view"
-            android:layout_width="1dp"
-            android:layout_height="60dp"
-            android:layout_below="@id/txt_first_high"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="65dp"
-            android:background="#d5d5d5" />
+            android:id="@+id/blank_view"
+            android:layout_width="match_parent"
+            android:layout_height="80dp" />
 
-        <ImageView
-            android:id="@+id/img_dp_big_1"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/txt_first_high"
-            android:layout_marginTop="20dp"
-            android:layout_toLeftOf="@+id/view"
-            android:src="@drawable/img_dp_big" />
+        <RelativeLayout
+            android:id="@+id/layer1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/img_dp_big_2"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/img_dp_big_1"
-            android:layout_toRightOf="@+id/view"
-            android:src="@drawable/img_dp_big" />
+            <com.mtvindia.connect.ui.custom.UbuntuTextView
+                android:id="@+id/txt_second_quest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_find_match"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:textColor="#fff"
+                android:textSize="16.67sp" />
 
-        <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/txt_question_1"
-            android:layout_width="wrap_content"
+            <View
+                android:id="@+id/view"
+                android:layout_width="1dp"
+                android:layout_height="60dp"
+                android:layout_below="@id/txt_second_quest"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="65dp"
+                android:background="#d5d5d5" />
+
+            <ImageView
+                android:id="@+id/img_dp_big_1"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/txt_second_quest"
+                android:layout_marginTop="20dp"
+                android:layout_toLeftOf="@+id/view"/>
+
+            <ImageView
+                android:id="@+id/img_dp_big_2"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/img_dp_big_1"
+                android:layout_toRightOf="@+id/view" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/img_dp_big_1">
+                <com.mtvindia.connect.ui.custom.UbuntuTextView
+                    android:id="@+id/txt_option_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#fff"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="fill_horizontal"
+                    android:layout_weight="1"
+                    android:textSize="12sp" />
+
+                <com.mtvindia.connect.ui.custom.UbuntuTextView
+                    android:id="@+id/txt_option_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/view"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:textColor="#fff"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layer2"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/img_dp_big_1"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="First high level\nquestion to tag\nuser to particular\ncategory?"
-            android:textColor="#fff"
-            android:textSize="12sp" />
+            android:layout_below="@+id/layer1">
 
-        <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/txt_question_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/view"
-            android:layout_below="@+id/img_dp_big_2"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="First high level\nquestion to tag\nuser to particular\ncategory?"
-            android:textColor="#fff"
-            android:textSize="12sp" />
-    </RelativeLayout>
+            <View
+                android:id="@+id/view2"
+                android:layout_width="1dp"
+                android:layout_height="60dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="65dp"
+                android:background="#d5d5d5" />
 
-    <RelativeLayout
-        android:id="@+id/layer2"
-        android:layout_width="fill_parent"
+            <ImageView
+                android:id="@+id/img_dp_big3"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="20dp"
+                android:layout_toLeftOf="@+id/view2" />
+
+            <ImageView
+                android:id="@+id/img_dp_big4"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/img_dp_big3"
+                android:layout_toRightOf="@+id/view2" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/img_dp_big4">
+                <com.mtvindia.connect.ui.custom.UbuntuTextView
+                    android:id="@+id/txt_option_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#fff"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="fill_horizontal"
+                    android:layout_weight="1"
+                    android:textSize="12sp" />
+
+                <com.mtvindia.connect.ui.custom.UbuntuTextView
+                    android:id="@+id/txt_option_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/view"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:textColor="#fff"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layer1">
+        android:layout_centerInParent="true"
+        android:indeterminateTint="#c5c5c5"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="invisible" />
 
-        <View
-            android:id="@+id/view2"
-            android:layout_width="1dp"
-            android:layout_height="60dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="65dp"
-            android:background="#d5d5d5" />
-
-        <ImageView
-            android:id="@+id/img_dp_big3"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="20dp"
-            android:layout_toLeftOf="@+id/view2"
-            android:src="@drawable/img_dp_big" />
-
-        <ImageView
-            android:id="@+id/img_dp_big4"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/img_dp_big3"
-            android:layout_toRightOf="@+id/view2"
-            android:src="@drawable/img_dp_big" />
-
-        <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/txt_question_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/img_dp_big3"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="First high level\nquestion to tag\nuser to particular\ncategory?"
-            android:textColor="#fff"
-            android:textSize="12sp" />
-
-        <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/txt_question_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/view2"
-            android:layout_below="@+id/img_dp_big4"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="First high level\nquestion to tag\nuser to particular\ncategory?"
-            android:textColor="#fff"
-            android:textSize="12sp" />
-
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>

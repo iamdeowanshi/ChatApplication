@@ -131,6 +131,10 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
             googleApiClient.connect();
         }
 
+        if (requestCode == REQ_SIGN_IN_REQUIRED && resultCode == Activity.RESULT_OK) {
+            // We had to sign in - now we can finish off the token request.
+            new RetrieveTokenTask().execute(Plus.AccountApi.getAccountName(googleApiClient));
+        }
         if (fbCallbackManager.onActivityResult(requestCode, resultCode, data)) {
             return;
         }
@@ -146,8 +150,12 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
     @Override
     public void onConnected(Bundle bundle) {
         shouldResolve = false;
-        new RetrieveTokenTask(Plus.PeopleApi.getCurrentPerson(googleApiClient).toString(), Plus.AccountApi.getAccountName(googleApiClient).toString())
-                .execute(Plus.AccountApi.getAccountName(googleApiClient));
+        try {
+            new RetrieveTokenTask(Plus.PeopleApi.getCurrentPerson(googleApiClient).toString(), Plus.AccountApi.getAccountName(googleApiClient).toString())
+                    .execute(Plus.AccountApi.getAccountName(googleApiClient));
+        } catch (NullPointerException e) {
+            callback.onError(e);
+        }
     }
 
     @Override
@@ -161,6 +169,7 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
                     connectionResult.startResolutionForResult(activity, RC_SIGN_IN);
                     isResolving = true;
                 } catch (IntentSender.SendIntentException e) {
+                    isResolving = false;
                     callback.onError(e);
                 }
             }
@@ -171,6 +180,8 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
 
         String jsonData;
         String email;
+
+        public RetrieveTokenTask() {}
 
         public RetrieveTokenTask(String jsonData, String email) {
             this.jsonData = jsonData;
@@ -184,11 +195,11 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
             try {
                 token = GoogleAuthUtil.getToken(activity, accountName, scopes);
             } catch (IOException e) {
-                Log.e("yoyo", e.getMessage());
+                callback.onError(e);
             } catch (UserRecoverableAuthException e) {
                 activity.startActivityForResult(e.getIntent(), REQ_SIGN_IN_REQUIRED);
             } catch (GoogleAuthException e) {
-                Log.e("yoyo", e.getMessage());
+                callback.onError(e);
             }
             return token;
         }

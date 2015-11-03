@@ -9,36 +9,26 @@ public class User extends BaseModel {
 
     @SerializedName("id")
     private int id;
-    @SerializedName("signup")
-    private int signup;
-    @SerializedName("socialId")
-    private String socialId;
+    @SerializedName("latitude")
+    private double latitude;
+    @SerializedName("longitude")
+    private double longitude;
     @SerializedName("profilePic")
     private String profilePic;
     @SerializedName("firstName")
     private String firstName;
     @SerializedName("lastName")
     private String lastName;
-    @SerializedName("email")
-    private String email;
-    @SerializedName("birthday")
-    private String birthday;
-    @SerializedName("gender")
-    private String gender;
+    @SerializedName("birthDay")
+    private String birthDay;
     @SerializedName("accessToken")
     private String accessToken;
-
-    public User() {
-    }
-
-    public User(LoginResponse response) {
-        id = response.getId();
-        firstName = response.getFirstName();
-        lastName = response.getLastName();
-        email = response.getEmail();
-        profilePic = response.getProfilePic();
-        accessToken = response.getAccessToken();
-    }
+    @SerializedName("about")
+    private String about;
+    @SerializedName("likeToMeet")
+    private String likeToMeet;
+    @SerializedName("interestedIn")
+    private String interestedIn;
 
     public int getId() {
         return id;
@@ -48,44 +38,28 @@ public class User extends BaseModel {
         this.id = id;
     }
 
-    public int getSignup() {
-        return signup;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setSignup(int signup) {
-        this.signup = signup;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public String getSocialId() {
-        return socialId;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setSocialId(String socialId) {
-        this.socialId = socialId;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public String getAccessToken() {
-        return accessToken;
+    public String getProfilePic() {
+        return profilePic;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 
     public String getFirstName() {
@@ -96,27 +70,56 @@ public class User extends BaseModel {
         this.firstName = firstName;
     }
 
-    public String getBirthday() {
-        return birthday;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getGender() {
-        return gender;
+    public String getBirthDay() {
+        return birthDay;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setBirthDay(String birthDay) {
+        this.birthDay = birthDay;
     }
 
-    public String getProfilePic() {
-        return profilePic;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setProfilePic(String profilePic) {
-        this.profilePic = profilePic;
+    public String getAuthHeader() {
+        return "Bearer " + accessToken;
     }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public String getLikeToMeet() {
+        return likeToMeet;
+    }
+
+    public void setLikeToMeet(String likeToMeet) {
+        this.likeToMeet = likeToMeet;
+    }
+
+    public String getInterestedIn() {
+        return interestedIn;
+    }
+
+    public void setInterestedIn(String interestedIn) {
+        this.interestedIn = interestedIn;
+    }
+
 }

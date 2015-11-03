@@ -4,16 +4,15 @@ import com.mtvindia.connect.app.base.ViewInteractor;
 import com.mtvindia.connect.data.model.User;
 
 /**
- * @author Farhan Ali
+ * Created by Sibi on 28/10/15.
  */
-public interface LoginViewInteractor extends ViewInteractor {
+public interface UpdateViewInteractor extends ViewInteractor {
 
     void showProgress();
 
     void hideProgress();
 
-    void loginDone(User user, boolean isRegister);
+    void updateDone(User user);
 
-    void onError(Throwable tr);
-
+    void onError(Throwable throwable);
 }

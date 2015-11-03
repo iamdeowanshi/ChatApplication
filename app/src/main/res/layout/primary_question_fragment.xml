@@ -7,11 +7,10 @@
 
     <ImageView
         android:id="@+id/img_dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:src="@drawable/img_dp" />
+        android:layout_marginTop="60dp" />
 
     <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:id="@+id/txt_hello"
@@ -20,7 +19,7 @@
         android:layout_below="@+id/img_dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:text="Hello Siddharth!"
+        android:text="Hello!"
         android:textColor="#fff"
         android:textSize="23.67sp" />
 
@@ -37,14 +36,13 @@
 
 
     <com.mtvindia.connect.ui.custom.UbuntuTextView
-        android:id="@+id/txt_first_high"
+        android:id="@+id/txt_prim_quest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_find_match"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:gravity="center"
-        android:text="First high level question to tag user\nto paticular category?"
         android:textColor="#fff"
         android:textSize="15.67sp" />
 
@@ -52,7 +50,7 @@
         android:id="@+id/view"
         android:layout_width="1dp"
         android:layout_height="60dp"
-        android:layout_below="@id/txt_first_high"
+        android:layout_below="@id/txt_prim_quest"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="65dp"
         android:background="#d5d5d5" />
@@ -62,10 +60,9 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/txt_first_high"
+        android:layout_below="@+id/txt_prim_quest"
         android:layout_marginTop="30dp"
-        android:layout_toLeftOf="@+id/view"
-        android:src="@drawable/img_dp_big" />
+        android:layout_toLeftOf="@+id/view"/>
 
     <ImageView
         android:id="@+id/img_dp_big_2"
@@ -73,32 +70,40 @@
         android:layout_height="120dp"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/img_dp_big_1"
-        android:layout_toRightOf="@+id/view"
-        android:src="@drawable/img_dp_big" />
-
+        android:layout_toRightOf="@+id/view"/>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_below="@+id/img_dp_big_1">
     <com.mtvindia.connect.ui.custom.UbuntuTextView
-        android:id="@+id/txt_question_1"
+        android:id="@+id/txt_option_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/img_dp_big_1"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:text="First high level\nquestion to tag\nuser to particular\ncategory?"
         android:textColor="#fff"
+        android:gravity="center_horizontal"
+        android:layout_gravity="fill_horizontal"
+        android:layout_weight="1"
         android:textSize="12sp" />
 
     <com.mtvindia.connect.ui.custom.UbuntuTextView
-        android:id="@+id/txt_question_2"
+        android:id="@+id/txt_option_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/view"
-        android:layout_below="@+id/img_dp_big_2"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:text="First high level\nquestion to tag\nuser to particular\ncategory?"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
         android:textColor="#fff"
         android:textSize="12sp" />
+</LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateTint="#c5c5c5"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="invisible" />
 
 </RelativeLayout>

@@ -16,8 +16,7 @@
             android:layout_height="66.33dp"
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="15dp"
-            android:src="@drawable/img_dp" />
+            android:layout_marginLeft="15dp"/>
 
         <com.mtvindia.connect.ui.custom.UbuntuTextView
             android:id="@+id/txt_item_name"
@@ -27,7 +26,6 @@
             android:layout_toEndOf="@+id/img_dp"
             android:layout_toRightOf="@+id/img_dp"
             android:paddingLeft="10dp"
-            android:text="Priyanka Sachdeva"
             android:textColor="@color/purple"
             android:textSize="15sp" />
     </RelativeLayout>
