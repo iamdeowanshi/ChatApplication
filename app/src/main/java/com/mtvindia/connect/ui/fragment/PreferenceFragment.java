@@ -151,12 +151,14 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
     public void updateDone(User user) {
         preferenceUtil.save(PreferenceUtil.USER, user);
 
-        NavigationActivity navigationActivity = (NavigationActivity) getContext();
-        Fragment fragment = ProfileFragment.getInstance(null);
-        navigationActivity.addFragment(fragment);
+        if(preferenceUtil.readBoolean(PreferenceUtil.IS_IN_REGISTRATION, false)) {
+            NavigationActivity navigationActivity = (NavigationActivity) getContext();
+            Fragment fragment = ProfileFragment.getInstance(null);
+            navigationActivity.addFragment(fragment);
 
-        NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
-        navigationDrawerFragment.onItemSelected(NavigationItem.PROFILE);
+            NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+            navigationDrawerFragment.onItemSelected(NavigationItem.PROFILE);
+        }
     }
 
     @Override

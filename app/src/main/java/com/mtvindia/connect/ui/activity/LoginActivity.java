@@ -127,5 +127,8 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         startActivity(NavigationActivity.class, null);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

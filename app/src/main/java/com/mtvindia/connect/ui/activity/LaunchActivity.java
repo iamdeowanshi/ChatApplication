@@ -12,15 +12,14 @@ import android.os.Handler;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.gson.Gson;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.data.model.User;
@@ -34,6 +33,8 @@ import timber.log.Timber;
 public class LaunchActivity extends BaseActivity implements LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
 
     @Inject PreferenceUtil preferenceUtil;
+    @Inject
+    Gson gson;
     private static int timeOut = 2000;
     final static int REQUEST_LOCATION = 1000;
     private GoogleApiClient googleApiClient;
@@ -57,15 +58,17 @@ public class LaunchActivity extends BaseActivity implements LocationListener, Go
 
         locationChecker(googleApiClient, LaunchActivity.this);
         LocationManager locationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Timber.d("yoyo", requestCode);
 
         switch (requestCode) {
             case REQUEST_LOCATION:
@@ -75,12 +78,8 @@ public class LaunchActivity extends BaseActivity implements LocationListener, Go
                         finish();
                         break;
                     }
-                    case Activity.RESULT_OK: {
+                    case Activity.RESULT_OK:
                         proceed();
-                    }
-                    default: {
-                        break;
-                    }
                 }
                 break;
         }
@@ -142,6 +141,8 @@ public class LaunchActivity extends BaseActivity implements LocationListener, Go
                 e.printStackTrace();
             }
         }
+        toastShort(connectionResult.toString());
+        finish();
     }
 
     @Override

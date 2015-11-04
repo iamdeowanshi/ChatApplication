@@ -57,6 +57,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
 
     private CircleStrokeTransformation circleStrokeTransformation;
 
+    private User user;
     private NavigationItem selectedItem;
 
     @Override
@@ -79,7 +80,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
 
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
 
-        User user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
+        user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
 
         drawerItems = Arrays.asList(NavigationItem.values());
         drawerList.setLayoutManager(layoutManager);
@@ -177,6 +178,16 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         }
 
         ((NavigationDrawerAdapter) drawerList.getAdapter()).setSelectedItem(item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
+
+        txtItemName.setText(user.getFirstName() + " " + user.getLastName());
+        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDp);
     }
 
     @Override
