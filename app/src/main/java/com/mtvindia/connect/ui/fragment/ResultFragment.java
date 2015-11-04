@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
-import com.mtvindia.connect.data.model.User;
+import com.mtvindia.connect.data.model.ResultResponse;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
@@ -27,7 +27,7 @@ import butterknife.OnClick;
 /**
  * Created by Sibi on 22/10/15.
  */
-public class AnswerFragment extends BaseFragment {
+public class ResultFragment extends BaseFragment {
 
     @Inject
     PreferenceUtil preferenceUtil;
@@ -56,12 +56,19 @@ public class AnswerFragment extends BaseFragment {
     ImageView imgDpBig;
     @Bind(R.id.txt_left_questions)
     UbuntuTextView txtLeftQuestions;
+    @Bind(R.id.txt_second_quest)
+    UbuntuTextView txtQuestion;
+    @Bind(R.id.txt_question)
+    UbuntuTextView txtOption;
+    @Bind(R.id.txt_other_people)
+    UbuntuTextView txtOtherPeople;
 
     private CircleStrokeTransformation circleStrokeTransformation;
     private int strokeColor;
     private static int count;
     private int option;
     private View[] progressBarView;
+    private ResultResponse response;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,26 +90,27 @@ public class AnswerFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
+        response = (ResultResponse) preferenceUtil.read(PreferenceUtil.RESULT_RESPONSE, ResultResponse.class);
         progressBarView = new View[]{circle1, circle2, circle3, circle4, circle5, circle6, circle7, circle8, circle9, circle10};
 
-        User user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
         count = preferenceUtil.readInt(PreferenceUtil.QUESTIONS_ANSWERED, 0);
         setProgress(count);
 
         strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
 
-        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDpBig);
+        txtQuestion.setText(response.getQuestion());
+        txtOption.setText(response.getOption().getOption());
+        txtOtherPeople.setText(response.getMatchingUserCount() + " other people answered option " + response.getOption().getOptionId());
+        Picasso.with(getContext()).load(response.getOption().getOptionUrl()).transform(circleStrokeTransformation).into(imgDpBig);
         txtLeftQuestions.setText((10 - count) + " more to go");
-        circle1.setActivated(true);
-        option = getArguments().getInt("value");
     }
 
     public static Fragment getInstance(Bundle bundle) {
-        AnswerFragment answerFragment = new AnswerFragment();
-        answerFragment.setArguments(bundle);
+        ResultFragment resultFragment = new ResultFragment();
+        resultFragment.setArguments(bundle);
 
-        return answerFragment;
+        return resultFragment;
     }
 
     @OnClick(R.id.btn_continue)

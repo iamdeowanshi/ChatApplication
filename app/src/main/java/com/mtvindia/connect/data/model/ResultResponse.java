@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Sibi on 02/11/15.
  */
-public class AnswerResponse {
+public class ResultResponse {
     @SerializedName("questionId")
     private int questionId;
     @SerializedName("question")

@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
-import com.mtvindia.connect.ui.fragment.AnswerFragment;
+import com.mtvindia.connect.ui.fragment.ResultFragment;
 import com.mtvindia.connect.ui.fragment.ChatFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
 import com.mtvindia.connect.ui.fragment.PreferenceFragment;
@@ -73,7 +73,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 if(count == 0) {
                     fragment = PrimaryQuestionFragment.getInstance(bundle);
                 } else {
-                    fragment = AnswerFragment.getInstance(bundle);
+                    fragment = ResultFragment.getInstance(bundle);
                 }
                 addFragment(fragment);
                 break;
