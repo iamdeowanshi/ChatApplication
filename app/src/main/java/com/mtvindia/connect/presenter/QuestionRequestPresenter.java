@@ -7,6 +7,8 @@ import com.mtvindia.connect.app.base.Presenter;
  */
 public interface QuestionRequestPresenter extends Presenter<QuestionViewInteractor> {
 
-    void primaryQuestionRequest();
-    void secondaryQuestionRequest(int questionId);
+    void getPrimaryQuestion(String header);
+
+    void getSecondaryQuestion(int questionId);
+
 }

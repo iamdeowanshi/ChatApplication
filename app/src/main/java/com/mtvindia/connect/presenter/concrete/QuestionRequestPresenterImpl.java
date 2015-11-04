@@ -29,7 +29,7 @@ public class QuestionRequestPresenterImpl extends BaseNetworkPresenter<QuestionV
     private ApiObserver<Question> apiObserver = new ApiObserver<Question>() {
         @Override
         public void onResult(Question result) {
-            viewInteractor.display(result);
+            viewInteractor.showQuestion(result);
             viewInteractor.hideProgress();
 
         }
@@ -41,16 +41,15 @@ public class QuestionRequestPresenterImpl extends BaseNetworkPresenter<QuestionV
     };
 
     @Override
-    public void primaryQuestionRequest() {
+    public void getPrimaryQuestion(String header) {
         viewInteractor.showProgress();
-
-        Observable<Question> resultObservable = mtvConnectApi.primaryQuestionRequest();
+        Observable<Question> resultObservable = mtvConnectApi.primaryQuestionRequest(header);
 
         subscribeForNetwork(resultObservable, apiObserver);
     }
 
     @Override
-    public void secondaryQuestionRequest(int pq_id) {
+    public void getSecondaryQuestion(int pq_id) {
         viewInteractor.showProgress();
 
         Observable<Question> resultObservable = mtvConnectApi.secondaryQuestionRequest(pq_id);

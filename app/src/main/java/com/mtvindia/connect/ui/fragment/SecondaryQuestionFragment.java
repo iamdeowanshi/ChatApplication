@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
+import com.mtvindia.connect.data.model.Option;
 import com.mtvindia.connect.data.model.Question;
 import com.mtvindia.connect.presenter.QuestionRequestPresenter;
 import com.mtvindia.connect.presenter.QuestionViewInteractor;
@@ -23,6 +24,9 @@ import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.PreferenceUtil;
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,15 +45,13 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     QuestionRequestPresenter presenter;
 
     @Bind(R.id.img_dp_big_1)
-    ImageView imgDpBig;
+    ImageView picOption1;
     @Bind(R.id.img_dp_big_2)
-    ImageView imgDpBig2;
-    @Bind(R.id.layer1)
-    RelativeLayout layer1;
+    ImageView picOption2;
     @Bind(R.id.img_dp_big3)
-    ImageView imgDpBig3;
+    ImageView picOption3;
     @Bind(R.id.img_dp_big4)
-    ImageView imgDpBig4;
+    ImageView picOption4;
     @Bind(R.id.layer2)
     RelativeLayout layer2;
     @Bind(R.id.linear_layout)
@@ -68,11 +70,16 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     UbuntuTextView txtOption4;
     @Bind(R.id.progress)
     ProgressBar progress;
+    @Bind(R.id.view)
+    View view;
+    @Bind(R.id.view2)
+    View view2;
 
     private CircleStrokeTransformation circleStrokeTransformation;
     private int strokeColor;
-    private int options;
     private int count;
+
+    private List<Option> options;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,21 +102,13 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         presenter.setViewInteractor(this);
 
-        presenter.secondaryQuestionRequest(preferenceUtil.readInt(PreferenceUtil.PRIMARY_QUESTION_ID, 0));
+        presenter.getSecondaryQuestion(preferenceUtil.readInt(PreferenceUtil.PRIMARY_QUESTION_ID, 0));
 
         count = preferenceUtil.readInt(PreferenceUtil.QUESTIONS_ANSWERED, 0);
 
         strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
 
-
-        options = getArguments().getInt("value");
-
-        if (options == 2) {
-            layer2.setVisibility(View.GONE);
-            blankView.setVisibility(View.GONE);
-            linearLayout.setGravity(Gravity.CENTER);
-        }
     }
 
     @OnClick(R.id.img_dp_big_1)
@@ -152,7 +151,41 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     }
 
     @Override
-    public void display(Question question) {
+    public void showQuestion(Question question) {
+        options = question.getOptions();
+        txtFirstHigh.setText(question.getQuestion());
+        setView(options.size());
+    }
+
+    void setView(int size) {
+        if (size == 2) {
+            layer2.setVisibility(View.GONE);
+            blankView.setVisibility(View.GONE);
+            linearLayout.setGravity(Gravity.CENTER);
+
+            txtOption1.setText(options.get(0).getOption());
+            txtOption2.setText(options.get(1).getOption());
+
+            view.setVisibility(View.VISIBLE);
+
+            Picasso.with(getContext()).load(options.get(0).getOptionUrl()).transform(circleStrokeTransformation).into(picOption1);
+            Picasso.with(getContext()).load(options.get(1).getOptionUrl()).transform(circleStrokeTransformation).into(picOption2);
+        } else {
+            txtOption1.setText(options.get(0).getOption());
+            txtOption2.setText(options.get(1).getOption());
+            txtOption3.setText(options.get(2).getOption());
+            txtOption4.setText(options.get(3).getOption());
+
+            view.setVisibility(View.VISIBLE);
+            view2.setVisibility(View.VISIBLE);
+
+            Picasso.with(getContext()).load(options.get(0).getOptionUrl()).transform(circleStrokeTransformation).into(picOption1);
+            Picasso.with(getContext()).load(options.get(1).getOptionUrl()).transform(circleStrokeTransformation).into(picOption2);
+            Picasso.with(getContext()).load(options.get(2).getOptionUrl()).transform(circleStrokeTransformation).into(picOption3);
+            Picasso.with(getContext()).load(options.get(3).getOptionUrl()).transform(circleStrokeTransformation).into(picOption4);
+
+        }
+
 
     }
 

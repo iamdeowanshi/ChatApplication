@@ -34,7 +34,6 @@ import com.mtvindia.connect.util.PreferenceUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.StringTokenizer;
 
 import javax.inject.Inject;
@@ -69,7 +68,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     public static final int MEDIA_TYPE_IMAGE = 1;
 
-    private int day;
+    private int date;
     private int month;
     private int year;
 
@@ -103,7 +102,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
             String[] string = birthDay.split("-");
             year = Integer.parseInt(string[0]);
             month = Integer.parseInt(string[1]);
-            day = Integer.parseInt(string[2]);
+            date = Integer.parseInt(string[2]);
             txtYear.setText(string[0]);
             txtDay.setText(string[2]);
             txtMonth.setText(getMonthName(month));
@@ -124,7 +123,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         if(year == 0) {
             year = currentDate.get(Calendar.YEAR);
             month = currentDate.get(Calendar.MONTH);
-            day = currentDate.get(Calendar.DAY_OF_MONTH);
+            date = currentDate.get(Calendar.DAY_OF_MONTH);
         }
 
         DatePickerDialog datePicker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
@@ -134,11 +133,13 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
                 txtYear.setText(String.valueOf(selectedyear));
                 year = selectedyear;
                 month = selectedmonth;
-                day = selectedday;
+                date = selectedday;
             }
-        }, year, month, day);
+        }, year, month, date);
         datePicker.setTitle("Select date");
-        datePicker.getDatePicker().setMaxDate(new Date().getTime());
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(calendar.get(Calendar.YEAR) - 18, calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+        datePicker.getDatePicker().setMaxDate(calendar.getTime().getTime());
         datePicker.getDatePicker().setSpinnersShown(true);
         datePicker.getDatePicker().getSpinnersShown();
         datePicker.getDatePicker().setCalendarViewShown(false);
@@ -158,7 +159,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         }
 
         user.setAbout(edtAbout.getText().toString());
-        user.setBirthDay(year + "-" + month + "-" + day);
+        user.setBirthDay(year + "-" + month + "-" + date);
 
         presenter.update(user);
     }
@@ -277,12 +278,16 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
     public void updateDone(User user) {
         preferenceUtil.save(PreferenceUtil.USER, user);
 
-        NavigationActivity navigationActivity = (NavigationActivity) getContext();
-        Fragment fragment = PrimaryQuestionFragment.getInstance(null);
-        navigationActivity.addFragment(fragment);
+        if(preferenceUtil.readBoolean(PreferenceUtil.IS_IN_REGISTRATION, false)) {
+            preferenceUtil.save(PreferenceUtil.IS_IN_REGISTRATION, false);
+            preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, 0);
+            NavigationActivity navigationActivity = (NavigationActivity) getContext();
+            Fragment fragment = PrimaryQuestionFragment.getInstance(null);
+            navigationActivity.addFragment(fragment);
 
-        NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
-        navigationDrawerFragment.onItemSelected(NavigationItem.FIND_PEOPLE);
+            NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.fragment_drawer);
+            navigationDrawerFragment.onItemSelected(NavigationItem.FIND_PEOPLE);
+        }
     }
 
     @Override

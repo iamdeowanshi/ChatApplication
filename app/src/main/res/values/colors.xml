@@ -4,6 +4,6 @@
     <color name="red">#e8204e</color>
     <color name="blue">#00cccc</color>
     <color name="yellow">#ffcc00</color>
-    <color name="selected_color">#00c0c0</color>
+    <color name="selected_color">#cdcdcd</color>
     <color name="touch_color">#be15c0</color>
 </resources>

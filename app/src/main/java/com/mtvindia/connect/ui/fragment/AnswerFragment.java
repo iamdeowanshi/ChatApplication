@@ -61,7 +61,7 @@ public class AnswerFragment extends BaseFragment {
     private int strokeColor;
     private static int count;
     private int option;
-    private View[] progressBarView ;
+    private View[] progressBarView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,7 +83,7 @@ public class AnswerFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-       progressBarView = new View[]{circle1, circle2, circle3, circle4, circle5, circle6, circle7, circle8, circle9, circle10};
+        progressBarView = new View[]{circle1, circle2, circle3, circle4, circle5, circle6, circle7, circle8, circle9, circle10};
 
         User user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
         count = preferenceUtil.readInt(PreferenceUtil.QUESTIONS_ANSWERED, 0);
@@ -127,7 +127,7 @@ public class AnswerFragment extends BaseFragment {
     void setProgress(int position) {
         int i = 0;
 
-        while(i< position) {
+        while (i < position) {
             progressBarView[i].setActivated(true);
             i++;
         }

@@ -38,7 +38,8 @@
                 android:layout_below="@id/txt_second_quest"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="65dp"
-                android:background="#d5d5d5" />
+                android:background="#d5d5d5"
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/img_dp_big_1"
@@ -95,7 +96,8 @@
                 android:layout_height="60dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="65dp"
-                android:background="#d5d5d5" />
+                android:background="#d5d5d5"
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/img_dp_big3"
