@@ -53,6 +53,7 @@
         android:layout_below="@id/txt_prim_quest"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="65dp"
+        android:visibility="gone"
         android:background="#d5d5d5" />
 
     <ImageView
