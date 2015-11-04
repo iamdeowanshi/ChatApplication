@@ -1,11 +1,16 @@
 package com.mtvindia.connect.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Sibi on 02/11/15.
  */
 public class Option {
+    @SerializedName("id")
     private int optionId;
+    @SerializedName("option")
     private String option;
+    @SerializedName("optionUrl")
     private String optionUrl;
 
     public int getOptionId() {
