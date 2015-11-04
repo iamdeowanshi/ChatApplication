@@ -136,7 +136,7 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
         preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, count);
 
         NavigationActivity navigationActivity = (NavigationActivity) getContext();
-        Fragment fragment = AnswerFragment.getInstance(null);
+        Fragment fragment = ResultFragment.getInstance(null);
         navigationActivity.addFragment(fragment);
     }
 

@@ -14,9 +14,13 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.data.model.Option;
 import com.mtvindia.connect.data.model.Question;
+import com.mtvindia.connect.data.model.ResultRequest;
+import com.mtvindia.connect.data.model.ResultResponse;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.presenter.QuestionRequestPresenter;
 import com.mtvindia.connect.presenter.QuestionViewInteractor;
+import com.mtvindia.connect.presenter.ResultPresenter;
+import com.mtvindia.connect.presenter.ResultViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
@@ -35,12 +39,13 @@ import timber.log.Timber;
 /**
  * Created by Sibi on 21/10/15.
  */
-public class PrimaryQuestionFragment extends BaseFragment implements QuestionViewInteractor {
+public class PrimaryQuestionFragment extends BaseFragment implements QuestionViewInteractor, ResultViewInteractor{
 
     @Inject
     PreferenceUtil preferenceUtil;
+    @Inject QuestionRequestPresenter questionRequestPresenter;
     @Inject
-    QuestionRequestPresenter presenter;
+    ResultPresenter resultPresenter;
 
     @Bind(R.id.img_dp)
     ImageView userPic;
@@ -66,6 +71,7 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
     private User user;
     private List<Option> option;
+    private ResultRequest resultRequest = new ResultRequest();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,11 +92,12 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        presenter.setViewInteractor(this);
+        questionRequestPresenter.setViewInteractor(this);
+        resultPresenter.setViewInteractor(this);
 
         user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
 
-        presenter.getPrimaryQuestion(user.getAuthHeader());
+        questionRequestPresenter.getPrimaryQuestion(user.getAuthHeader());
 
         preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, 0);
 
@@ -107,23 +114,21 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
     @OnClick(R.id.img_dp_big_1)
     void option1() {
-        preferenceUtil.save(PreferenceUtil.OPTION_ID, option.get(1).getOptionId());
-        optionSelected();
+        optionSelected(option.get(0).getOptionId());
     }
 
     @OnClick(R.id.img_dp_big_2)
     void option2() {
-        preferenceUtil.save(PreferenceUtil.OPTION_ID, option.get(2).getOptionId());
-        optionSelected();
+        optionSelected(option.get(1).getOptionId());
     }
 
-    void optionSelected() {
-
+    void optionSelected(int option) {
         preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, 1);
 
-        NavigationActivity navigationActivity = (NavigationActivity) getContext();
-        Fragment fragment = AnswerFragment.getInstance(null);
-        navigationActivity.addFragment(fragment);
+        resultRequest.setPrimaryQuestionId(preferenceUtil.readInt(PreferenceUtil.PRIMARY_QUESTION_ID, 0));
+        resultRequest.setOptionId(option);
+
+        resultPresenter.requestResult(resultRequest, user.getAuthHeader());
     }
 
     @Override
@@ -137,10 +142,21 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     }
 
     @Override
+    public void showResult(ResultResponse response) {
+        preferenceUtil.save(PreferenceUtil.RESULT_RESPONSE, response);
+
+        NavigationActivity navigationActivity = (NavigationActivity) getContext();
+        Fragment fragment = ResultFragment.getInstance(null);
+        navigationActivity.addFragment(fragment);
+    }
+
+
+    @Override
     public void showQuestion(Question question) {
 
         preferenceUtil.save(PreferenceUtil.PRIMARY_QUESTION_ID, question.getQuestionId());
-        preferenceUtil.save(PreferenceUtil.QUESTION_ID, question.getQuestionId());
+
+        resultRequest.setQuestionId(question.getQuestionId());
 
         option = question.getOptions();
 
@@ -165,13 +181,13 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     @Override
     public void onResume() {
         super.onResume();
-        presenter.resume();
+        questionRequestPresenter.resume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        presenter.pause();
+        questionRequestPresenter.pause();
     }
 
     @Override

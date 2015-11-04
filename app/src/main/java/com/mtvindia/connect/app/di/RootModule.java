@@ -5,11 +5,12 @@ import android.content.Context;
 import com.mtvindia.connect.app.MtvConnectApplication;
 import com.mtvindia.connect.presenter.concrete.LoginPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.QuestionRequestPresenterImpl;
+import com.mtvindia.connect.presenter.concrete.ResultPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.UpdatePresenterImpl;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
 import com.mtvindia.connect.ui.activity.LoginActivity;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
-import com.mtvindia.connect.ui.fragment.AnswerFragment;
+import com.mtvindia.connect.ui.fragment.ResultFragment;
 import com.mtvindia.connect.ui.fragment.ChatFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
@@ -53,7 +54,8 @@ import dagger.Provides;
                 SecondaryQuestionFragment.class,
                 ChatFragment.class,
                 ChooseFragment.class,
-                AnswerFragment.class,
+                ResultFragment.class,
+                ResultPresenterImpl.class,
 
                 // Util classes
                 PreferenceUtil.class
