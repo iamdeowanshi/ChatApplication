@@ -29,7 +29,7 @@ public interface MtvConnectApi {
     Observable<User> update(@Body User user, @Header("Authorization") String accessToken);
 
     @GET(Config.QUESTION_REQUEST)
-    Observable<Question> primaryQuestionRequest();
+    Observable<Question> primaryQuestionRequest(@Header("Authorization") String accessToken);
 
     @GET(Config.QUESTION_REQUEST)
     Observable<Question> secondaryQuestionRequest(@Query("questionId") Integer pq_id);

@@ -12,7 +12,7 @@ public interface QuestionViewInteractor extends ViewInteractor {
 
     void hideProgress();
 
-    void display(Question question);
+    void showQuestion(Question question);
 
     void onError(Throwable throwable);
 

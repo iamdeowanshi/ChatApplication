@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * Created by Sibi on 21/10/15.
@@ -42,11 +43,11 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     QuestionRequestPresenter presenter;
 
     @Bind(R.id.img_dp)
-    ImageView imgDp;
+    ImageView userPic;
     @Bind(R.id.img_dp_big_1)
-    ImageView imgDpBig;
+    ImageView picOption1;
     @Bind(R.id.img_dp_big_2)
-    ImageView imgDpBig2;
+    ImageView picOption2;
     @Bind(R.id.progress)
     ProgressBar progress;
     @Bind(R.id.txt_hello)
@@ -57,8 +58,11 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     UbuntuTextView txtOption2;
     @Bind(R.id.txt_prim_quest)
     UbuntuTextView txtPrimQuest;
+    @Bind(R.id.view)
+    View view;
 
     private CircleStrokeTransformation circleStrokeTransformation;
+    private CircleStrokeTransformation circleStrokeTransformationDp;
 
     private User user;
     private List<Option> option;
@@ -86,29 +90,30 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
         user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
 
-        presenter.primaryQuestionRequest();
+        presenter.getPrimaryQuestion(user.getAuthHeader());
 
         preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, 0);
 
         int strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
+        circleStrokeTransformationDp = new CircleStrokeTransformation(getContext(), strokeColor, 2);
 
         txtHello.setText("Hello " + user.getFirstName() + "!");
 
-        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDp);
+        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformationDp).into(userPic);
 
 
     }
 
     @OnClick(R.id.img_dp_big_1)
     void option1() {
-        preferenceUtil.save(PreferenceUtil.PRIMARY_OPTION_ID, option.get(1).getOptionId());
+        preferenceUtil.save(PreferenceUtil.OPTION_ID, option.get(1).getOptionId());
         optionSelected();
     }
 
     @OnClick(R.id.img_dp_big_2)
     void option2() {
-        preferenceUtil.save(PreferenceUtil.PRIMARY_OPTION_ID, option.get(2).getOptionId());
+        preferenceUtil.save(PreferenceUtil.OPTION_ID, option.get(2).getOptionId());
         optionSelected();
     }
 
@@ -132,8 +137,10 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     }
 
     @Override
-    public void display(Question question) {
+    public void showQuestion(Question question) {
+
         preferenceUtil.save(PreferenceUtil.PRIMARY_QUESTION_ID, question.getQuestionId());
+        preferenceUtil.save(PreferenceUtil.QUESTION_ID, question.getQuestionId());
 
         option = question.getOptions();
 
@@ -141,16 +148,31 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         txtOption1.setText(option.get(0).getOption());
         txtOption2.setText(option.get(1).getOption());
 
-        Picasso.with(getContext()).load(option.get(0).getOptionUrl()).transform(circleStrokeTransformation).into(imgDpBig);
-        Picasso.with(getContext()).load(option.get(1).getOptionUrl()).transform(circleStrokeTransformation).into(imgDpBig2);
+        view.setVisibility(View.VISIBLE);
+
+        Picasso.with(getContext()).load(option.get(0).getOptionUrl()).transform(circleStrokeTransformation).into(picOption1);
+        Picasso.with(getContext()).load(option.get(1).getOptionUrl()).transform(circleStrokeTransformation).into(picOption2);
 
     }
 
     @Override
     public void onError(Throwable throwable) {
-        toastShort(String.valueOf(throwable));
+        Timber.e(throwable, "Error");
+        toastShort("Error: " + throwable);
+        hideProgress();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        presenter.pause();
+    }
 
     @Override
     public void onDestroyView() {
