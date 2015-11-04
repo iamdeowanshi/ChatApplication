@@ -9,6 +9,6 @@ public interface QuestionRequestPresenter extends Presenter<QuestionViewInteract
 
     void getPrimaryQuestion(String header);
 
-    void getSecondaryQuestion(int questionId);
+    void getSecondaryQuestion(int questionId, String header);
 
 }

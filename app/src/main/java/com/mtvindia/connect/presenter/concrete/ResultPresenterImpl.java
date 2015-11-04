@@ -7,6 +7,7 @@ import com.mtvindia.connect.data.model.ResultRequest;
 import com.mtvindia.connect.data.model.ResultResponse;
 import com.mtvindia.connect.presenter.ResultPresenter;
 import com.mtvindia.connect.presenter.ResultViewInteractor;
+import com.mtvindia.connect.util.PreferenceUtil;
 
 import javax.inject.Inject;
 
@@ -19,6 +20,8 @@ public class ResultPresenterImpl extends BaseNetworkPresenter<ResultViewInteract
 
     @Inject
     MtvConnectApi mtvConnectApi;
+    @Inject PreferenceUtil preferenceUtil;
+
     public ResultPresenterImpl() {
         injectDependencies();
     }

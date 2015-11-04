@@ -32,7 +32,7 @@ public interface MtvConnectApi {
     Observable<Question> primaryQuestionRequest(@Header("Authorization") String accessToken);
 
     @GET(Config.QUESTION_REQUEST)
-    Observable<Question> secondaryQuestionRequest(@Query("questionId") Integer pq_id);
+    Observable<Question> secondaryQuestionRequest(@Query("pq_id") Integer pq_id, @Header("Authorization") String accessToken);
 
     @POST(Config.ANSWER_REQUEST)
     Observable<ResultResponse> result(@Body ResultRequest resultRequest,@Header("Authorization") String accessToken );

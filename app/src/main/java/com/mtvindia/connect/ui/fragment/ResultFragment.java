@@ -103,7 +103,11 @@ public class ResultFragment extends BaseFragment {
         txtOption.setText(response.getOption().getOption());
         txtOtherPeople.setText(response.getMatchingUserCount() + " other people answered option " + response.getOption().getOptionId());
         Picasso.with(getContext()).load(response.getOption().getOptionUrl()).transform(circleStrokeTransformation).into(imgDpBig);
-        txtLeftQuestions.setText((10 - count) + " more to go");
+        if(count <10) {
+            txtLeftQuestions.setText((10 - count) + " more to go");
+        } else {
+            txtLeftQuestions.setText("Finished");
+        }
     }
 
     public static Fragment getInstance(Bundle bundle) {
