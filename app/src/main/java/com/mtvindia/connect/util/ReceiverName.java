@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.widget.Toast;
 
 import timber.log.Timber;
 
@@ -20,12 +19,24 @@ public class ReceiverName extends BroadcastReceiver {
         if (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected()) {
             Timber.d("Internet", "connected");
         } else {
-            /*final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Add Photo!");
-            builder.setIcon(android.R.drawable.ic_dialog_alert);
-            builder.show();
-*/
-            Toast.makeText(context, "No Internet Access", Toast.LENGTH_SHORT).show();
+/*
+
+            AlertDialog dialog = new AlertDialog.Builder(context)
+                    .setTitle("Connection Failed")
+                    .setMessage("Please Check Your Internet Connection")
+                    .setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //Code for try again
+                        }
+                    })
+                    .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    }).create();
+            dialog.show();*/
         }
     }
 

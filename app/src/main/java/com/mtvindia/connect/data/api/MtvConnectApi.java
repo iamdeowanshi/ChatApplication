@@ -1,12 +1,13 @@
 package com.mtvindia.connect.data.api;
 
 import com.mtvindia.connect.app.Config;
+import com.mtvindia.connect.data.model.LoginRequest;
+import com.mtvindia.connect.data.model.Question;
 import com.mtvindia.connect.data.model.ResultRequest;
 import com.mtvindia.connect.data.model.ResultResponse;
-import com.mtvindia.connect.data.model.LoginRequest;
-import com.mtvindia.connect.data.model.MatchUserResponse;
-import com.mtvindia.connect.data.model.Question;
 import com.mtvindia.connect.data.model.User;
+
+import java.util.List;
 
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -38,6 +39,6 @@ public interface MtvConnectApi {
     Observable<ResultResponse> result(@Body ResultRequest resultRequest,@Header("Authorization") String accessToken );
 
     @GET(Config.MATCH_USER)
-    Observable<MatchUserResponse> matchUser();
+    Observable<List<User>> matchUser(@Header("Authorization") String accessToken);
 
 }

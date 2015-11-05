@@ -3,6 +3,7 @@ package com.mtvindia.connect.app.di;
 import android.content.Context;
 
 import com.mtvindia.connect.app.MtvConnectApplication;
+import com.mtvindia.connect.presenter.concrete.FindMatchPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.LoginPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.QuestionRequestPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.ResultPresenterImpl;
@@ -56,6 +57,7 @@ import dagger.Provides;
                 ChooseFragment.class,
                 ResultFragment.class,
                 ResultPresenterImpl.class,
+                FindMatchPresenterImpl.class,
 
                 // Util classes
                 PreferenceUtil.class

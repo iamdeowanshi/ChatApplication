@@ -14,6 +14,7 @@ import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.data.model.ResultResponse;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
+import com.mtvindia.connect.ui.custom.UbuntuButton;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.PreferenceUtil;
 import com.squareup.picasso.Picasso;
@@ -62,11 +63,12 @@ public class ResultFragment extends BaseFragment {
     UbuntuTextView txtOption;
     @Bind(R.id.txt_other_people)
     UbuntuTextView txtOtherPeople;
+    @Bind(R.id.btn_continue)
+    UbuntuButton btnContinue;
 
     private CircleStrokeTransformation circleStrokeTransformation;
     private int strokeColor;
     private static int count;
-    private int option;
     private View[] progressBarView;
     private ResultResponse response;
 
@@ -103,7 +105,7 @@ public class ResultFragment extends BaseFragment {
         txtOption.setText(response.getOption().getOption());
         txtOtherPeople.setText(response.getMatchingUserCount() + " other people answered option " + response.getOption().getOptionId());
         Picasso.with(getContext()).load(response.getOption().getOptionUrl()).transform(circleStrokeTransformation).into(imgDpBig);
-        if(count <10) {
+        if (count < 10) {
             txtLeftQuestions.setText((10 - count) + " more to go");
         } else {
             txtLeftQuestions.setText("Finished");
@@ -122,16 +124,14 @@ public class ResultFragment extends BaseFragment {
         NavigationActivity navigationActivity = (NavigationActivity) getContext();
 
         if (count < 10) {
+            btnContinue.setText("Continue");
             Bundle bundle = new Bundle();
-            Fragment fragment = SecondaryQuestionFragment.getInstance(bundle);
-            bundle.putInt("value", option);
+            Fragment fragment = SecondaryQuestionFragment.getInstance(null);
             fragment.setArguments(bundle);
             navigationActivity.addFragment(fragment);
         } else if (count == 10) {
-            Bundle bundle = new Bundle();
-            Fragment fragment = ChooseFragment.getInstance(bundle);
-            bundle.putInt("value", option);
-            fragment.setArguments(bundle);
+            btnContinue.setText("Let's Find Matches");
+            Fragment fragment = ChooseFragment.getInstance(null);
             navigationActivity.addFragment(fragment);
         }
     }

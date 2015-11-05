@@ -1,9 +1,11 @@
 package com.mtvindia.connect.app.di;
 
+import com.mtvindia.connect.presenter.FindMatchPresenter;
 import com.mtvindia.connect.presenter.LoginPresenter;
 import com.mtvindia.connect.presenter.QuestionRequestPresenter;
 import com.mtvindia.connect.presenter.ResultPresenter;
 import com.mtvindia.connect.presenter.UpdatePresenter;
+import com.mtvindia.connect.presenter.concrete.FindMatchPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.LoginPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.QuestionRequestPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.ResultPresenterImpl;
@@ -41,6 +43,11 @@ public class PresenterModule {
     @Provides
     public ResultPresenter resultPresenter() {
         return new ResultPresenterImpl();
+    }
+
+    @Provides
+    public FindMatchPresenter findMatchPresenter() {
+        return new FindMatchPresenterImpl();
     }
 
 }
