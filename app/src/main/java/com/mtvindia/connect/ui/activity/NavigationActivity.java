@@ -1,5 +1,9 @@
 package com.mtvindia.connect.ui.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,12 +14,14 @@ import android.support.v7.widget.Toolbar;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
-import com.mtvindia.connect.ui.fragment.ResultFragment;
 import com.mtvindia.connect.ui.fragment.ChatFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
 import com.mtvindia.connect.ui.fragment.PreferenceFragment;
 import com.mtvindia.connect.ui.fragment.PrimaryQuestionFragment;
 import com.mtvindia.connect.ui.fragment.ProfileFragment;
+import com.mtvindia.connect.ui.fragment.ResultFragment;
+import com.mtvindia.connect.util.DialogUtil;
+import com.mtvindia.connect.util.NetworkUtil;
 import com.mtvindia.connect.util.PreferenceUtil;
 
 import javax.inject.Inject;
@@ -25,6 +31,8 @@ import butterknife.Bind;
 public class NavigationActivity extends BaseActivity implements NavigationCallBack {
 
     @Inject PreferenceUtil preferenceUtil;
+    @Inject NetworkUtil networkUtil;
+    @Inject DialogUtil dialogUtil;
 
     @Bind(R.id.toolbar_actionbar)
     Toolbar toolbar;
@@ -33,10 +41,17 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
 
     private NavigationDrawerFragment navigationDrawerFragment;
 
+    static final String ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
+
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION);
+        registerReceiver(internetReciever, filter);
 
         injectDependencies();
 
@@ -94,6 +109,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 addFragment(fragment);
                 break;
             case LOGOUT:
+                startActivity(LoginActivity.class, null);
                 finish();
                 break;
         }
@@ -127,4 +143,22 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         drawerLayout.setDrawerLockMode(drawerLockMode);
     }
 
+
+    private final BroadcastReceiver internetReciever = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Boolean isOnline = networkUtil.isOnline();
+
+            if(!isOnline) {
+                dialogUtil.displayInternetAlert(NavigationActivity.this);
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(internetReciever);
+    }
 }
