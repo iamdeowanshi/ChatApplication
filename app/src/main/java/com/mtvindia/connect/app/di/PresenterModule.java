@@ -26,27 +26,27 @@ import dagger.Provides;
 public class PresenterModule {
 
     @Provides
-    public LoginPresenter provideSamplePresenter() {
+    public LoginPresenter provideLoginPresenter() {
         return new LoginPresenterImpl();
     }
 
     @Provides
-    public UpdatePresenter updatePresenter() {
+    public UpdatePresenter provideUpdatePresenter() {
         return new UpdatePresenterImpl();
     }
 
     @Provides
-    public QuestionRequestPresenter questionRequestPresenter() {
+    public QuestionRequestPresenter provideQuestionRequestPresenter() {
         return new QuestionRequestPresenterImpl();
     }
 
     @Provides
-    public ResultPresenter resultPresenter() {
+    public ResultPresenter provideResultPresenter() {
         return new ResultPresenterImpl();
     }
 
     @Provides
-    public FindMatchPresenter findMatchPresenter() {
+    public FindMatchPresenter provideFindMatchPresenter() {
         return new FindMatchPresenterImpl();
     }
 

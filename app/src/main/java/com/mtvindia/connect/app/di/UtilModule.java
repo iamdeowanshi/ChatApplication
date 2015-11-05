@@ -1,5 +1,7 @@
 package com.mtvindia.connect.app.di;
 
+import com.mtvindia.connect.util.DialogUtil;
+import com.mtvindia.connect.util.NetworkUtil;
 import com.mtvindia.connect.util.PreferenceUtil;
 
 import javax.inject.Singleton;
@@ -23,5 +25,18 @@ public class UtilModule {
     public PreferenceUtil providePreferenceUtil() {
         return new PreferenceUtil();
     }
+
+    @Provides
+    @Singleton
+    public NetworkUtil provideNetworkUtil() {
+        return new NetworkUtil();
+    }
+
+    @Provides
+    @Singleton
+    public DialogUtil provideDialogUtil() {
+        return new DialogUtil();
+    }
+
 
 }

@@ -19,25 +19,27 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.gson.Gson;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.data.model.User;
+import com.mtvindia.connect.util.NetworkUtil;
 import com.mtvindia.connect.util.PreferenceUtil;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class LaunchActivity extends BaseActivity implements LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
 
     @Inject PreferenceUtil preferenceUtil;
-    @Inject
-    Gson gson;
+    @Inject NetworkUtil networkUtil;
+
     private static int timeOut = 2000;
     final static int REQUEST_LOCATION = 1000;
+
     private GoogleApiClient googleApiClient;
+    private User user = new User();
+
     private double latitude;
     private double longitude;
 
@@ -45,7 +47,6 @@ public class LaunchActivity extends BaseActivity implements LocationListener, Go
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
-        ButterKnife.bind(this);
 
         injectDependencies();
 
@@ -56,7 +57,12 @@ public class LaunchActivity extends BaseActivity implements LocationListener, Go
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        checkLocation();
+    }
+
+    void checkLocation() {
         locationChecker(googleApiClient, LaunchActivity.this);
+
         LocationManager locationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
@@ -99,9 +105,12 @@ public class LaunchActivity extends BaseActivity implements LocationListener, Go
     public void locationChecker(GoogleApiClient mGoogleApiClient, final Activity activity) {
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
+
         PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+
         result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
             @Override
             public void onResult(LocationSettingsResult result) {
@@ -123,6 +132,7 @@ public class LaunchActivity extends BaseActivity implements LocationListener, Go
     }
 
     public void proceed() {
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -164,9 +174,6 @@ public class LaunchActivity extends BaseActivity implements LocationListener, Go
     @Override
     protected void onPause() {
         super.onPause();
-  /*      if (googleApiClient.isConnected()) {
-            googleApiClient.disconnect();
-        }*/
     }
 
     @Override
@@ -174,7 +181,7 @@ public class LaunchActivity extends BaseActivity implements LocationListener, Go
         latitude = location.getLatitude();
         longitude = location.getLongitude();
 
-        User user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
+        user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
         user.setLatitude(latitude);
         user.setLongitude(longitude);
 
