@@ -34,6 +34,7 @@
             android:layout_alignLeft="@+id/img_1"
             android:layout_alignRight="@+id/img_1"
             android:layout_below="@id/img_1"
+            android:id="@+id/txt_user1_name"
             android:layout_marginTop="20dp"
             android:gravity="center"
             android:textColor="#fff"
@@ -54,6 +55,7 @@
             android:layout_below="@id/img_2"
             android:layout_marginTop="20dp"
             android:gravity="center"
+            android:id="@+id/txt_user2_name"
             android:textColor="#fff"
             android:textSize="12sp" />
 
@@ -70,5 +72,14 @@
         android:text="Skip"
         android:textAllCaps="false"
         android:textColor="#fff" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateTint="#c5c5c5"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="invisible" />
 
 </RelativeLayout>
