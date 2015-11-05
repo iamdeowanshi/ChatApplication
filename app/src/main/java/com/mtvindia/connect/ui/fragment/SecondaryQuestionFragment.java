@@ -18,8 +18,13 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.data.model.Option;
 import com.mtvindia.connect.data.model.Question;
+import com.mtvindia.connect.data.model.ResultRequest;
+import com.mtvindia.connect.data.model.ResultResponse;
+import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.presenter.QuestionRequestPresenter;
 import com.mtvindia.connect.presenter.QuestionViewInteractor;
+import com.mtvindia.connect.presenter.ResultPresenter;
+import com.mtvindia.connect.presenter.ResultViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
@@ -37,12 +42,14 @@ import butterknife.OnClick;
 /**
  * Created by Sibi on 22/10/15.
  */
-public class SecondaryQuestionFragment extends BaseFragment implements QuestionViewInteractor {
+public class SecondaryQuestionFragment extends BaseFragment implements QuestionViewInteractor, ResultViewInteractor {
 
     @Inject
     PreferenceUtil preferenceUtil;
     @Inject
-    QuestionRequestPresenter presenter;
+    QuestionRequestPresenter questionRequestPresenter;
+    @Inject
+    ResultPresenter resultPresenter;
 
     @Bind(R.id.img_dp_big_1)
     ImageView picOption1;
@@ -78,6 +85,8 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     private CircleStrokeTransformation circleStrokeTransformation;
     private int strokeColor;
     private int count;
+    private User user;
+    private ResultRequest resultRequest = new ResultRequest();
 
     private List<Option> options;
 
@@ -100,11 +109,15 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        presenter.setViewInteractor(this);
+        questionRequestPresenter.setViewInteractor(this);
+        resultPresenter.setViewInteractor(this);
 
-        presenter.getSecondaryQuestion(preferenceUtil.readInt(PreferenceUtil.PRIMARY_QUESTION_ID, 0));
+        user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
+
+        questionRequestPresenter.getSecondaryQuestion(preferenceUtil.readInt(PreferenceUtil.PRIMARY_QUESTION_ID, 0), user.getAuthHeader());
 
         count = preferenceUtil.readInt(PreferenceUtil.QUESTIONS_ANSWERED, 0);
+
 
         strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
@@ -113,31 +126,33 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
 
     @OnClick(R.id.img_dp_big_1)
     void option1() {
-        optionSelected();
+        optionSelected(0);
     }
 
     @OnClick(R.id.img_dp_big_2)
     void option2() {
-        optionSelected();
+        optionSelected(1);
     }
 
     @OnClick(R.id.img_dp_big3)
     void option3() {
-        optionSelected();
+        optionSelected(2);
     }
 
     @OnClick(R.id.img_dp_big4)
     void option4() {
-        optionSelected();
+        optionSelected(3);
     }
 
-    void optionSelected() {
+    void optionSelected(int option) {
         count++;
         preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, count);
 
-        NavigationActivity navigationActivity = (NavigationActivity) getContext();
-        Fragment fragment = ResultFragment.getInstance(null);
-        navigationActivity.addFragment(fragment);
+        resultRequest.setOptionId(options.get(option).getOptionId());
+        resultRequest.setPrimaryQuestionId(preferenceUtil.readInt(PreferenceUtil.PRIMARY_QUESTION_ID, 0));
+
+        resultPresenter.requestResult(resultRequest, user.getAuthHeader());
+
     }
 
     @Override
@@ -151,9 +166,19 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     }
 
     @Override
+    public void showResult(ResultResponse response) {
+        preferenceUtil.save(PreferenceUtil.RESULT_RESPONSE, response);
+
+        NavigationActivity navigationActivity = (NavigationActivity) getContext();
+        Fragment fragment = ResultFragment.getInstance(null);
+        navigationActivity.addFragment(fragment);
+    }
+
+    @Override
     public void showQuestion(Question question) {
         options = question.getOptions();
         txtFirstHigh.setText(question.getQuestion());
+        resultRequest.setQuestionId(question.getQuestionId());
         setView(options.size());
     }
 
@@ -191,7 +216,8 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
 
     @Override
     public void onError(Throwable throwable) {
-
+        throwable.printStackTrace();
+        toastShort(throwable.toString());
     }
 
     public static Fragment getInstance(Bundle bundle) {

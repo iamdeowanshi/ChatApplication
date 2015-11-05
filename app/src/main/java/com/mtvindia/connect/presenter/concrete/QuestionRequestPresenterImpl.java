@@ -7,6 +7,7 @@ import com.mtvindia.connect.data.api.MtvConnectApi;
 import com.mtvindia.connect.data.model.Question;
 import com.mtvindia.connect.presenter.QuestionRequestPresenter;
 import com.mtvindia.connect.presenter.QuestionViewInteractor;
+import com.mtvindia.connect.util.PreferenceUtil;
 
 import javax.inject.Inject;
 
@@ -19,6 +20,7 @@ public class QuestionRequestPresenterImpl extends BaseNetworkPresenter<QuestionV
 
     @Inject
     MtvConnectApi mtvConnectApi;
+    @Inject PreferenceUtil preferenceUtil;
     @Inject
     Gson gson;
 
@@ -49,10 +51,10 @@ public class QuestionRequestPresenterImpl extends BaseNetworkPresenter<QuestionV
     }
 
     @Override
-    public void getSecondaryQuestion(int pq_id) {
+    public void getSecondaryQuestion(int pq_id, String header) {
         viewInteractor.showProgress();
 
-        Observable<Question> resultObservable = mtvConnectApi.secondaryQuestionRequest(pq_id);
+        Observable<Question> resultObservable = mtvConnectApi.secondaryQuestionRequest(pq_id, header);
 
         subscribeForNetwork(resultObservable, apiObserver);
     }
