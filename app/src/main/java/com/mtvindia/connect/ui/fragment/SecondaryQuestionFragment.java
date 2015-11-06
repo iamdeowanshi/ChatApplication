@@ -28,6 +28,7 @@ import com.mtvindia.connect.presenter.ResultViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
+import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
 
@@ -45,6 +46,7 @@ import butterknife.OnClick;
 public class SecondaryQuestionFragment extends BaseFragment implements QuestionViewInteractor, ResultViewInteractor {
 
     @Inject UserPreference userPreference;
+    @Inject QuestionPreference questionPreference;
     @Inject QuestionRequestPresenter questionRequestPresenter;
     @Inject ResultPresenter resultPresenter;
 
@@ -111,14 +113,14 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
         resultPresenter.setViewInteractor(this);
 
         user = userPreference.readUser();
-        question = userPreference.readQuestionResponse();
-        count = userPreference.readQuestionCount();
+        question = questionPreference.readQuestionResponse();
+        count = questionPreference.readQuestionCount();
 
         strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
 
          if(isQuestionAnswered()) {
-                questionRequestPresenter.getSecondaryQuestion(userPreference.readPrimaryQuestionId(), user.getAuthHeader());
+                questionRequestPresenter.getSecondaryQuestion(questionPreference.readPrimaryQuestionId(), user.getAuthHeader());
          } else {
              displayQuestion(question);
          }
@@ -151,11 +153,11 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     void optionSelected(int option) {
         count++;
         question.setIsAnswered(true);
-        userPreference.saveQuestionCount(count);
-        userPreference.saveQuestionResponse(question);
+        questionPreference.saveQuestionCount(count);
+        questionPreference.saveQuestionResponse(question);
 
         resultRequest.setOptionId(options.get(option).getOptionId());
-        resultRequest.setPrimaryQuestionId(userPreference.readPrimaryQuestionId());
+        resultRequest.setPrimaryQuestionId(questionPreference.readPrimaryQuestionId());
 
         resultPresenter.requestResult(resultRequest, user.getAuthHeader());
 
@@ -173,7 +175,7 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
 
     @Override
     public void showResult(ResultResponse response) {
-        userPreference.saveResultResponse(response);
+        questionPreference.saveResultResponse(response);
 
         NavigationActivity navigationActivity = (NavigationActivity) getContext();
         Fragment fragment = ResultFragment.getInstance(null);
@@ -182,7 +184,7 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
 
     @Override
     public void showQuestion(Question question) {
-        userPreference.saveQuestionResponse(question);
+        questionPreference.saveQuestionResponse(question);
         displayQuestion(question);
     }
 
@@ -235,6 +237,18 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     public void onError(Throwable throwable) {
         throwable.printStackTrace();
         toastShort(throwable.toString());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        questionRequestPresenter.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        questionRequestPresenter.pause();
     }
 
     public static Fragment getInstance(Bundle bundle) {

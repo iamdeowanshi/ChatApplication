@@ -24,6 +24,7 @@ import com.mtvindia.connect.presenter.ResultViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
+import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
 
@@ -42,6 +43,7 @@ import timber.log.Timber;
 public class PrimaryQuestionFragment extends BaseFragment implements QuestionViewInteractor, ResultViewInteractor{
 
     @Inject UserPreference userPreference;
+    @Inject QuestionPreference questionPreference;
     @Inject QuestionRequestPresenter questionRequestPresenter;
     @Inject
     ResultPresenter resultPresenter;
@@ -99,7 +101,7 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
         questionRequestPresenter.getPrimaryQuestion(user.getAuthHeader());
 
-        userPreference.savePrimaryQuestionId(0);
+        questionPreference.savePrimaryQuestionId(0);
 
         int strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
@@ -124,9 +126,9 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
     void optionSelected(int option) {
         question.setIsAnswered(true);
-        userPreference.saveQuestionResponse(question);
-        userPreference.saveQuestionCount(1);
-        resultRequest.setPrimaryQuestionId(userPreference.readPrimaryQuestionId());
+        questionPreference.saveQuestionResponse(question);
+        questionPreference.saveQuestionCount(1);
+        resultRequest.setPrimaryQuestionId(questionPreference.readPrimaryQuestionId());
         resultRequest.setOptionId(option);
 
         resultPresenter.requestResult(resultRequest, user.getAuthHeader());
@@ -144,7 +146,7 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
     @Override
     public void showResult(ResultResponse response) {
-        userPreference.saveResultResponse(response);
+        questionPreference.saveResultResponse(response);
 
         NavigationActivity navigationActivity = (NavigationActivity) getContext();
         Fragment fragment = ResultFragment.getInstance(null);
@@ -155,8 +157,8 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     @Override
     public void showQuestion(Question response) {
         question = response;
-        userPreference.saveQuestionResponse(question);
-        userPreference.savePrimaryQuestionId(question.getQuestionId());
+        questionPreference.saveQuestionResponse(question);
+        questionPreference.savePrimaryQuestionId(question.getQuestionId());
 
         resultRequest.setQuestionId(question.getQuestionId());
 

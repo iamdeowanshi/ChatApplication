@@ -30,6 +30,7 @@ import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.activity.NavigationItem;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
+import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
 
@@ -48,6 +49,7 @@ import butterknife.OnClick;
 public class ProfileFragment extends BaseFragment implements UpdateViewInteractor {
 
     @Inject UserPreference userPreference;
+    @Inject QuestionPreference questionPreference;
     @Inject UpdatePresenter presenter;
 
     @Bind(R.id.img_dp)
@@ -280,7 +282,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
 
         if(userPreference.readLoginStatus()) {
             userPreference.saveLoginStatus(false);
-            userPreference.saveQuestionCount(0);
+            questionPreference.saveQuestionCount(0);
             NavigationActivity navigationActivity = (NavigationActivity) getContext();
             Fragment fragment = PrimaryQuestionFragment.getInstance(null);
             navigationActivity.addFragment(fragment);

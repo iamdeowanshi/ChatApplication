@@ -3,6 +3,7 @@ package com.mtvindia.connect.app.di;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.NetworkUtil;
 import com.mtvindia.connect.util.PreferenceUtil;
+import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
 
 import javax.inject.Singleton;
@@ -42,6 +43,11 @@ public class UtilModule {
     @Provides
     public UserPreference provideUserPreference() {
         return new UserPreference();
+    }
+
+    @Provides
+    public QuestionPreference provideQuestionPreference() {
+        return new QuestionPreference();
     }
 
 }
