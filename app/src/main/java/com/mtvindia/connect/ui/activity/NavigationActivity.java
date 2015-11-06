@@ -24,7 +24,7 @@ import com.mtvindia.connect.ui.fragment.ResultFragment;
 import com.mtvindia.connect.ui.fragment.SecondaryQuestionFragment;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.NetworkUtil;
-import com.mtvindia.connect.util.PreferenceUtil;
+import com.mtvindia.connect.util.UserPreference;
 
 import javax.inject.Inject;
 
@@ -32,7 +32,7 @@ import butterknife.Bind;
 
 public class NavigationActivity extends BaseActivity implements NavigationCallBack {
 
-    @Inject PreferenceUtil preferenceUtil;
+    @Inject UserPreference userPreference;
     @Inject NetworkUtil networkUtil;
     @Inject DialogUtil dialogUtil;
 
@@ -108,8 +108,8 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     }
 
     private void showFindMorePeople() {
-        int count = preferenceUtil.readInt(PreferenceUtil.QUESTIONS_ANSWERED, 0);
-        Question question = (Question) preferenceUtil.read(PreferenceUtil.QUESTION_RESPONSE, Question.class);
+        int count = userPreference.readQuestionCount();
+        Question question = userPreference.readQuestionResponse();
         Fragment fragment;
         if(!question.isAnswered()) {
             fragment = SecondaryQuestionFragment.getInstance(null);
@@ -133,7 +133,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     }
 
     private void loadInitialItem() {
-        boolean isInRegistration = preferenceUtil.readBoolean(PreferenceUtil.IS_IN_REGISTRATION, false);
+        boolean isInRegistration = userPreference.readLoginStatus();
 
         if(isInRegistration) {
             setDrawerEnabled(false);

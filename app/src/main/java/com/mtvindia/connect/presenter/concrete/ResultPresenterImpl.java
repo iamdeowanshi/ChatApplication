@@ -17,8 +17,7 @@ import rx.Observable;
  */
 public class ResultPresenterImpl extends BaseNetworkPresenter<ResultViewInteractor> implements ResultPresenter {
 
-    @Inject
-    MtvConnectApi mtvConnectApi;
+    @Inject MtvConnectApi mtvConnectApi;
 
     public ResultPresenterImpl() {
         injectDependencies();

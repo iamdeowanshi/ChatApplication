@@ -22,8 +22,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.data.model.User;
-import com.mtvindia.connect.util.NetworkUtil;
-import com.mtvindia.connect.util.PreferenceUtil;
+import com.mtvindia.connect.util.UserPreference;
 
 import javax.inject.Inject;
 
@@ -31,8 +30,7 @@ import timber.log.Timber;
 
 public class LaunchActivity extends BaseActivity implements LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
 
-    @Inject PreferenceUtil preferenceUtil;
-    @Inject NetworkUtil networkUtil;
+    @Inject UserPreference userPreference;
 
     private static int timeOut = 2000;
     final static int REQUEST_LOCATION = 1000;
@@ -181,11 +179,11 @@ public class LaunchActivity extends BaseActivity implements LocationListener, Go
         latitude = location.getLatitude();
         longitude = location.getLongitude();
 
-        user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
+        user = userPreference.readUser();
         user.setLatitude(latitude);
         user.setLongitude(longitude);
 
-        preferenceUtil.save(PreferenceUtil.USER, user);
+        userPreference.saveUser(user);
     }
 
     @Override

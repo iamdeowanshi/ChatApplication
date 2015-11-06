@@ -22,6 +22,7 @@ import com.mtvindia.connect.ui.fragment.SecondaryQuestionFragment;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.NetworkUtil;
 import com.mtvindia.connect.util.PreferenceUtil;
+import com.mtvindia.connect.util.UserPreference;
 
 import javax.inject.Singleton;
 
@@ -68,6 +69,7 @@ import dagger.Provides;
                 // Util classes
                 NetworkUtil.class,
                 DialogUtil.class,
+                UserPreference.class,
                 PreferenceUtil.class
 
         }

@@ -30,7 +30,7 @@ import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.activity.NavigationItem;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
-import com.mtvindia.connect.util.PreferenceUtil;
+import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
@@ -47,7 +47,7 @@ import butterknife.OnClick;
  */
 public class ProfileFragment extends BaseFragment implements UpdateViewInteractor {
 
-    @Inject PreferenceUtil preferenceUtil;
+    @Inject UserPreference userPreference;
     @Inject UpdatePresenter presenter;
 
     @Bind(R.id.img_dp)
@@ -95,7 +95,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         presenter.setViewInteractor(this);
-        user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
+        user = userPreference.readUser();
 
         String birthDay = user.getBirthDay();
         if(birthDay != null) {
@@ -276,11 +276,11 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
 
     @Override
     public void updateDone(User user) {
-        preferenceUtil.save(PreferenceUtil.USER, user);
+        userPreference.saveUser(user);
 
-        if(preferenceUtil.readBoolean(PreferenceUtil.IS_IN_REGISTRATION, false)) {
-            preferenceUtil.save(PreferenceUtil.IS_IN_REGISTRATION, false);
-            preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, 0);
+        if(userPreference.readLoginStatus()) {
+            userPreference.saveLoginStatus(false);
+            userPreference.saveQuestionCount(0);
             NavigationActivity navigationActivity = (NavigationActivity) getContext();
             Fragment fragment = PrimaryQuestionFragment.getInstance(null);
             navigationActivity.addFragment(fragment);

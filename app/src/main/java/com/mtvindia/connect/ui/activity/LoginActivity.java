@@ -14,7 +14,7 @@ import com.mtvindia.connect.presenter.LoginPresenter;
 import com.mtvindia.connect.presenter.LoginViewInteractor;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.NetworkUtil;
-import com.mtvindia.connect.util.PreferenceUtil;
+import com.mtvindia.connect.util.UserPreference;
 import com.mtvindia.connect.util.social.AuthResult;
 import com.mtvindia.connect.util.social.SocialAuth;
 import com.mtvindia.connect.util.social.SocialAuthCallback;
@@ -29,7 +29,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
 
     @Inject LoginPresenter presenter;
     @Inject Gson gson;
-    @Inject PreferenceUtil preferenceUtil;
+    @Inject UserPreference userPreference;
     @Inject NetworkUtil networkUtil;
     @Inject
     DialogUtil dialogUtil;
@@ -121,8 +121,8 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     public void loginDone(User response, boolean isRegister) {
         Timber.d(gson.toJson(response));
 
-        preferenceUtil.save(PreferenceUtil.USER, response);
-        preferenceUtil.save(PreferenceUtil.IS_IN_REGISTRATION, isRegister);
+        userPreference.saveUser(response);
+        userPreference.saveLoginStatus(isRegister);
 
         startActivity(NavigationActivity.class, null);
         finish();

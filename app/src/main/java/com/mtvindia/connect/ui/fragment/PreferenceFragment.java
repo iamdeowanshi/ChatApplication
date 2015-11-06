@@ -20,7 +20,7 @@ import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.activity.NavigationItem;
-import com.mtvindia.connect.util.PreferenceUtil;
+import com.mtvindia.connect.util.UserPreference;
 
 import javax.inject.Inject;
 
@@ -37,7 +37,7 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
     @Inject
     UpdatePresenter presenter;
     @Inject
-    PreferenceUtil preferenceUtil;
+    UserPreference userPreference;
 
     @Bind(R.id.layout_dialog_interested)
     RelativeLayout layoutDialogInterested;
@@ -73,7 +73,7 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         presenter.setViewInteractor(this);
-        user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
+        user = userPreference.readUser();
 
         textMeet.setText(user.getLikeToMeet());
         textInterested.setText(user.getInterestedIn());
@@ -149,9 +149,9 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
 
     @Override
     public void updateDone(User user) {
-        preferenceUtil.save(PreferenceUtil.USER, user);
+        userPreference.saveUser(user);
 
-        if(preferenceUtil.readBoolean(PreferenceUtil.IS_IN_REGISTRATION, false)) {
+        if(userPreference.readLoginStatus()) {
             NavigationActivity navigationActivity = (NavigationActivity) getContext();
             Fragment fragment = ProfileFragment.getInstance(null);
             navigationActivity.addFragment(fragment);
