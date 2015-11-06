@@ -208,7 +208,9 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
             view.setVisibility(View.VISIBLE);
 
             Picasso.with(getContext()).load(options.get(0).getOptionUrl()).transform(circleStrokeTransformation).into(picOption1);
+            picOption1.setVisibility(View.VISIBLE);
             Picasso.with(getContext()).load(options.get(1).getOptionUrl()).transform(circleStrokeTransformation).into(picOption2);
+            picOption2.setVisibility(View.VISIBLE);
         } else {
             txtOption1.setText(options.get(0).getOption());
             txtOption2.setText(options.get(1).getOption());
@@ -219,9 +221,13 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
             view2.setVisibility(View.VISIBLE);
 
             Picasso.with(getContext()).load(options.get(0).getOptionUrl()).transform(circleStrokeTransformation).into(picOption1);
+            picOption1.setVisibility(View.VISIBLE);
             Picasso.with(getContext()).load(options.get(1).getOptionUrl()).transform(circleStrokeTransformation).into(picOption2);
+            picOption2.setVisibility(View.VISIBLE);
             Picasso.with(getContext()).load(options.get(2).getOptionUrl()).transform(circleStrokeTransformation).into(picOption3);
+            picOption3.setVisibility(View.VISIBLE);
             Picasso.with(getContext()).load(options.get(3).getOptionUrl()).transform(circleStrokeTransformation).into(picOption4);
+            picOption4.setVisibility(View.VISIBLE);
 
         }
 

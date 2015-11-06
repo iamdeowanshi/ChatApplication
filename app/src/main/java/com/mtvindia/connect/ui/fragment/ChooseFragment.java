@@ -79,6 +79,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
         presenter.setViewInteractor(this);
 
         preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, 0);
+        preferenceUtil.save(PreferenceUtil.PRIMARY_QUESTION_ID, 0);
         User user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
 
         presenter.findMatches(user.getAuthHeader());

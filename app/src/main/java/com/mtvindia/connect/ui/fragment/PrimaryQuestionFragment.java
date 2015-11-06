@@ -170,7 +170,9 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         view.setVisibility(View.VISIBLE);
 
         Picasso.with(getContext()).load(option.get(0).getOptionUrl()).transform(circleStrokeTransformation).into(picOption1);
+        picOption1.setVisibility(View.VISIBLE);
         Picasso.with(getContext()).load(option.get(1).getOptionUrl()).transform(circleStrokeTransformation).into(picOption2);
+        picOption2.setVisibility(View.VISIBLE);
 
     }
 

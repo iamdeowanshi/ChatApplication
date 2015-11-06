@@ -93,7 +93,6 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         hideProgress();
 
         LoginRequest loginRequest = new LoginRequest(authResult);
-
         presenter.login(loginRequest);
     }
 
