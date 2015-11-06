@@ -205,11 +205,11 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     };
 
     void checkLocation() {
-        locationChecker(googleApiClient, NavigationActivity.this);
+        requestLocation();
 
         locationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
         try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (android.location.LocationListener) this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         } catch (SecurityException e) {
             e.printStackTrace();
         }
@@ -245,14 +245,14 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         super.onStop();
     }
 
-    public void locationChecker(GoogleApiClient mGoogleApiClient, final Activity activity) {
+    public void requestLocation() {
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
 
-        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
 
         result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
             @Override
@@ -263,7 +263,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         try {
-                            status.startResolutionForResult(activity, 1000);
+                            status.startResolutionForResult(NavigationActivity.this, 1000);
                         } catch (IntentSender.SendIntentException e) {
                             e.printStackTrace();
                         }
@@ -305,16 +305,29 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     @Override
     protected void onPause() {
         super.onPause();
+        try {
+            locationManager.removeUpdates(this);
+            locationManager = null;
+        }catch (SecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        if (user == null) {
+            return;
+        }
         user = userPreference.readUser();
         user.setLatitude(location.getLatitude());
         user.setLongitude(location.getLongitude());
         userPreference.saveUser(user);
-        locationManager.removeUpdates(this);
-        locationManager = null;
+        try {
+            locationManager.removeUpdates(this);
+            locationManager = null;
+        }catch (SecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -336,5 +349,6 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(internetReciever);
+        questionPreference.clearPreference();
     }
 }
