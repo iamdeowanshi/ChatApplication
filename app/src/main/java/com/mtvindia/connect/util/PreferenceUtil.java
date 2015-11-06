@@ -18,6 +18,7 @@ public class PreferenceUtil {
     public static final String IS_IN_REGISTRATION = "_IS_REGISTERED";
     public static final String PRIMARY_QUESTION_ID = "_PRIMARY_QUESTION_ID";
     public static final String RESULT_RESPONSE = "_RESULT_RESPONSE";
+    public static final String QUESTION_RESPONSE = "_QUESTION_RESPONSE";
 
     @Inject Context context;
     @Inject Gson gson;

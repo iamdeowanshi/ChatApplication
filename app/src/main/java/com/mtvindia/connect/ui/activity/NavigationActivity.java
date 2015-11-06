@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
+import com.mtvindia.connect.data.model.Question;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
 import com.mtvindia.connect.ui.fragment.ChatFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
@@ -20,6 +21,7 @@ import com.mtvindia.connect.ui.fragment.PreferenceFragment;
 import com.mtvindia.connect.ui.fragment.PrimaryQuestionFragment;
 import com.mtvindia.connect.ui.fragment.ProfileFragment;
 import com.mtvindia.connect.ui.fragment.ResultFragment;
+import com.mtvindia.connect.ui.fragment.SecondaryQuestionFragment;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.NetworkUtil;
 import com.mtvindia.connect.util.PreferenceUtil;
@@ -40,6 +42,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     DrawerLayout drawerLayout;
 
     private NavigationDrawerFragment navigationDrawerFragment;
+    private Fragment fragment;
 
     static final String ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
 
@@ -76,42 +79,47 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
 
     @Override
     public void onItemSelected(NavigationItem item) {
-        Fragment fragment;
-        Bundle bundle = new Bundle();
-
-
-
         switch (item) {
             case FIND_PEOPLE:
-                int count = preferenceUtil.readInt(PreferenceUtil.QUESTIONS_ANSWERED, 0);
                 setDrawerEnabled(true);
-                if(count == 0) {
-                    fragment = PrimaryQuestionFragment.getInstance(bundle);
-                } else {
-                    fragment = ResultFragment.getInstance(bundle);
-                }
-                addFragment(fragment);
+                showFindMorePeople();
                 break;
             case PROFILE:
-                fragment = ProfileFragment.getInstance(bundle);
+                fragment = ProfileFragment.getInstance(null);
                 addFragment(fragment);
                 break;
             case PREFERENCE:
-                fragment = PreferenceFragment.getInstance(bundle);
+                fragment = PreferenceFragment.getInstance(null);
                 addFragment(fragment);
                 break;
             case CHAT:
-                fragment = ChatFragment.getInstance(bundle);
+                fragment = ChatFragment.getInstance(null);
                 addFragment(fragment);
                 break;
             case ABOUT:
-                fragment = AboutFragment.getInstance(bundle);
+                fragment = AboutFragment.getInstance(null);
                 addFragment(fragment);
                 break;
             case LOGOUT:
                 startActivity(LoginActivity.class, null);
                 finish();
                 break;
+        }
+    }
+
+    private void showFindMorePeople() {
+        int count = preferenceUtil.readInt(PreferenceUtil.QUESTIONS_ANSWERED, 0);
+        Question question = (Question) preferenceUtil.read(PreferenceUtil.QUESTION_RESPONSE, Question.class);
+        Fragment fragment;
+        if(!question.isAnswered()) {
+            fragment = SecondaryQuestionFragment.getInstance(null);
+            addFragment(fragment);
+        } else if(count == 0) {
+            fragment = PrimaryQuestionFragment.getInstance(null);
+            addFragment(fragment);
+        } else if(count > 0){
+            fragment = ResultFragment.getInstance(null);
+            addFragment(fragment);
         }
     }
 

@@ -70,6 +70,7 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     private CircleStrokeTransformation circleStrokeTransformationDp;
 
     private User user;
+    private Question question;
     private List<Option> option;
     private ResultRequest resultRequest = new ResultRequest();
 
@@ -123,8 +124,9 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     }
 
     void optionSelected(int option) {
+        question.setIsAnswered(true);
+        preferenceUtil.save(PreferenceUtil.QUESTION_RESPONSE, question);
         preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, 1);
-
         resultRequest.setPrimaryQuestionId(preferenceUtil.readInt(PreferenceUtil.PRIMARY_QUESTION_ID, 0));
         resultRequest.setOptionId(option);
 
@@ -152,8 +154,9 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
 
     @Override
-    public void showQuestion(Question question) {
-
+    public void showQuestion(Question response) {
+        question = response;
+        preferenceUtil.save(PreferenceUtil.QUESTION_RESPONSE, question );
         preferenceUtil.save(PreferenceUtil.PRIMARY_QUESTION_ID, question.getQuestionId());
 
         resultRequest.setQuestionId(question.getQuestionId());
