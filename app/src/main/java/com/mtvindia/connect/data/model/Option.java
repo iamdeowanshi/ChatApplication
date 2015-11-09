@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Sibi on 02/11/15.
  */
 public class Option {
-    @SerializedName("id")
+    @SerializedName("optionId")
     private int optionId;
     @SerializedName("option")
     private String option;
