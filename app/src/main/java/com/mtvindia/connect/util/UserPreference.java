@@ -36,7 +36,8 @@ public class UserPreference {
     }
 
     public void removeUser() {
-        preferenceUtil.clearData();
+        preferenceUtil.remove(USER);
+        preferenceUtil.remove(IS_IN_REGISTRATION);
     }
 
 }

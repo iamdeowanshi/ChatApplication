@@ -103,8 +103,9 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
 
     @Override
     public void onError(Throwable throwable) {
-        Timber.e(throwable, "Error");
         hideProgress();
+        toastShort("Some error on Login");
+        Timber.e(throwable, "Error");
     }
 
     @Override
