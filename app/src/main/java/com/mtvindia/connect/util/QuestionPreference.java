@@ -55,7 +55,10 @@ public class QuestionPreference {
     }
 
     public void clearPreference() {
-        preferenceUtil.clearData();
+        preferenceUtil.remove(QUESTION_RESPONSE);
+        preferenceUtil.remove(PRIMARY_QUESTION_ID);
+        preferenceUtil.remove(RESULT_RESPONSE);
+        preferenceUtil.remove(QUESTION_RESPONSE);
     }
 
 }

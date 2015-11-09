@@ -8,7 +8,7 @@ import java.util.List;
  * Created by Sibi on 02/11/15.
  */
 public class Question {
-    @SerializedName("id")
+    @SerializedName("questionId")
     private int questionId;
     @SerializedName("question")
     private String question;

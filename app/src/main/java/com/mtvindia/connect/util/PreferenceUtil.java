@@ -104,6 +104,10 @@ public class PreferenceUtil {
         }
     }
 
+    public void remove(String key) {
+        getEditor().remove(key).apply();
+    }
+
     public void clearData() {
         getEditor().clear().apply();
     }

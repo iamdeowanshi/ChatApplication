@@ -151,7 +151,7 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
     public void onConnected(Bundle bundle) {
         shouldResolve = false;
         try {
-            new RetrieveTokenTask(Plus.PeopleApi.getCurrentPerson(googleApiClient).toString(), Plus.AccountApi.getAccountName(googleApiClient).toString())
+            new RetrieveTokenTask(Plus.PeopleApi.getCurrentPerson(googleApiClient).toString(), Plus.AccountApi.getAccountName(googleApiClient))
                     .execute(Plus.AccountApi.getAccountName(googleApiClient));
         } catch (NullPointerException e) {
             callback.onError(e);
