@@ -24,7 +24,8 @@ import com.mtvindia.connect.presenter.ResultViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
-import com.mtvindia.connect.util.PreferenceUtil;
+import com.mtvindia.connect.util.QuestionPreference;
+import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -41,8 +42,8 @@ import timber.log.Timber;
  */
 public class PrimaryQuestionFragment extends BaseFragment implements QuestionViewInteractor, ResultViewInteractor{
 
-    @Inject
-    PreferenceUtil preferenceUtil;
+    @Inject UserPreference userPreference;
+    @Inject QuestionPreference questionPreference;
     @Inject QuestionRequestPresenter questionRequestPresenter;
     @Inject
     ResultPresenter resultPresenter;
@@ -70,6 +71,7 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     private CircleStrokeTransformation circleStrokeTransformationDp;
 
     private User user;
+    private Question question;
     private List<Option> option;
     private ResultRequest resultRequest = new ResultRequest();
 
@@ -95,11 +97,11 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         questionRequestPresenter.setViewInteractor(this);
         resultPresenter.setViewInteractor(this);
 
-        user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
+        user = userPreference.readUser();
 
         questionRequestPresenter.getPrimaryQuestion(user.getAuthHeader());
 
-        preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, 0);
+        questionPreference.savePrimaryQuestionId(0);
 
         int strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
@@ -123,9 +125,10 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     }
 
     void optionSelected(int option) {
-        preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, 1);
-
-        resultRequest.setPrimaryQuestionId(preferenceUtil.readInt(PreferenceUtil.PRIMARY_QUESTION_ID, 0));
+        question.setIsAnswered(true);
+        questionPreference.saveQuestionResponse(question);
+        questionPreference.saveQuestionCount(1);
+        resultRequest.setPrimaryQuestionId(questionPreference.readPrimaryQuestionId());
         resultRequest.setOptionId(option);
 
         resultPresenter.requestResult(resultRequest, user.getAuthHeader());
@@ -143,7 +146,7 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
     @Override
     public void showResult(ResultResponse response) {
-        preferenceUtil.save(PreferenceUtil.RESULT_RESPONSE, response);
+        questionPreference.saveResultResponse(response);
 
         NavigationActivity navigationActivity = (NavigationActivity) getContext();
         Fragment fragment = ResultFragment.getInstance(null);
@@ -152,9 +155,10 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
 
     @Override
-    public void showQuestion(Question question) {
-
-        preferenceUtil.save(PreferenceUtil.PRIMARY_QUESTION_ID, question.getQuestionId());
+    public void showQuestion(Question response) {
+        question = response;
+        questionPreference.saveQuestionResponse(question);
+        questionPreference.savePrimaryQuestionId(question.getQuestionId());
 
         resultRequest.setQuestionId(question.getQuestionId());
 
@@ -167,7 +171,9 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         view.setVisibility(View.VISIBLE);
 
         Picasso.with(getContext()).load(option.get(0).getOptionUrl()).transform(circleStrokeTransformation).into(picOption1);
+        picOption1.setVisibility(View.VISIBLE);
         Picasso.with(getContext()).load(option.get(1).getOptionUrl()).transform(circleStrokeTransformation).into(picOption2);
+        picOption2.setVisibility(View.VISIBLE);
 
     }
 

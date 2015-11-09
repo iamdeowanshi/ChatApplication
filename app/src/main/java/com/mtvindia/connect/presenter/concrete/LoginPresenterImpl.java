@@ -57,6 +57,7 @@ public class LoginPresenterImpl extends BaseNetworkPresenter<LoginViewInteractor
         viewInteractor.showProgress();
 
         Observable<Response> resultObservable = mtvConnectApi.login(request);
+        Timber.d(gson.toJson(request));
 
         subscribeForNetwork(resultObservable, apiObserver);
     }

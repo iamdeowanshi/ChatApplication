@@ -1,13 +1,11 @@
 package com.mtvindia.connect.presenter.concrete;
 
-import com.google.gson.Gson;
 import com.mtvindia.connect.app.base.BaseNetworkPresenter;
 import com.mtvindia.connect.data.api.ApiObserver;
 import com.mtvindia.connect.data.api.MtvConnectApi;
 import com.mtvindia.connect.data.model.Question;
 import com.mtvindia.connect.presenter.QuestionRequestPresenter;
 import com.mtvindia.connect.presenter.QuestionViewInteractor;
-import com.mtvindia.connect.util.PreferenceUtil;
 
 import javax.inject.Inject;
 
@@ -18,11 +16,7 @@ import rx.Observable;
  */
 public class QuestionRequestPresenterImpl extends BaseNetworkPresenter<QuestionViewInteractor> implements QuestionRequestPresenter {
 
-    @Inject
-    MtvConnectApi mtvConnectApi;
-    @Inject PreferenceUtil preferenceUtil;
-    @Inject
-    Gson gson;
+    @Inject MtvConnectApi mtvConnectApi;
 
     public QuestionRequestPresenterImpl() {
         injectDependencies();

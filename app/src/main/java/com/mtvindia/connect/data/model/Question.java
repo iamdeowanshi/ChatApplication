@@ -14,6 +14,8 @@ public class Question {
     private String question;
     @SerializedName("options")
     private List<Option> options;
+    @SerializedName("isAnswered")
+    private boolean isAnswered;
 
     public int getQuestionId() {
         return questionId;
@@ -37,5 +39,13 @@ public class Question {
 
     public void setOptions(List<Option> options) {
         this.options = options;
+    }
+
+    public boolean isAnswered() {
+        return isAnswered;
+    }
+
+    public void setIsAnswered(boolean isAnswered) {
+        this.isAnswered = isAnswered;
     }
 }

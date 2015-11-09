@@ -23,7 +23,7 @@ import com.mtvindia.connect.ui.activity.NavigationItem;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
-import com.mtvindia.connect.util.PreferenceUtil;
+import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
@@ -39,7 +39,7 @@ import butterknife.ButterKnife;
  */
 public class NavigationDrawerFragment extends BaseFragment implements NavigationCallBack {
 
-    @Inject PreferenceUtil preferenceUtil;
+    @Inject UserPreference userPreference;
 
     @Bind(R.id.recycler_view)
     RecyclerView drawerList;
@@ -80,7 +80,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
 
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
 
-        user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
+        user = userPreference.readUser();
 
         drawerItems = Arrays.asList(NavigationItem.values());
         drawerList.setLayoutManager(layoutManager);
@@ -92,8 +92,6 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(drawerItems);
         adapter.setNavigationCallbacks(this);
         drawerList.setAdapter(adapter);
-
-        //onItemSelected(NavigationItem.PREFERENCE);
     }
 
     @Override
@@ -184,7 +182,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     public void onResume() {
         super.onResume();
 
-        user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
+        user = userPreference.readUser();
 
         txtItemName.setText(user.getFirstName() + " " + user.getLastName());
         Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDp);

@@ -16,7 +16,8 @@ import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuButton;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
-import com.mtvindia.connect.util.PreferenceUtil;
+import com.mtvindia.connect.util.QuestionPreference;
+import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -30,8 +31,8 @@ import butterknife.OnClick;
  */
 public class ResultFragment extends BaseFragment {
 
-    @Inject
-    PreferenceUtil preferenceUtil;
+    @Inject UserPreference userPreference;
+    @Inject QuestionPreference questionPreference;
 
     @Bind(R.id.circle1)
     View circle1;
@@ -92,10 +93,10 @@ public class ResultFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        response = (ResultResponse) preferenceUtil.read(PreferenceUtil.RESULT_RESPONSE, ResultResponse.class);
+        response = questionPreference.readResultResponse();
         progressBarView = new View[]{circle1, circle2, circle3, circle4, circle5, circle6, circle7, circle8, circle9, circle10};
 
-        count = preferenceUtil.readInt(PreferenceUtil.QUESTIONS_ANSWERED, 0);
+        count = questionPreference.readQuestionCount();
         setProgress(count);
 
         strokeColor = getContext().getResources().getColor(android.R.color.white);

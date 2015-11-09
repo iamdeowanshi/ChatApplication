@@ -19,7 +19,8 @@ import com.mtvindia.connect.presenter.FindMatchViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
-import com.mtvindia.connect.util.PreferenceUtil;
+import com.mtvindia.connect.util.QuestionPreference;
+import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -35,10 +36,9 @@ import butterknife.OnClick;
  */
 public class ChooseFragment extends BaseFragment implements FindMatchViewInteractor {
 
-    @Inject
-    PreferenceUtil preferenceUtil;
-    @Inject
-    FindMatchPresenter presenter;
+    @Inject UserPreference userPreference;
+    @Inject QuestionPreference questionPreference;
+    @Inject FindMatchPresenter presenter;
 
     @Bind(R.id.img_1)
     ImageView img1;
@@ -78,8 +78,9 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         presenter.setViewInteractor(this);
 
-        preferenceUtil.save(PreferenceUtil.QUESTIONS_ANSWERED, 0);
-        User user = (User) preferenceUtil.read(PreferenceUtil.USER, User.class);
+        questionPreference.saveQuestionCount(0);
+        questionPreference.savePrimaryQuestionId(0);
+        User user = userPreference.readUser();
 
         presenter.findMatches(user.getAuthHeader());
 

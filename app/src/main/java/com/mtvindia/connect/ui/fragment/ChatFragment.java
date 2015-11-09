@@ -9,17 +9,11 @@ import android.view.ViewGroup;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
-import com.mtvindia.connect.util.PreferenceUtil;
-
-import javax.inject.Inject;
 
 /**
  * Created by Sibi on 16/10/15.
  */
 public class ChatFragment extends BaseFragment {
-
-    @Inject
-    PreferenceUtil preferenceUtil;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
