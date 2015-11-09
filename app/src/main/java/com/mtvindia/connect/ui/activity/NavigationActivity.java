@@ -48,12 +48,16 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import timber.log.Timber;
 
-public class NavigationActivity extends BaseActivity implements NavigationCallBack, LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
+public class NavigationActivity extends BaseActivity implements NavigationCallBack, LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
-    @Inject UserPreference userPreference;
-    @Inject QuestionPreference questionPreference;
-    @Inject NetworkUtil networkUtil;
-    @Inject DialogUtil dialogUtil;
+    @Inject
+    UserPreference userPreference;
+    @Inject
+    QuestionPreference questionPreference;
+    @Inject
+    NetworkUtil networkUtil;
+    @Inject
+    DialogUtil dialogUtil;
 
     @Bind(R.id.toolbar_actionbar)
     Toolbar toolbar;
@@ -146,7 +150,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         int count = questionPreference.readQuestionCount();
         Question question = questionPreference.readQuestionResponse();
         Fragment fragment;
-        if(question == null) {
+        if (question == null) {
             fragment = PrimaryQuestionFragment.getInstance(null);
             addFragment(fragment);
         } else {
@@ -175,7 +179,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     private void loadInitialItem() {
         boolean isInRegistration = userPreference.readLoginStatus();
 
-        if(isInRegistration) {
+        if (isInRegistration) {
             setDrawerEnabled(false);
             onItemSelected(NavigationItem.PREFERENCE);
         } else {
@@ -198,7 +202,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         public void onReceive(Context context, Intent intent) {
             Boolean isOnline = networkUtil.isOnline();
 
-            if(!isOnline) {
+            if (!isOnline) {
                 dialogUtil.displayInternetAlert(NavigationActivity.this);
             }
         }
@@ -207,7 +211,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     void checkLocation() {
         requestLocation();
 
-        locationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         } catch (SecurityException e) {
@@ -305,12 +309,17 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     @Override
     protected void onPause() {
         super.onPause();
+        if (locationManager == null) {
+            return;
+        }
+
         try {
             locationManager.removeUpdates(this);
             locationManager = null;
-        }catch (SecurityException e) {
+        } catch (SecurityException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
@@ -325,7 +334,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         try {
             locationManager.removeUpdates(this);
             locationManager = null;
-        }catch (SecurityException e) {
+        } catch (SecurityException e) {
             e.printStackTrace();
         }
     }
