@@ -15,7 +15,7 @@ public class Config {
     public static final String BASE_URL_MOCK     = "http://mtvconnect.getsandbox.com";
 
     // Active base url
-    public static final String BASE_URL             = BASE_URL_PRODUCTION;
+    public static final String BASE_URL             = BASE_URL_MOCK;
 
     public static final String USER_LOGIN           = "/login";
     public static final String USER_UPDATE          = "/profile/update";
