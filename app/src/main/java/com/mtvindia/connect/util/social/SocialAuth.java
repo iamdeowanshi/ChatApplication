@@ -135,6 +135,7 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
             // We had to sign in - now we can finish off the token request.
             new RetrieveTokenTask().execute(Plus.AccountApi.getAccountName(googleApiClient));
         }
+
         if (fbCallbackManager.onActivityResult(requestCode, resultCode, data)) {
             return;
         }

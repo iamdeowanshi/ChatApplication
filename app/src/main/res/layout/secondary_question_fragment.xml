@@ -123,7 +123,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_below="@+id/img_dp_big4">
+                android:layout_below="@+id/img_dp_big3">
                 <com.mtvindia.connect.ui.custom.UbuntuTextView
                     android:id="@+id/txt_option_3"
                     android:layout_width="wrap_content"

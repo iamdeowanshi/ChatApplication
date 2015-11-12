@@ -165,5 +165,6 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
     public void onError(Throwable throwable) {
         Timber.e(throwable, "Error");
         toastShort("Error: " + throwable);
+        hideProgress();
     }
 }
