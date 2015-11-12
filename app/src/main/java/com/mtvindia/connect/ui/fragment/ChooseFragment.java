@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * Created by Sibi on 22/10/15.
@@ -159,6 +160,8 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
     @Override
     public void onError(Throwable e) {
-        e.printStackTrace();
+        Timber.e(e, "Error");
+        toastShort("Error: " + e);
+        hideProgress();
     }
 }

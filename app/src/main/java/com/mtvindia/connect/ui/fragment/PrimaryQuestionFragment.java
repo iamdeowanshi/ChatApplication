@@ -128,7 +128,7 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         question.setIsAnswered(true);
         questionPreference.saveQuestionResponse(question);
         questionPreference.saveQuestionCount(1);
-        resultRequest.setPrimaryQuestionId(questionPreference.readPrimaryQuestionId());
+        resultRequest.setPrimaryQuestionId(0);
         resultRequest.setOptionId(option);
 
         resultPresenter.requestResult(resultRequest, user.getAuthHeader());

@@ -20,7 +20,16 @@ public class UserPreference {
     }
 
     public void saveUser(User user) {
-        preferenceUtil.save(UserPreference.USER, user);
+        if (readUser() == null) {
+            preferenceUtil.save(UserPreference.USER, user);
+            return;
+        }
+
+        if (user.getAccessToken() == null || user.getAccessToken().equals("")) {
+            user.setAccessToken(readUser().getAccessToken());
+            user.setAccessToken(readUser().getAccessToken());
+            preferenceUtil.save(UserPreference.USER, user);
+        }
     }
 
     public User readUser() {

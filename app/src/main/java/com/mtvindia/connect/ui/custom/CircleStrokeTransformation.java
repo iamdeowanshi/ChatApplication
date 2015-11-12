@@ -23,7 +23,7 @@ public class CircleStrokeTransformation implements Transformation {
 
     public CircleStrokeTransformation(Context context, int strokeColor, int strokeWidthDp) {
         this.strokeColor = strokeColor;
-        this.strokeWidth = strokeWidthDp * context.getResources().getDisplayMetrics().density;
+        this.strokeWidth = strokeWidthDp;// * context.getResources().getDisplayMetrics().density;
 
         strokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         strokePaint.setStyle(Paint.Style.STROKE);

@@ -42,6 +42,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * Created by Sibi on 16/10/15.
@@ -294,6 +295,8 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
 
     @Override
     public void onError(Throwable throwable) {
-
+        Timber.e(throwable, "Error");
+        toastShort("Error: " + throwable);
+        hideProgress();
     }
 }

@@ -123,6 +123,9 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         Timber.d(gson.toJson(response));
 
         userPreference.saveUser(response);
+
+        User user = userPreference.readUser();
+
         userPreference.saveLoginStatus(isRegister);
 
         startActivity(NavigationActivity.class, null);
