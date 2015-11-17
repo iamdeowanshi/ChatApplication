@@ -85,7 +85,6 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     @Override
     protected void onStop() {
         super.onStop();
-        socialAuth.disconnect();
     }
 
     @Override
@@ -129,6 +128,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         userPreference.saveLoginStatus(isRegister);
 
         startActivity(NavigationActivity.class, null);
+        socialAuth.disconnect();
         finish();
     }
 

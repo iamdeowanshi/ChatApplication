@@ -51,8 +51,11 @@ public class AuthResult {
             authUser.setGender(jsonObject.getString("gender"));
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
 
     private String getGoogleProfileUrl(JSONObject jsonObject) {
         try {
@@ -90,7 +93,7 @@ public class AuthResult {
 
     private String getFbProfileUrl(JSONObject jsonObject) {
         try {
-            JSONObject dataJsonObject  = jsonObject.getJSONObject("data");
+            JSONObject dataJsonObject = jsonObject.getJSONObject("data");
             return dataJsonObject.getString("url");
         } catch (JSONException e) {
             e.printStackTrace();

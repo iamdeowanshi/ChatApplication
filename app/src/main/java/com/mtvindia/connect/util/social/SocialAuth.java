@@ -133,7 +133,8 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
 
         if (requestCode == REQ_SIGN_IN_REQUIRED && resultCode == Activity.RESULT_OK) {
             // We had to sign in - now we can finish off the token request.
-            new RetrieveTokenTask().execute(Plus.AccountApi.getAccountName(googleApiClient));
+            new RetrieveTokenTask(Plus.PeopleApi.getCurrentPerson(googleApiClient).toString(), Plus.AccountApi.getAccountName(googleApiClient))
+                    .execute(Plus.AccountApi.getAccountName(googleApiClient));
         }
 
         if (fbCallbackManager.onActivityResult(requestCode, resultCode, data)) {
@@ -207,10 +208,12 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
 
         @Override
         protected void onPostExecute(String token) {
-            AuthResult result = new AuthResult(jsonData, SocialType.GOOGLE);
-            result.getAuthUser().setAccessToken(token);
-            result.getAuthUser().setEmail(email);
-            callback.onSuccess(result);
+            if(token != null) {
+                AuthResult result = new AuthResult(jsonData, SocialType.GOOGLE);
+                result.getAuthUser().setAccessToken(token);
+                result.getAuthUser().setEmail(email);
+                callback.onSuccess(result);
+            }
         }
 
     }
