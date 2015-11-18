@@ -19,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mtvindia.connect.R;
@@ -49,9 +50,12 @@ import timber.log.Timber;
  */
 public class ProfileFragment extends BaseFragment implements UpdateViewInteractor {
 
-    @Inject UserPreference userPreference;
-    @Inject QuestionPreference questionPreference;
-    @Inject UpdatePresenter presenter;
+    @Inject
+    UserPreference userPreference;
+    @Inject
+    QuestionPreference questionPreference;
+    @Inject
+    UpdatePresenter presenter;
 
     @Bind(R.id.img_dp)
     ImageView imgDp;
@@ -70,6 +74,10 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
 
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     public static final int MEDIA_TYPE_IMAGE = 1;
+    @Bind(R.id.txt_gender)
+    UbuntuTextView txtGender;
+    @Bind(R.id.layout_dialog_gender)
+    RelativeLayout layoutDialogGender;
 
     private int date;
     private int month;
@@ -98,44 +106,76 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         presenter.setViewInteractor(this);
-        user = userPreference.readUser();
-
-        String birthDay = user.getBirthDay();
-        if(birthDay != null) {
-            String[] string = birthDay.split("-");
-            year = Integer.parseInt(string[0]);
-            month = Integer.parseInt(string[1]);
-            date = Integer.parseInt(string[2]);
-            txtYear.setText(string[0]);
-            txtDay.setText(string[2]);
-            txtMonth.setText(getMonthName(month));
-        }
-
 
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
 
-        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDp);
-        edtName.setText(user.getFirstName() + " " + user.getLastName());
-        edtAbout.setText(user.getAbout());
+        layoutDialogGender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(" Select Gender:");
+                builder.setIcon(R.drawable.icon_gender);
+                builder.setItems(R.array.meet_array, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String[] interested = getResources().getStringArray(R.array.meet_array);
+                        txtGender.setText(interested[which]);
+                    }
+                });
+                builder.show();
+            }
+        });
 
+        loadData();
+    }
+
+    void loadData() {
+        user = userPreference.readUser();
+
+        String birthDay = user.getBirthDate();
+        if (birthDay != null) {
+            String[] string = birthDay.split("-");
+            year = Integer.parseInt(string[0]);
+            month = Integer.parseInt(string[1]);
+
+            String[] stringDay = string[2].split("T");
+            date = Integer.parseInt(stringDay[0]);
+            txtYear.setText(string[0]);
+            txtDay.setText(stringDay[0]);
+            txtMonth.setText(getMonthName(month));
+        } else {
+            Calendar currentDate = Calendar.getInstance();
+            year = currentDate.get(Calendar.YEAR) -18;
+            month = currentDate.get(Calendar.MONTH) + 1;
+            date = currentDate.get(Calendar.DAY_OF_MONTH);
+            txtYear.setText(String.valueOf(year));
+            txtDay.setText(String.valueOf(date));
+            txtMonth.setText(getMonthName(month));
+        }
+
+        txtGender.setText((user.getGender() != null) ? user.getGender() : "Men");
+        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDp);
+        edtName.setText(user.getFullName());
+        edtAbout.setText(user.getAbout());
     }
 
     @OnClick(R.id.txt_date_picker)
     void selectDate() {
         Calendar currentDate = Calendar.getInstance();
-        if(year == 0) {
+        if (year == 0) {
             year = currentDate.get(Calendar.YEAR);
-            month = currentDate.get(Calendar.MONTH);
+            month = currentDate.get(Calendar.MONTH) + 1;
             date = currentDate.get(Calendar.DAY_OF_MONTH);
         }
+
 
         DatePickerDialog datePicker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                 txtDay.setText(String.valueOf(selectedday));
-                txtMonth.setText(getMonthName(selectedmonth));
+                txtMonth.setText(getMonthName(selectedmonth + 1));
                 txtYear.setText(String.valueOf(selectedyear));
                 year = selectedyear;
-                month = selectedmonth;
+                month = selectedmonth + 1;
                 date = selectedday;
             }
         }, year, month, date);
@@ -162,7 +202,8 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         }
 
         user.setAbout(edtAbout.getText().toString());
-        user.setBirthDay(year + "-" + month + "-" + date);
+        user.setBirthDate(year + "-" + (month) + "-" + date);
+        user.setGender(txtGender.getText().toString());
 
         presenter.update(user);
     }
@@ -198,7 +239,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
     }
 
     public static String getMonthName(int month) {
-        switch (month + 1) {
+        switch (month) {
             case 1:
                 return "Jan";
 
@@ -281,7 +322,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
     public void updateDone(User user) {
         userPreference.saveUser(user);
 
-        if(userPreference.readLoginStatus()) {
+        if (userPreference.readLoginStatus()) {
             userPreference.saveLoginStatus(false);
             questionPreference.saveQuestionCount(0);
             NavigationActivity navigationActivity = (NavigationActivity) getContext();

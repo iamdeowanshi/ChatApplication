@@ -47,7 +47,7 @@ public class AuthResult {
             authUser = new AuthUser();
             authUser.setSocialId(jsonObject.getString("id"));
             loadGoogleName(authUser, jsonObject.getJSONObject("name"));
-            authUser.setProfilePic(getGoogleProfileUrl(jsonObject.getJSONObject("image")));
+            authUser.setProfilePic(getGoogleProfileUrl(jsonObject.getJSONObject("image")) + "0");
             authUser.setGender(jsonObject.getString("gender"));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -84,7 +84,8 @@ public class AuthResult {
             authUser.setEmail(jsonObject.getString("email"));
             authUser.setFirstName(jsonObject.getString("first_name"));
             authUser.setLastName(jsonObject.getString("last_name"));
-            authUser.setProfilePic(getFbProfileUrl(jsonObject.getJSONObject("picture")));
+           // authUser.setProfilePic(getFbProfileUrl(jsonObject.getJSONObject("picture")));
+            authUser.setProfilePic("http://graph.facebook.com/" + jsonObject.getString("id") + "/picture?type=large");
             authUser.setGender(jsonObject.getString("gender"));
         } catch (JSONException e) {
             e.printStackTrace();

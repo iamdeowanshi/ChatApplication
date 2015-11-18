@@ -20,8 +20,7 @@
     </string-array>
 
     <string-array name="meet_array">
-        <item>Male</item>
-        <item>Female</item>
-        <item>Other</item>
+        <item>Men</item>
+        <item>Women</item>
     </string-array>
 </resources>

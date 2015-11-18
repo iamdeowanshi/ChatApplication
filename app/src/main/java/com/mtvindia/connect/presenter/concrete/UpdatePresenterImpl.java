@@ -39,6 +39,17 @@ public class UpdatePresenterImpl extends BaseNetworkPresenter<UpdateViewInteract
         }
     };
 
+    private ApiObserver<User> apiObserverLocation = new ApiObserver<User>() {
+        @Override
+        public void onResult(User result) {
+            viewInteractor.updateDone(result);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+        }
+    };
+
     @Override
     public void update(User user) {
         viewInteractor.showProgress();
@@ -48,6 +59,13 @@ public class UpdatePresenterImpl extends BaseNetworkPresenter<UpdateViewInteract
         Observable<User> resultObservable = mtvConnectApi.update(user, user.getAuthHeader());
 
         subscribeForNetwork(resultObservable, apiObserver);
+    }
+
+    @Override
+    public void updateLocation(User user) {
+        Observable<User> resultObservable = mtvConnectApi.update(user, user.getAuthHeader());
+
+        subscribeForNetwork(resultObservable, apiObserverLocation);
     }
 
 }

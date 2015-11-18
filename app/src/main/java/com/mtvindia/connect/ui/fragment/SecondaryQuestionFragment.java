@@ -134,21 +134,25 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     @OnClick(R.id.img_dp_big_1)
     void option1() {
         optionSelected(0);
+        questionPreference.saveOptionSelected(1);
     }
 
     @OnClick(R.id.img_dp_big_2)
     void option2() {
         optionSelected(1);
+        questionPreference.saveOptionSelected(2);
     }
 
     @OnClick(R.id.img_dp_big3)
     void option3() {
         optionSelected(2);
+        questionPreference.saveOptionSelected(3);
     }
 
     @OnClick(R.id.img_dp_big4)
     void option4() {
         optionSelected(3);
+        questionPreference.saveOptionSelected(4);
     }
 
     void optionSelected(int option) {

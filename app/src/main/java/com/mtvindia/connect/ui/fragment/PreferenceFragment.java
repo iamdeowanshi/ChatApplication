@@ -75,8 +75,8 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
         presenter.setViewInteractor(this);
         user = userPreference.readUser();
 
-        textMeet.setText(user.getLikeToMeet());
-        textInterested.setText(user.getInterestedIn());
+        textMeet.setText((user.getLikeToMeet() != null ) ? user.getLikeToMeet() : "Women");
+        textInterested.setText((user.getInterestedIn() != null) ? user.getInterestedIn() : "Dating");
 
 
         layoutDialogInterested.setOnClickListener(new View.OnClickListener() {
