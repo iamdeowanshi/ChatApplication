@@ -46,4 +46,10 @@ public class MatchUserResponse {
     public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
     }
+
+    public String getFullName() {
+        String name = (lastName != null) ? firstName + " " + lastName : firstName;
+
+        return name;
+    }
 }

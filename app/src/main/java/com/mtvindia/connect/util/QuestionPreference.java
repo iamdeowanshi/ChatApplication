@@ -17,6 +17,7 @@ public class QuestionPreference {
     public static final String PRIMARY_QUESTION_ID = "_PRIMARY_QUESTION_ID";
     public static final String RESULT_RESPONSE = "_RESULT_RESPONSE";
     public static final String QUESTION_RESPONSE = "_QUESTION_RESPONSE";
+    public static final String OPTION_SELECTED =  "_OPTION_SELECTED";
 
     public QuestionPreference() {
         Injector.instance().inject(this);
@@ -52,6 +53,14 @@ public class QuestionPreference {
 
     public int readPrimaryQuestionId() {
         return preferenceUtil.readInt(QuestionPreference.PRIMARY_QUESTION_ID, 0);
+    }
+
+    public void saveOptionSelected(int id) {
+        preferenceUtil.save(QuestionPreference.OPTION_SELECTED, id);
+    }
+
+    public int readOptionSelected() {
+        return preferenceUtil.readInt(QuestionPreference.OPTION_SELECTED, 0);
     }
 
     public void clearPreference() {

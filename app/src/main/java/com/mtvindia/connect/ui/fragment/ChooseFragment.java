@@ -152,8 +152,8 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
     @Override
     public void showUsers(List<User> users) {
-        txtUser1Name.setText(users.get(0).getFirstName() + " " + users.get(0).getLastName());
-        txtUser2Name.setText(users.get(1).getFirstName() + " " + users.get(1).getLastName());
+        txtUser1Name.setText(users.get(0).getFullName());
+        txtUser2Name.setText(users.get(1).getFullName());
         Picasso.with(getContext()).load(users.get(0).getProfilePic()).transform(circleStrokeTransformation).into(img1);
         Picasso.with(getContext()).load(users.get(1).getProfilePic()).transform(circleStrokeTransformation).into(img2);
     }

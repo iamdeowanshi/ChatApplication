@@ -19,8 +19,8 @@ public class User extends BaseModel {
     private String firstName;
     @SerializedName("lastName")
     private String lastName;
-    @SerializedName("birthDay")
-    private String birthDay;
+    @SerializedName("birthDate")
+    private String birthDate;
     @SerializedName("accessToken")
     private String accessToken;
     @SerializedName("about")
@@ -29,6 +29,8 @@ public class User extends BaseModel {
     private String likeToMeet;
     @SerializedName("interestedIn")
     private String interestedIn;
+    @SerializedName("gender")
+    private String gender;
 
     public int getId() {
         return id;
@@ -78,12 +80,12 @@ public class User extends BaseModel {
         this.lastName = lastName;
     }
 
-    public String getBirthDay() {
-        return birthDay;
+    public String getBirthDate() {
+        return birthDate;
     }
 
-    public void setBirthDay(String birthDay) {
-        this.birthDay = birthDay;
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
     }
 
     public String getAccessToken() {
@@ -120,6 +122,20 @@ public class User extends BaseModel {
 
     public void setInterestedIn(String interestedIn) {
         this.interestedIn = interestedIn;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getFullName() {
+        String name = (lastName != null) ? firstName + " " + lastName : firstName;
+
+        return name;
     }
 
 }

@@ -117,11 +117,13 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     @OnClick(R.id.img_dp_big_1)
     void option1() {
         optionSelected(option.get(0).getOptionId());
+        questionPreference.saveOptionSelected(1);
     }
 
     @OnClick(R.id.img_dp_big_2)
     void option2() {
         optionSelected(option.get(1).getOptionId());
+        questionPreference.saveOptionSelected(2);
     }
 
     void optionSelected(int option) {

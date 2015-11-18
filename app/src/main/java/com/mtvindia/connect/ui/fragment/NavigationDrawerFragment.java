@@ -86,7 +86,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         drawerList.setLayoutManager(layoutManager);
         drawerList.setHasFixedSize(true);
 
-        txtItemName.setText(user.getFirstName() + " " + user.getLastName());
+        txtItemName.setText(user.getFullName());
         Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDp);
 
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(drawerItems);

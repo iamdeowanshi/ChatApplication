@@ -11,7 +11,7 @@
     <string name="drawer_open">List Opened</string>
     <string name="drawer_close">List Closed</string>
 
-    <string name="facebook_app_id">440788082794592</string>
+    <string name="facebook_app_id">1670274839923097</string>
 
     <string-array name="interested_array">
         <item>Dating</item>
@@ -20,8 +20,7 @@
     </string-array>
 
     <string-array name="meet_array">
-        <item>Male</item>
-        <item>Female</item>
-        <item>Other</item>
+        <item>Men</item>
+        <item>Women</item>
     </string-array>
 </resources>

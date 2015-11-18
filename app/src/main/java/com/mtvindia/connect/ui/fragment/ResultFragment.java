@@ -72,6 +72,7 @@ public class ResultFragment extends BaseFragment {
     private static int count;
     private View[] progressBarView;
     private ResultResponse response;
+    private  NavigationActivity navigationActivity;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,9 +103,17 @@ public class ResultFragment extends BaseFragment {
         strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
 
+       if(response != null) {
+           loadResult();
+       } else {
+           loadSecondaryQuestionFragment();
+       }
+    }
+
+     void loadResult() {
         txtQuestion.setText(response.getQuestion());
         txtOption.setText(response.getOption().getOption());
-        txtOtherPeople.setText(response.getMatchingUserCount() + " other people answered option " + response.getOption().getOptionId());
+        txtOtherPeople.setText(response.getMatchingUserCount() + " other people answered option " + questionPreference.readOptionSelected());
         Picasso.with(getContext()).load(response.getOption().getOptionUrl()).transform(circleStrokeTransformation).into(imgDpBig);
         if (count < 10) {
             txtLeftQuestions.setText((10 - count) + " more to go");
@@ -122,19 +131,23 @@ public class ResultFragment extends BaseFragment {
 
     @OnClick(R.id.btn_continue)
     void setBtnContinue() {
-        NavigationActivity navigationActivity = (NavigationActivity) getContext();
+        navigationActivity = (NavigationActivity) getContext();
 
         if (count < 10) {
             btnContinue.setText("Continue");
-            Bundle bundle = new Bundle();
-            Fragment fragment = SecondaryQuestionFragment.getInstance(null);
-            fragment.setArguments(bundle);
-            navigationActivity.addFragment(fragment);
+            loadSecondaryQuestionFragment();
         } else if (count == 10) {
             btnContinue.setText("Let's Find Matches");
             Fragment fragment = ChooseFragment.getInstance(null);
             navigationActivity.addFragment(fragment);
         }
+    }
+
+    void loadSecondaryQuestionFragment() {
+        Bundle bundle = new Bundle();
+        Fragment fragment = SecondaryQuestionFragment.getInstance(null);
+        fragment.setArguments(bundle);
+        navigationActivity.addFragment(fragment);
     }
 
     void setProgress(int position) {

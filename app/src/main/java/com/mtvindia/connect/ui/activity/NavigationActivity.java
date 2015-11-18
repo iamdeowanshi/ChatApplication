@@ -1,20 +1,22 @@
 package com.mtvindia.connect.ui.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,6 +32,8 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.data.model.Question;
 import com.mtvindia.connect.data.model.User;
+import com.mtvindia.connect.presenter.UpdatePresenter;
+import com.mtvindia.connect.presenter.UpdateViewInteractor;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
 import com.mtvindia.connect.ui.fragment.ChatFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
@@ -46,9 +50,8 @@ import com.mtvindia.connect.util.UserPreference;
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import timber.log.Timber;
 
-public class NavigationActivity extends BaseActivity implements NavigationCallBack, LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class NavigationActivity extends BaseActivity implements NavigationCallBack, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, UpdateViewInteractor{
 
     @Inject
     UserPreference userPreference;
@@ -58,6 +61,8 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     NetworkUtil networkUtil;
     @Inject
     DialogUtil dialogUtil;
+    @Inject
+    UpdatePresenter presenter;
 
     @Bind(R.id.toolbar_actionbar)
     Toolbar toolbar;
@@ -67,7 +72,6 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     private NavigationDrawerFragment navigationDrawerFragment;
     private Fragment fragment;
     private User user;
-    private LocationManager locationManager;
 
     final static int REQUEST_LOCATION = 1000;
 
@@ -80,12 +84,12 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
-
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION);
         registerReceiver(internetReciever, filter);
 
         injectDependencies();
+        presenter.setViewInteractor(this);
 
         googleApiClient = new GoogleApiClient
                 .Builder(this)
@@ -94,7 +98,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        checkLocation();
+        requestLocation();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setIcon(R.drawable.icon_logo);
@@ -199,24 +203,55 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     private final BroadcastReceiver internetReciever = new BroadcastReceiver() {
 
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             Boolean isOnline = networkUtil.isOnline();
 
             if (!isOnline) {
-                dialogUtil.displayInternetAlert(NavigationActivity.this);
+                final AlertDialog alertDialog = (AlertDialog) dialogUtil.createAlertDialog(NavigationActivity.this, "No Internet", "Seems like device is not connected to internet. Try again with active internet connection", "Exit", "Try Again");
+                alertDialog.show();
+                Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                Button negativeButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        finish();
+                    }
+                });
+
+                negativeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(!networkUtil.isOnline()) {
+                            dialogUtil.createAlertDialog(NavigationActivity.this, "No Internet", "Seems like device is not connected to internet. Try again with active internet connection", "Exit", "Try Again");
+                        }
+                        else {
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
             }
         }
     };
 
-    void checkLocation() {
-        requestLocation();
 
-        locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
+    private void getlastKnownLocation() {
+        LocationRequest locationRequest = new LocationRequest();
+        com.google.android.gms.location.LocationListener locationListener = new com.google.android.gms.location.LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                if(location != null) {
+                    user = userPreference.readUser();
+                    if(user.getLatitude() == 0.0 && user.getLongitude() == 0.0){
+                        user.setLatitude(location.getLatitude());
+                        user.setLongitude(location.getLongitude());
+                        userPreference.saveUser(user);
+                        presenter.updateLocation(user);
+                    }
+                }
+
+            }
+        };
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, locationListener);
     }
 
     @Override
@@ -227,11 +262,12 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
             case REQUEST_LOCATION:
                 switch (resultCode) {
                     case Activity.RESULT_CANCELED: {
-                        Timber.d("cancel", "no");
-                        finish();
+                        requestLocation();
                         break;
                     }
                     case Activity.RESULT_OK:
+                        requestLocation();
+                        break;
                 }
                 break;
         }
@@ -242,11 +278,6 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     protected void onStart() {
         super.onStart();
         googleApiClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 
     public void requestLocation() {
@@ -264,6 +295,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 final Status status = result.getStatus();
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
+                        getlastKnownLocation();
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         try {
@@ -292,7 +324,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
 
     @Override
     public void onConnected(Bundle bundle) {
-
+        requestLocation();
     }
 
     @Override
@@ -309,55 +341,46 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     @Override
     protected void onPause() {
         super.onPause();
-        if (locationManager == null) {
-            return;
-        }
-
-        try {
-            locationManager.removeUpdates(this);
-            locationManager = null;
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        if (user == null) {
-            return;
-        }
-        user = userPreference.readUser();
-        user.setLatitude(location.getLatitude());
-        user.setLongitude(location.getLongitude());
-        userPreference.saveUser(user);
-        try {
-            locationManager.removeUpdates(this);
-            locationManager = null;
-        } catch (SecurityException e) {
-            e.printStackTrace();
+        if (googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
         }
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
+    protected void onStop() {
+        super.onStop();
+        if (googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
+        }
         unregisterReceiver(internetReciever);
         questionPreference.clearPreference();
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
+    public void updateDone(User user) {
+        userPreference.saveUser(user);
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+
     }
 }

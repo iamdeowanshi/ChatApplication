@@ -9,4 +9,6 @@ import com.mtvindia.connect.data.model.User;
 public interface UpdatePresenter extends Presenter<UpdateViewInteractor> {
 
     void update(User user);
+
+    void updateLocation(User user);
 }

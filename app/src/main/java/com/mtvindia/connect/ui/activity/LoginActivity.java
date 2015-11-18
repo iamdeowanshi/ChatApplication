@@ -1,8 +1,11 @@
 package com.mtvindia.connect.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
@@ -54,7 +57,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     @OnClick(R.id.btn_fb)
     void facebookLogin() {
         if( ! networkUtil.isOnline()) {
-            dialogUtil.displayInternetAlert(LoginActivity.this);
+            displayInternetAlert();
         } else {
             showProgress();
             socialAuth.login(SocialAuth.SocialType.FACEBOOK );
@@ -64,11 +67,35 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     @OnClick(R.id.btn_gPlus)
     void gPlusLogin() {
         if( ! networkUtil.isOnline()) {
-            dialogUtil.displayInternetAlert(LoginActivity.this);
+            displayInternetAlert();
         } else {
             showProgress();
             socialAuth.login(SocialAuth.SocialType.GOOGLE);
         }
+    }
+
+    void displayInternetAlert() {
+        final AlertDialog alertDialog = (AlertDialog) dialogUtil.createAlertDialog(LoginActivity.this, "No Internet", "Seems like device is not connected to internet. Try again with active internet connection", "Exit", "Try Again");
+        alertDialog.show();
+        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        Button negativeButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        negativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!networkUtil.isOnline()) {
+                    dialogUtil.createAlertDialog(LoginActivity.this, "No Internet", "Seems like device is not connected to internet. Try again with active internet connection", "Exit", "Try Again");
+                } else {
+                    alertDialog.dismiss();
+                }
+            }
+        });
     }
 
     @Override
@@ -85,7 +112,6 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     @Override
     protected void onStop() {
         super.onStop();
-        socialAuth.disconnect();
     }
 
     @Override
@@ -129,6 +155,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         userPreference.saveLoginStatus(isRegister);
 
         startActivity(NavigationActivity.class, null);
+        socialAuth.disconnect();
         finish();
     }
 
