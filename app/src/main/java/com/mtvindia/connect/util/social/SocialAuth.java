@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -28,6 +27,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
+
+import timber.log.Timber;
 
 /**
  * Created by Sibi on 26/10/15.
@@ -143,8 +144,13 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
     }
 
     public void disconnect() {
-        googleApiClient.disconnect();
-        Log.e("Logout", "google logout");
+        if(socialType == SocialType.GOOGLE) {
+            googleApiClient.disconnect();
+            Timber.d("google logout");
+        } else if(socialType == SocialType.FACEBOOK) {
+            LoginManager.getInstance().logOut();
+            Timber.d("facebook logout");
+        }
     }
 
     // google api callbacks
