@@ -87,7 +87,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         drawerList.setHasFixedSize(true);
 
         txtItemName.setText(user.getFullName());
-        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDp);
+        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).fit().into(imgDp);
 
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(drawerItems);
         adapter.setNavigationCallbacks(this);
@@ -126,6 +126,11 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+
+                user = userPreference.readUser();
+
+                txtItemName.setText(user.getFullName());
+                Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).fit().into(imgDp);
                 getActivity().invalidateOptionsMenu();
             }
         };
@@ -184,8 +189,8 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
 
         user = userPreference.readUser();
 
-        txtItemName.setText(user.getFirstName() + " " + user.getLastName());
-        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDp);
+        txtItemName.setText(user.getFullName());
+        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).fit().into(imgDp);
     }
 
     @Override

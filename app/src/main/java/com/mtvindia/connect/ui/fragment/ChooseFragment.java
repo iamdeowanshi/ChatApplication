@@ -56,6 +56,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
     private int strokeColor;
     private CircleStrokeTransformation circleStrokeTransformation;
+    private List<User> matchedUser;
 
 
     @Override
@@ -67,7 +68,6 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.choose_fragment, container, false);
-        ButterKnife.bind(this, view);
 
         return view;
     }
@@ -79,40 +79,55 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         presenter.setViewInteractor(this);
 
-        questionPreference.saveQuestionCount(0);
-        questionPreference.savePrimaryQuestionId(0);
         User user = userPreference.readUser();
-
-        presenter.findMatches(user.getAuthHeader());
 
         strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
 
+        matchedUser = userPreference.readMatchedUser();
 
+        if(matchedUser.size() == 0) {
+            presenter.findMatches(user.getAuthHeader());
+        } else {
+            loadMatches(matchedUser);
+        }
 
     }
 
     @OnClick(R.id.img_1)
     void clickedFirst() {
+        questionPreference.saveQuestionCount(0);
+        questionPreference.savePrimaryQuestionId(0);
         NavigationActivity navigationActivity = (NavigationActivity) getContext();
-        Fragment fragment = ChatFragment.getInstance(null);
+        Bundle bundle = new Bundle();
+        bundle.putInt("UserId", matchedUser.get(0).getId());
+        Fragment fragment = ChatFragment.getInstance(bundle);
         navigationActivity.addFragment(fragment);
+        changePreferences();
         toastShort("clicked first option");
     }
 
     @OnClick(R.id.img_2)
     void clickedSecond() {
+        questionPreference.saveQuestionCount(0);
+        questionPreference.savePrimaryQuestionId(0);
         NavigationActivity navigationActivity = (NavigationActivity) getContext();
-        Fragment fragment = ChatFragment.getInstance(null);
+        Bundle bundle = new Bundle();
+        bundle.putInt("UserId", matchedUser.get(1).getId());
+        Fragment fragment = ChatFragment.getInstance(bundle);
         navigationActivity.addFragment(fragment);
+        changePreferences();
         toastShort("clicked second option");
     }
 
     @OnClick(R.id.btn_skip)
     void clickedSkip() {
+        questionPreference.saveQuestionCount(0);
+        questionPreference.savePrimaryQuestionId(0);
         NavigationActivity navigationActivity = (NavigationActivity) getContext();
         Fragment fragment = PrimaryQuestionFragment.getInstance(null);
         navigationActivity.addFragment(fragment);
+        changePreferences();
     }
 
     public static Fragment getInstance(Bundle bundle) {
@@ -152,10 +167,23 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
     @Override
     public void showUsers(List<User> users) {
+        matchedUser = users;
+        userPreference.saveMatchedUser(users);
+        loadMatches(matchedUser);
+
+    }
+
+    void changePreferences() {
+        userPreference.removeMatchedUser();
+    }
+
+    void loadMatches(List<User> users) {
+        if (users.size() <= 0) return;
+
         txtUser1Name.setText(users.get(0).getFullName());
         txtUser2Name.setText(users.get(1).getFullName());
-        Picasso.with(getContext()).load(users.get(0).getProfilePic()).transform(circleStrokeTransformation).into(img1);
-        Picasso.with(getContext()).load(users.get(1).getProfilePic()).transform(circleStrokeTransformation).into(img2);
+        Picasso.with(getContext()).load(users.get(0).getProfilePic()).transform(circleStrokeTransformation).fit().into(img1);
+        Picasso.with(getContext()).load(users.get(1).getProfilePic()).transform(circleStrokeTransformation).fit().into(img2);
     }
 
     @Override

@@ -60,7 +60,9 @@
             android:id="@+id/txt_interested"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dating"
+            android:hint="Select interested in"
+
+            android:textColorHint="#fff"
             android:textColor="#fff"
             android:textSize="13.5sp" />
 
@@ -124,7 +126,8 @@
             android:id="@+id/txt_meet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Men"
+            android:hint="Select like to meet"
+            android:textColorHint="#fff"
             android:textColor="#fff"
             android:textSize="13.5sp" />
 

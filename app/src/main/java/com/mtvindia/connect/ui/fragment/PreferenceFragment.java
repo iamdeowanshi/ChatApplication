@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.activity.NavigationItem;
+import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.UserPreference;
 
 import javax.inject.Inject;
@@ -38,6 +40,8 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
     UpdatePresenter presenter;
     @Inject
     UserPreference userPreference;
+    @Inject
+    DialogUtil dialogUtil;
 
     @Bind(R.id.layout_dialog_interested)
     RelativeLayout layoutDialogInterested;
@@ -75,8 +79,10 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
         presenter.setViewInteractor(this);
         user = userPreference.readUser();
 
-        textMeet.setText((user.getLikeToMeet() != null ) ? user.getLikeToMeet() : "Women");
-        textInterested.setText((user.getInterestedIn() != null) ? user.getInterestedIn() : "Dating");
+        if( ! userPreference.readLoginStatus() ) {
+            textMeet.setText(user.getLikeToMeet());
+            textInterested.setText(user.getInterestedIn());
+        }
 
 
         layoutDialogInterested.setOnClickListener(new View.OnClickListener() {
@@ -126,8 +132,47 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
     void onSave() {
         user.setInterestedIn((String) textInterested.getText());
         user.setLikeToMeet((String) textMeet.getText());
+        if(validation()) {
+            presenter.update(user);
+        }
+    }
 
-        presenter.update(user);
+    boolean validation() {
+        if (textInterested == null || textInterested.getText().equals("")) {
+            return validationDialogInterested();
+        } else if (textMeet == null || textMeet.getText().equals("") ) {
+            return validationDialogMeet();
+        }
+
+        return true;
+    }
+
+    boolean validationDialogMeet() {
+        final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Select Like to Meet", "No Value Selected", "Ok", "");
+        alertDialog.show();
+        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+       return false;
+    }
+
+    boolean validationDialogInterested() {
+        final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Select Interested In", "No Value Selected", "Ok", "");
+        alertDialog.show();
+        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        return false;
     }
 
     @Override
@@ -150,6 +195,7 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
     @Override
     public void updateDone(User user) {
         userPreference.saveUser(user);
+        toastShort("Saved");
 
         if(userPreference.readLoginStatus()) {
             NavigationActivity navigationActivity = (NavigationActivity) getContext();

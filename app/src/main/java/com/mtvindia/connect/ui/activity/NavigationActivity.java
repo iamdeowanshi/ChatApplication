@@ -35,7 +35,8 @@ import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
-import com.mtvindia.connect.ui.fragment.ChatFragment;
+import com.mtvindia.connect.ui.fragment.ChatListFragment;
+import com.mtvindia.connect.ui.fragment.ChooseFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
 import com.mtvindia.connect.ui.fragment.PreferenceFragment;
 import com.mtvindia.connect.ui.fragment.PrimaryQuestionFragment;
@@ -46,6 +47,8 @@ import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.NetworkUtil;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -135,7 +138,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 addFragment(fragment);
                 break;
             case CHAT:
-                fragment = ChatFragment.getInstance(null);
+                fragment = ChatListFragment.getInstance(null);
                 addFragment(fragment);
                 break;
             case ABOUT:
@@ -153,18 +156,22 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     private void showFindMorePeople() {
         int count = questionPreference.readQuestionCount();
         Question question = questionPreference.readQuestionResponse();
+        List<User> matchedUser = userPreference.readMatchedUser();
         Fragment fragment;
         if (question == null) {
             fragment = PrimaryQuestionFragment.getInstance(null);
             addFragment(fragment);
         } else {
-            if (!question.isAnswered()) {
-                fragment = SecondaryQuestionFragment.getInstance(null);
-                addFragment(fragment);
-            } else if (count == 0) {
+            if (count == 0) {
                 fragment = PrimaryQuestionFragment.getInstance(null);
                 addFragment(fragment);
-            } else if (count > 0) {
+            } else if (!question.isAnswered()) {
+            fragment = SecondaryQuestionFragment.getInstance(null);
+            addFragment(fragment);
+            } else if( matchedUser.size() != 0) {
+                fragment = ChooseFragment.getInstance(null);
+                addFragment(fragment);
+            }  else if (count > 0) {
                 fragment = ResultFragment.getInstance(null);
                 addFragment(fragment);
             }
@@ -222,7 +229,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                     @Override
                     public void onClick(View view) {
                         if(!networkUtil.isOnline()) {
-                            dialogUtil.createAlertDialog(NavigationActivity.this, "No Internet", "Seems like device is not connected to internet. Try again with active internet connection", "Exit", "Try Again");
+                            dialogUtil.createAlertDialog(NavigationActivity.this, "No Internet Connectivity", "Try again with active internet connection", "Exit", "Try Again");
                         }
                         else {
                             alertDialog.dismiss();
@@ -241,7 +248,17 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
             public void onLocationChanged(Location location) {
                 if(location != null) {
                     user = userPreference.readUser();
-                    if(user.getLatitude() == 0.0 && user.getLongitude() == 0.0){
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+
+                    Location userLocation = new Location("point A");
+                    userLocation.setLatitude(user.getLatitude());
+                    userLocation.setLongitude(user.getLongitude());
+                    Location currentLocation = new Location("point B");
+                    currentLocation.setLatitude(latitude);
+                    currentLocation.setLongitude(longitude);
+                    double distance = userLocation.distanceTo(currentLocation) ;
+                    if(distance > 50000){
                         user.setLatitude(location.getLatitude());
                         user.setLongitude(location.getLongitude());
                         userPreference.saveUser(user);
@@ -362,6 +379,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         }
         unregisterReceiver(internetReciever);
         questionPreference.clearPreference();
+        userPreference.removeMatchedUser();
     }
 
     @Override

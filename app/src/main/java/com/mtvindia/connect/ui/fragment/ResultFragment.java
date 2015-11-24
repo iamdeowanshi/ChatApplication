@@ -103,18 +103,14 @@ public class ResultFragment extends BaseFragment {
         strokeColor = getContext().getResources().getColor(android.R.color.white);
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
 
-       if(response != null) {
-           loadResult();
-       } else {
-           loadSecondaryQuestionFragment();
-       }
+        loadResult();
     }
 
      void loadResult() {
         txtQuestion.setText(response.getQuestion());
         txtOption.setText(response.getOption().getOption());
         txtOtherPeople.setText(response.getMatchingUserCount() + " other people answered option " + questionPreference.readOptionSelected());
-        Picasso.with(getContext()).load(response.getOption().getOptionUrl()).transform(circleStrokeTransformation).into(imgDpBig);
+        Picasso.with(getContext()).load(response.getOption().getOptionUrl()).transform(circleStrokeTransformation).fit().into(imgDpBig);
         if (count < 10) {
             txtLeftQuestions.setText((10 - count) + " more to go");
         } else {

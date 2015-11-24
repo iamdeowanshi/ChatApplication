@@ -201,7 +201,7 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     }
 
     private void setView(int size) {
-        if (size >= 2) {
+        if (size == 2) {
             layer2.setVisibility(View.GONE);
             blankView.setVisibility(View.GONE);
             linearLayout.setGravity(Gravity.CENTER);
@@ -211,9 +211,9 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
 
             view.setVisibility(View.VISIBLE);
 
-            Picasso.with(getContext()).load(options.get(0).getOptionUrl()).transform(circleStrokeTransformation).into(picOption1);
+            Picasso.with(getContext()).load(options.get(0).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption1);
             picOption1.setVisibility(View.VISIBLE);
-            Picasso.with(getContext()).load(options.get(1).getOptionUrl()).transform(circleStrokeTransformation).into(picOption2);
+            Picasso.with(getContext()).load(options.get(1).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption2);
             picOption2.setVisibility(View.VISIBLE);
         }
         else {
@@ -221,20 +221,20 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
             view2.setVisibility(View.VISIBLE);
 
             txtOption1.setText(options.get(0).getOption());
-            Picasso.with(getContext()).load(options.get(0).getOptionUrl()).transform(circleStrokeTransformation).into(picOption1);
+            Picasso.with(getContext()).load(options.get(0).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption1);
             picOption1.setVisibility(View.VISIBLE);
 
             txtOption2.setText(options.get(1).getOption());
-            Picasso.with(getContext()).load(options.get(1).getOptionUrl()).transform(circleStrokeTransformation).into(picOption2);
+            Picasso.with(getContext()).load(options.get(1).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption2);
             picOption2.setVisibility(View.VISIBLE);
 
             txtOption3.setText(options.get(2).getOption());
-            Picasso.with(getContext()).load(options.get(2).getOptionUrl()).transform(circleStrokeTransformation).into(picOption3);
+            Picasso.with(getContext()).load(options.get(2).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption3);
             picOption3.setVisibility(View.VISIBLE);
 
             try {
                 txtOption4.setText(options.get(3).getOption());
-                Picasso.with(getContext()).load(options.get(3).getOptionUrl()).transform(circleStrokeTransformation).into(picOption4);
+                Picasso.with(getContext()).load(options.get(3).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption4);
                 picOption4.setVisibility(View.VISIBLE);
             } catch (IndexOutOfBoundsException e) {
                 Timber.e("option size is not appropriate: " + size, e);
@@ -253,12 +253,14 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     public void onResume() {
         super.onResume();
         questionRequestPresenter.resume();
+        resultPresenter.resume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         questionRequestPresenter.pause();
+        resultPresenter.pause();
     }
 
     public static Fragment getInstance(Bundle bundle) {
