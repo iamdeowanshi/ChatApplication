@@ -109,7 +109,7 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
         txtHello.setText("Hello " + user.getFirstName() + "!");
 
-        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformationDp).into(userPic);
+        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformationDp).fit().into(userPic);
 
 
     }
@@ -172,9 +172,9 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
         view.setVisibility(View.VISIBLE);
 
-        Picasso.with(getContext()).load(option.get(0).getOptionUrl()).transform(circleStrokeTransformation).into(picOption1);
+        Picasso.with(getContext()).load(option.get(0).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption1);
         picOption1.setVisibility(View.VISIBLE);
-        Picasso.with(getContext()).load(option.get(1).getOptionUrl()).transform(circleStrokeTransformation).into(picOption2);
+        Picasso.with(getContext()).load(option.get(1).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption2);
         picOption2.setVisibility(View.VISIBLE);
 
     }
@@ -190,12 +190,14 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     public void onResume() {
         super.onResume();
         questionRequestPresenter.resume();
+        resultPresenter.resume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         questionRequestPresenter.pause();
+        resultPresenter.pause();
     }
 
     @Override

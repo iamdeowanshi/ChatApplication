@@ -3,8 +3,10 @@ package com.mtvindia.connect.app.di;
 import android.content.Context;
 
 import com.mtvindia.connect.app.MtvConnectApplication;
+import com.mtvindia.connect.presenter.concrete.AboutUserPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.FindMatchPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.LoginPresenterImpl;
+import com.mtvindia.connect.presenter.concrete.ProfilePicUpdatePresenterImpl;
 import com.mtvindia.connect.presenter.concrete.QuestionRequestPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.ResultPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.UpdatePresenterImpl;
@@ -12,6 +14,7 @@ import com.mtvindia.connect.ui.activity.LaunchActivity;
 import com.mtvindia.connect.ui.activity.LoginActivity;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.fragment.ChatFragment;
+import com.mtvindia.connect.ui.fragment.ChatListFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
 import com.mtvindia.connect.ui.fragment.PreferenceFragment;
@@ -55,17 +58,18 @@ import dagger.Provides;
                 ProfileFragment.class,
                 PrimaryQuestionFragment.class,
                 SecondaryQuestionFragment.class,
-                ChatFragment.class,
+                ChatListFragment.class,
                 ChooseFragment.class,
                 ResultFragment.class,
+                ChatFragment.class,
 
                 LoginPresenterImpl.class,
                 UpdatePresenterImpl.class,
                 QuestionRequestPresenterImpl.class,
                 ResultPresenterImpl.class,
                 FindMatchPresenterImpl.class,
-
-
+                AboutUserPresenterImpl.class,
+                ProfilePicUpdatePresenterImpl.class,
 
                 // Util classes
                 NetworkUtil.class,
@@ -89,5 +93,6 @@ public class RootModule {
     public Context provideApplicationContext() {
         return context;
     }
+
 
 }

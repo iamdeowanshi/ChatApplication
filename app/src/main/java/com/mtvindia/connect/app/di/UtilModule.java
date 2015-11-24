@@ -5,6 +5,7 @@ import com.mtvindia.connect.util.NetworkUtil;
 import com.mtvindia.connect.util.PreferenceUtil;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
+import com.mtvindia.connect.util.ViewUtil;
 
 import javax.inject.Singleton;
 
@@ -48,6 +49,11 @@ public class UtilModule {
     @Provides
     public QuestionPreference provideQuestionPreference() {
         return new QuestionPreference();
+    }
+
+    @Provides
+    public ViewUtil provideViewUtil() {
+        return new ViewUtil();
     }
 
 }

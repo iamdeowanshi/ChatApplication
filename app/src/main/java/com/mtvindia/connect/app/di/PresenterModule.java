@@ -2,11 +2,13 @@ package com.mtvindia.connect.app.di;
 
 import com.mtvindia.connect.presenter.FindMatchPresenter;
 import com.mtvindia.connect.presenter.LoginPresenter;
+import com.mtvindia.connect.presenter.ProfilePicUpdatePresenter;
 import com.mtvindia.connect.presenter.QuestionRequestPresenter;
 import com.mtvindia.connect.presenter.ResultPresenter;
 import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.concrete.FindMatchPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.LoginPresenterImpl;
+import com.mtvindia.connect.presenter.concrete.ProfilePicUpdatePresenterImpl;
 import com.mtvindia.connect.presenter.concrete.QuestionRequestPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.ResultPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.UpdatePresenterImpl;
@@ -33,6 +35,11 @@ public class PresenterModule {
     @Provides
     public UpdatePresenter provideUpdatePresenter() {
         return new UpdatePresenterImpl();
+    }
+
+    @Provides
+    public ProfilePicUpdatePresenter profilePicUpdatePresenter() {
+        return new ProfilePicUpdatePresenterImpl();
     }
 
     @Provides

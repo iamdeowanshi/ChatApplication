@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,16 +27,22 @@ import android.widget.TextView;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.data.model.User;
+import com.mtvindia.connect.presenter.PictureUpdateViewInteractor;
+import com.mtvindia.connect.presenter.ProfilePicUpdatePresenter;
 import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.activity.NavigationItem;
 import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
+import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
+import com.mtvindia.connect.util.ViewUtil;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Calendar;
 import java.util.StringTokenizer;
 
@@ -43,12 +51,13 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit.mime.TypedFile;
 import timber.log.Timber;
 
 /**
  * Created by Sibi on 16/10/15.
  */
-public class ProfileFragment extends BaseFragment implements UpdateViewInteractor {
+public class ProfileFragment extends BaseFragment implements UpdateViewInteractor, PictureUpdateViewInteractor{
 
     @Inject
     UserPreference userPreference;
@@ -56,6 +65,12 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
     QuestionPreference questionPreference;
     @Inject
     UpdatePresenter presenter;
+    @Inject
+    ProfilePicUpdatePresenter picUpdatePresenter;
+    @Inject
+    DialogUtil dialogUtil;
+    @Inject
+    ViewUtil viewUtil;
 
     @Bind(R.id.img_dp)
     ImageView imgDp;
@@ -106,6 +121,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         presenter.setViewInteractor(this);
+        picUpdatePresenter.setViewInteractor(this);
 
         circleStrokeTransformation = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
 
@@ -115,10 +131,10 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle(" Select Gender:");
                 builder.setIcon(R.drawable.icon_gender);
-                builder.setItems(R.array.meet_array, new DialogInterface.OnClickListener() {
+                builder.setItems(R.array.gender_array, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String[] interested = getResources().getStringArray(R.array.meet_array);
+                        String[] interested = getResources().getStringArray(R.array.gender_array);
                         txtGender.setText(interested[which]);
                     }
                 });
@@ -143,20 +159,15 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
             txtYear.setText(string[0]);
             txtDay.setText(stringDay[0]);
             txtMonth.setText(getMonthName(month));
-        } else {
-            Calendar currentDate = Calendar.getInstance();
-            year = currentDate.get(Calendar.YEAR) -18;
-            month = currentDate.get(Calendar.MONTH) + 1;
-            date = currentDate.get(Calendar.DAY_OF_MONTH);
-            txtYear.setText(String.valueOf(year));
-            txtDay.setText(String.valueOf(date));
-            txtMonth.setText(getMonthName(month));
         }
 
-        txtGender.setText((user.getGender() != null) ? user.getGender() : "Men");
-        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).into(imgDp);
+        if( ! userPreference.readLoginStatus()) {
+            txtGender.setText(user.getGender());
+            edtAbout.setText(user.getAbout());
+        }
+
+        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).fit().into(imgDp);
         edtName.setText(user.getFullName());
-        edtAbout.setText(user.getAbout());
     }
 
     @OnClick(R.id.txt_date_picker)
@@ -191,21 +202,94 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
 
     @OnClick(R.id.btn_save)
     void save() {
+        viewUtil.hideKeyboard(getView());
+
+        if(validation()) {
+
         String name = edtName.getText().toString();
         StringTokenizer tokenizer = new StringTokenizer(name);
-
+        user.setFirstName(tokenizer.nextElement().toString());
         if (tokenizer.hasMoreElements()) {
-            user.setFirstName(tokenizer.nextElement().toString());
             user.setLastName(tokenizer.nextElement().toString());
         } else {
-            user.setFirstName(name);
+            user.setLastName("");
         }
 
-        user.setAbout(edtAbout.getText().toString());
-        user.setBirthDate(year + "-" + (month) + "-" + date);
-        user.setGender(txtGender.getText().toString());
+        user.setAbout(edtAbout.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", ""));
+              user.setBirthDate(year + "-" + (month) + "-" + date);
+              user.setGender(txtGender.getText().toString());
 
-        presenter.update(user);
+              presenter.update(user);
+        }
+    }
+
+    boolean validation() {
+        if (edtName == null || edtName.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", "").equals("")) {
+            return validationDialogName();
+        } else if(edtAbout == null || edtAbout.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", "").equals("")) {
+            return validationDialogAbout();
+        } else if(txtDay == null || txtMonth == null || txtYear == null || txtDay.getText().equals("") || txtMonth.getText().equals("") || txtYear .getText().equals("")) {
+            return validationDialogBirthDate();
+        } else if(txtGender == null || txtGender.getText().toString().equals("")) {
+            return validationDialogGender();
+        }
+        return true;
+    }
+
+    boolean validationDialogName() {
+        final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Invalid Name", "Please enter valid name", "Ok", "");
+        alertDialog.show();
+        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        return false;
+    }
+
+    boolean validationDialogAbout() {
+        final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Invalid Details", "Please enter valid information about you", "Ok", "");
+        alertDialog.show();
+        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        return false;
+    }
+
+    boolean validationDialogBirthDate() {
+        final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Select Birth Date", "Please select your birthday", "Ok", "");
+        alertDialog.show();
+        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        return false;
+    }
+
+    boolean validationDialogGender() {
+        final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Select Gender", "Please select your gender", "Ok", "");
+        alertDialog.show();
+        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        return false;
     }
 
     public static Fragment getInstance(Bundle bundle) {
@@ -288,18 +372,38 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
 
         switch (requestCode) {
             case CAMERA_CAPTURE_IMAGE_REQUEST_CODE:
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
-                String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(), photo, "Title", null);
-                Uri uri = Uri.parse(path);
-                user.setProfilePic(uri.toString());
-                Picasso.with(getContext()).load(uri).transform(circleStrokeTransformation).fit().into(imgDp);
+                Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+
+                Uri uri = saveBitmapToMedia(bitmap);
+                uploadFile(new File(getRealPathFromUri(uri)));
                 break;
 
             case MEDIA_TYPE_IMAGE:
-                Uri selectedImage = data.getData();
-                user.setProfilePic(selectedImage.toString());
-                Picasso.with(getContext()).load(selectedImage).transform(circleStrokeTransformation).fit().into(imgDp);
+                Uri selectedImageUri = data.getData();
+                uploadFile(new File(getRealPathFromUri(selectedImageUri)));
+                break;
         }
+    }
+
+    private Uri saveBitmapToMedia(Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(), inImage, "MTVConnectProfile", null);
+
+        return Uri.parse(path);
+    }
+
+    private String getRealPathFromUri(Uri uri) {
+        Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+
+        return cursor.getString(idx);
+    }
+
+    void uploadFile(File file) {
+        TypedFile typedFile=new TypedFile("image/jpeg", file);
+        picUpdatePresenter.updateProfilePic(user.getId(), typedFile, user.getAuthHeader());
     }
 
     @Override
@@ -321,6 +425,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
     @Override
     public void updateDone(User user) {
         userPreference.saveUser(user);
+        toastShort("Saved");
 
         if (userPreference.readLoginStatus()) {
             userPreference.saveLoginStatus(false);
@@ -340,4 +445,30 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         toastShort("Error: " + throwable);
         hideProgress();
     }
+
+    @Override
+    public void showPicUpdateProgress() {
+        progress.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hidePicUpdateProgress() {
+        progress.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onPicUpdateError(Throwable throwable) {
+        Timber.e(throwable, "Error");
+        toastShort("Error: " + throwable);
+        hideProgress();
+    }
+
+    @Override
+    public void showUpdatedPic(User result) {
+        user.setProfilePic(result.getProfilePic());
+        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).fit().into(imgDp);
+        userPreference.saveUser(user);
+        toastShort("Picture Updated");
+    }
+
 }

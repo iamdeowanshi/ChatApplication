@@ -5,10 +5,10 @@ import android.content.Context;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.OkHttpClient;
 import com.mtvindia.connect.app.Config;
 import com.mtvindia.connect.data.api.MtvConnectApi;
+import com.squareup.okhttp.Cache;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +52,7 @@ public class ApiModule {
                 .setEndpoint(endpoint)
                 .setRequestInterceptor(interceptor)
                 .setConverter(new GsonConverter(gson))
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
     }
 

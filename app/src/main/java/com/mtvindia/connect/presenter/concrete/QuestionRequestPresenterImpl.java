@@ -1,5 +1,6 @@
 package com.mtvindia.connect.presenter.concrete;
 
+import com.google.gson.Gson;
 import com.mtvindia.connect.app.base.BaseNetworkPresenter;
 import com.mtvindia.connect.data.api.ApiObserver;
 import com.mtvindia.connect.data.api.MtvConnectApi;
@@ -10,6 +11,7 @@ import com.mtvindia.connect.presenter.QuestionViewInteractor;
 import javax.inject.Inject;
 
 import rx.Observable;
+import timber.log.Timber;
 
 /**
  * Created by Sibi on 02/11/15.
@@ -17,6 +19,8 @@ import rx.Observable;
 public class QuestionRequestPresenterImpl extends BaseNetworkPresenter<QuestionViewInteractor> implements QuestionRequestPresenter {
 
     @Inject MtvConnectApi mtvConnectApi;
+    @Inject
+    Gson gson;
 
     public QuestionRequestPresenterImpl() {
         injectDependencies();
@@ -27,6 +31,7 @@ public class QuestionRequestPresenterImpl extends BaseNetworkPresenter<QuestionV
         public void onResult(Question result) {
             viewInteractor.showQuestion(result);
             viewInteractor.hideProgress();
+            Timber.d(gson.toJson(result));
 
         }
 

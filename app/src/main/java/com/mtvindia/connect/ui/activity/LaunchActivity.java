@@ -5,6 +5,7 @@ import android.os.Handler;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
+import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
 
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 public class LaunchActivity extends BaseActivity {
 
     @Inject UserPreference userPreference;
+    @Inject QuestionPreference questionPreference;
 
     private static int timeOut = 2000;
 
@@ -21,6 +23,9 @@ public class LaunchActivity extends BaseActivity {
         setContentView(R.layout.activity_launch);
 
         injectDependencies();
+
+        userPreference.removeMatchedUser();
+        questionPreference.clearPreference();
 
         proceed();
     }

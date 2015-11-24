@@ -2,14 +2,105 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/gradient_red_purple">
+    android:background="@drawable/gradient_purple_blue"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/img_dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"/>
 
     <com.mtvindia.connect.ui.custom.UbuntuTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chat Fragment"
-        android:textSize="40sp"
-        android:layout_centerInParent="true"/>
+        android:id="@+id/txt_name"
+        android:textColor="#fff"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/img_dp"
+        android:textSize="12sp"
+        android:layout_marginTop="20dp"/>
+
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/txt_about"
+        android:textColor="#fff"
+        android:textSize="10sp"
+        android:gravity="center"
+        android:layout_below="@+id/txt_name"
+        android:layout_marginTop="30dp"/>
+
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_about"
+        android:id="@+id/txt_common"
+        android:textColor="#fff"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"/>
+
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:layout_above="@+id/layout_chat"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
+        android:text="Say HI to know more about them"/>
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/layout_chat"
+    android:layout_alignParentBottom="true"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/chat_txtbox" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_smiley"
+        android:layout_marginLeft="25dp"
+        android:layout_centerVertical="true"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/icon_send"
+        android:layout_marginRight="20dp"
+        android:layout_centerVertical="true"/>
+
+    <com.mtvindia.connect.ui.custom.UbuntuEditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Type message here..."
+        android:textColorHint="#c0c0c0"
+        android:layout_marginBottom="18dp"
+        android:layout_marginLeft="55dp"
+        android:background="@android:color/transparent"
+        android:layout_centerVertical="true"/>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateTint="#c5c5c5"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="invisible" />
+</RelativeLayout>
 
 </RelativeLayout>
