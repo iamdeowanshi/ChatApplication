@@ -81,12 +81,11 @@ public class AuthResult {
             JSONObject jsonObject = new JSONObject(data);
             authUser = new AuthUser();
             authUser.setSocialId(jsonObject.getString("id"));
-            authUser.setEmail(jsonObject.getString("email"));
             authUser.setFirstName(jsonObject.getString("first_name"));
             authUser.setLastName(jsonObject.getString("last_name"));
-           // authUser.setProfilePic(getFbProfileUrl(jsonObject.getJSONObject("picture")));
             authUser.setProfilePic("http://graph.facebook.com/" + jsonObject.getString("id") + "/picture?type=large");
             authUser.setGender(jsonObject.getString("gender"));
+            authUser.setEmail(jsonObject.getString("email"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
