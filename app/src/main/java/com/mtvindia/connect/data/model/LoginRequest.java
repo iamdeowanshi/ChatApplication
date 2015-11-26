@@ -22,6 +22,12 @@ public class LoginRequest {
     private String socialId;
     @SerializedName("accessToken")
     private String accessToken;
+    @SerializedName("deviceToken")
+    private String deviceToken;
+    @SerializedName("osType")
+    private int osType;
+    @SerializedName("certificateType")
+    private int certificateType;
 
     public LoginRequest() {
     }
@@ -90,6 +96,30 @@ public class LoginRequest {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
+
+    public int getOsType() {
+        return osType;
+    }
+
+    public void setOsType(int osType) {
+        this.osType = osType;
+    }
+
+    public int getCertificateType() {
+        return certificateType;
+    }
+
+    public void setCertificateType(int certificateType) {
+        this.certificateType = certificateType;
     }
 
 }

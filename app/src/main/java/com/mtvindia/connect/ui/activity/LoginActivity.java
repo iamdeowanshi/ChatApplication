@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -40,6 +41,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     @Bind(R.id.progress_sign_in) ProgressBar progressSignIn;
 
     private SocialAuth socialAuth;
+    private String androidId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         setContentView(R.layout.activity_login);
 
         injectDependencies();
+
+        androidId = Secure.getString(this.getContentResolver(), Secure.ANDROID_ID);
 
         socialAuth = new SocialAuth(this);
         socialAuth.setCallback(this);
@@ -119,6 +123,10 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         hideProgress();
 
         LoginRequest loginRequest = new LoginRequest(authResult);
+        loginRequest.setOsType(1);
+        loginRequest.setCertificateType(0);
+        loginRequest.setDeviceToken(androidId);
+
         presenter.login(loginRequest);
     }
 
