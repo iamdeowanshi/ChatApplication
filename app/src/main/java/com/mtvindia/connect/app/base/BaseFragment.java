@@ -1,6 +1,5 @@
 package com.mtvindia.connect.app.base;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.mtvindia.connect.app.di.Injector;
-import com.mtvindia.connect.ui.fragment.ProfileFragment;
 
 import butterknife.ButterKnife;
 
@@ -47,7 +45,7 @@ public abstract class BaseFragment extends Fragment {
      *  @param activityClass Class<? extends Activity>
      * @param bundle Bundle
      */
-    protected void startActivity(Class<ProfileFragment> activityClass, Bundle bundle) {
+    protected void startActivity(Class activityClass, Bundle bundle) {
         Intent intent = new Intent(getActivity(), activityClass);
 
         if (bundle != null) intent.putExtras(bundle);

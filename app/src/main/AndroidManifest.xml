@@ -53,6 +53,11 @@
             android:label="@string/title_activity_navigation"
             android:windowSoftInputMode="adjustPan">
             </activity>
+        <activity android:name=".ui.activity.ChatActivity"
+            android:screenOrientation="portrait"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="f958711af2adab120a830dc232e2b390687662cc" />
     </application>
 
 </manifest>
