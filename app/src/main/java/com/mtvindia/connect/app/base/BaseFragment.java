@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.mtvindia.connect.app.di.Injector;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import butterknife.ButterKnife;
 
 /**
@@ -21,6 +23,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        JodaTimeAndroid.init(view.getContext());
         bindViews(view);
     }
 

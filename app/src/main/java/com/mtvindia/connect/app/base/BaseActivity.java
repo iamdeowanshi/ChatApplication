@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import com.mtvindia.connect.app.di.Injector;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import butterknife.ButterKnife;
 
 /**
@@ -20,6 +22,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
+        JodaTimeAndroid.init(this);
         bindViews();
     }
 

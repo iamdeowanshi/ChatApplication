@@ -7,6 +7,11 @@
         <item name="android:windowActionBarOverlay">true</item>
         <!--<item name="colorPrimaryDark">#dd204b</item>-->
 </style>
+
+    <style name="ChatTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
     <style name="ToolBarStyle" parent="">
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>

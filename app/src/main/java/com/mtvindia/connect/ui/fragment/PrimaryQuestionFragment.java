@@ -22,7 +22,6 @@ import com.mtvindia.connect.presenter.QuestionViewInteractor;
 import com.mtvindia.connect.presenter.ResultPresenter;
 import com.mtvindia.connect.presenter.ResultViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
-import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
@@ -67,9 +66,6 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
     @Bind(R.id.view)
     View view;
 
-    private CircleStrokeTransformation circleStrokeTransformation;
-    private CircleStrokeTransformation circleStrokeTransformationDp;
-
     private User user;
     private Question question;
     private List<Option> option;
@@ -103,13 +99,9 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
         questionPreference.savePrimaryQuestionId(0);
 
-        int strokeColor = getContext().getResources().getColor(android.R.color.white);
-        circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
-        circleStrokeTransformationDp = new CircleStrokeTransformation(getContext(), strokeColor, 2);
-
         txtHello.setText("Hello " + user.getFirstName() + "!");
 
-        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformationDp).fit().into(userPic);
+        Picasso.with(getContext()).load(user.getProfilePic()).fit().into(userPic);
 
 
     }
@@ -172,18 +164,18 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
         view.setVisibility(View.VISIBLE);
 
-        Picasso.with(getContext()).load(option.get(0).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption1);
+        Picasso.with(getContext()).load(option.get(0).getOptionUrl()).fit().into(picOption1);
         picOption1.setVisibility(View.VISIBLE);
-        Picasso.with(getContext()).load(option.get(1).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption2);
+        Picasso.with(getContext()).load(option.get(1).getOptionUrl()).fit().into(picOption2);
         picOption2.setVisibility(View.VISIBLE);
 
     }
 
     @Override
     public void onError(Throwable throwable) {
+        hideProgress();
         Timber.e(throwable, "Error");
         toastShort("Error: " + throwable);
-        hideProgress();
     }
 
     @Override

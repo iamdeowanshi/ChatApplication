@@ -26,14 +26,13 @@ import android.widget.TextView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
+import com.mtvindia.connect.data.model.NavigationItem;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.presenter.PictureUpdateViewInteractor;
 import com.mtvindia.connect.presenter.ProfilePicUpdatePresenter;
 import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
-import com.mtvindia.connect.ui.activity.NavigationItem;
-import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.QuestionPreference;
@@ -100,8 +99,6 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
 
     private User user;
 
-    private CircleStrokeTransformation circleStrokeTransformation;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,8 +119,6 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         presenter.setViewInteractor(this);
         picUpdatePresenter.setViewInteractor(this);
-
-        circleStrokeTransformation = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
 
         layoutDialogGender.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,7 +161,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
             edtAbout.setText(user.getAbout());
         }
 
-        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).fit().into(imgDp);
+        Picasso.with(getContext()).load(user.getProfilePic()).fit().into(imgDp);
         edtName.setText(user.getFullName());
     }
 
@@ -466,7 +461,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
     @Override
     public void showUpdatedPic(User result) {
         user.setProfilePic(result.getProfilePic());
-        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).fit().into(imgDp);
+        Picasso.with(getContext()).load(user.getProfilePic()).fit().into(imgDp);
         userPreference.saveUser(user);
         toastShort("Picture Updated");
     }

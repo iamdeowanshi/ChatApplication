@@ -30,8 +30,10 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
+import com.mtvindia.connect.data.model.NavigationItem;
 import com.mtvindia.connect.data.model.Question;
 import com.mtvindia.connect.data.model.User;
+import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
@@ -54,23 +56,17 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 
-public class NavigationActivity extends BaseActivity implements NavigationCallBack, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, UpdateViewInteractor{
+public class NavigationActivity extends BaseActivity implements NavigationCallBack, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, UpdateViewInteractor {
 
-    @Inject
-    UserPreference userPreference;
-    @Inject
-    QuestionPreference questionPreference;
-    @Inject
-    NetworkUtil networkUtil;
-    @Inject
-    DialogUtil dialogUtil;
-    @Inject
-    UpdatePresenter presenter;
+    @Inject UserPreference userPreference;
+    @Inject QuestionPreference questionPreference;
+    @Inject NetworkUtil networkUtil;
+    @Inject DialogUtil dialogUtil;
+    @Inject UpdatePresenter presenter;
+    @Inject ChatListRepository chatListRepository;
 
-    @Bind(R.id.toolbar_actionbar)
-    Toolbar toolbar;
-    @Bind(R.id.drawer)
-    DrawerLayout drawerLayout;
+    @Bind(R.id.toolbar_actionbar) Toolbar toolbar;
+    @Bind(R.id.drawer) DrawerLayout drawerLayout;
 
     private NavigationDrawerFragment navigationDrawerFragment;
     private Fragment fragment;
@@ -118,7 +114,23 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         if (navigationDrawerFragment.isDrawerOpen()) {
             navigationDrawerFragment.closeDrawer();
         } else {
-            super.onBackPressed();
+            final AlertDialog alertDialog = (AlertDialog) dialogUtil.createAlertDialog(NavigationActivity.this, "Exit", "Do you want to exit", "Yes", "No");
+            alertDialog.show();
+            Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            Button negativeButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            positiveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+
+            negativeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    alertDialog.dismiss();
+                }
+            });
         }
     }
 
@@ -166,12 +178,12 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 fragment = PrimaryQuestionFragment.getInstance(null);
                 addFragment(fragment);
             } else if (!question.isAnswered()) {
-            fragment = SecondaryQuestionFragment.getInstance(null);
-            addFragment(fragment);
-            } else if( matchedUser.size() != 0) {
+                fragment = SecondaryQuestionFragment.getInstance(null);
+                addFragment(fragment);
+            } else if (matchedUser.size() != 0) {
                 fragment = ChooseFragment.getInstance(null);
                 addFragment(fragment);
-            }  else if (count > 0) {
+            } else if (count > 0) {
                 fragment = ResultFragment.getInstance(null);
                 addFragment(fragment);
             }
@@ -193,6 +205,8 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         if (isInRegistration) {
             setDrawerEnabled(false);
             onItemSelected(NavigationItem.PREFERENCE);
+        } else if (chatListRepository.size() != 0) {
+            onItemSelected(NavigationItem.CHAT);
         } else {
             onItemSelected(NavigationItem.FIND_PEOPLE);
         }
@@ -205,7 +219,6 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
 
         drawerLayout.setDrawerLockMode(drawerLockMode);
     }
-
 
     private final BroadcastReceiver internetReciever = new BroadcastReceiver() {
 
@@ -228,10 +241,9 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 negativeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(!networkUtil.isOnline()) {
+                        if (!networkUtil.isOnline()) {
                             dialogUtil.createAlertDialog(NavigationActivity.this, "No Internet Connectivity", "Try again with active internet connection", "Exit", "Try Again");
-                        }
-                        else {
+                        } else {
                             alertDialog.dismiss();
                         }
                     }
@@ -240,13 +252,12 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         }
     };
 
-
     private void getlastKnownLocation() {
         LocationRequest locationRequest = new LocationRequest();
         com.google.android.gms.location.LocationListener locationListener = new com.google.android.gms.location.LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                if(location != null) {
+                if (location != null) {
                     user = userPreference.readUser();
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
@@ -257,8 +268,8 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                     Location currentLocation = new Location("point B");
                     currentLocation.setLatitude(latitude);
                     currentLocation.setLongitude(longitude);
-                    double distance = userLocation.distanceTo(currentLocation) ;
-                    if(distance > 50000){
+                    double distance = userLocation.distanceTo(currentLocation);
+                    if (distance > 50000) {
                         user.setLatitude(location.getLatitude());
                         user.setLongitude(location.getLongitude());
                         userPreference.saveUser(user);
@@ -289,7 +300,6 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 break;
         }
     }
-
 
     @Override
     protected void onStart() {
@@ -401,4 +411,5 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     public void onError(Throwable throwable) {
 
     }
+
 }

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/relative_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/gradient_yellow_red">
+<RelativeLayout android:id="@+id/relative_layout"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient_yellow_red">
 
     <LinearLayout
         android:id="@+id/linear_layout"
@@ -14,7 +15,7 @@
         <View
             android:id="@+id/blank_view"
             android:layout_width="match_parent"
-            android:layout_height="80dp" />
+            android:layout_height="80dp"/>
 
         <RelativeLayout
             android:id="@+id/layer1"
@@ -25,54 +26,75 @@
                 android:id="@+id/txt_second_quest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_find_match"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
                 android:textColor="#fff"
-                android:textSize="16.67sp" />
+                android:textSize="16.67sp"/>
 
-            <View
-                android:id="@+id/view"
-                android:layout_width="1dp"
-                android:layout_height="60dp"
-                android:layout_below="@id/txt_second_quest"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="65dp"
-                android:background="#d5d5d5"
-                android:visibility="gone"/>
-
-            <ImageView
-                android:id="@+id/img_dp_big_1"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:visibility="gone"
-                android:layout_alignParentLeft="true"
+            <LinearLayout
+                android:id="@+id/img_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/txt_second_quest"
-                android:layout_marginTop="20dp"
-                android:layout_toLeftOf="@+id/view"/>
+                android:layout_marginTop="30dp"
+                android:gravity="center_horizontal">
 
-            <ImageView
-                android:id="@+id/img_dp_big_2"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:visibility="gone"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/img_dp_big_1"
-                android:layout_toRightOf="@+id/view" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <com.github.siyamed.shapeimageview.CircularImageView
+                        android:id="@+id/img_dp_big_1"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@drawable/img_background"
+                        android:visibility="gone"
+                        app:siBorderColor="#fff"
+                        app:siBorderWidth="3dp"/>
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="1dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="35dp"
+                    android:background="#d5d5d5"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+
+                    <com.github.siyamed.shapeimageview.CircularImageView
+                        android:id="@+id/img_dp_big_2"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@drawable/img_background"
+                        android:visibility="gone"
+                        app:siBorderColor="#fff"
+                        app:siBorderWidth="3dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/img_dp_big_1">
+                android:layout_below="@+id/img_layout"
+                android:layout_marginTop="10dp">
+
                 <com.mtvindia.connect.ui.custom.UbuntuTextView
                     android:id="@+id/txt_option_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#fff"
-                    android:gravity="center_horizontal"
                     android:layout_gravity="fill_horizontal"
                     android:layout_weight="1"
-                    android:textSize="12sp" />
+                    android:gravity="center_horizontal"
+                    android:textColor="#fff"
+                    android:textSize="12sp"/>
 
                 <com.mtvindia.connect.ui.custom.UbuntuTextView
                     android:id="@+id/txt_option_2"
@@ -82,7 +104,7 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textColor="#fff"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"/>
             </LinearLayout>
         </RelativeLayout>
 
@@ -92,47 +114,70 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/layer1">
 
-            <View
-                android:id="@+id/view2"
-                android:layout_width="1dp"
-                android:layout_height="60dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="65dp"
-                android:background="#d5d5d5"
-                android:visibility="gone"/>
+            <LinearLayout
+                android:id="@+id/img_layout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_prim_quest"
+                android:layout_marginTop="30dp"
+                android:gravity="center_horizontal">
 
-            <ImageView
-                android:id="@+id/img_dp_big3"
-                android:layout_width="120dp"
-                android:visibility="gone"
-                android:layout_height="120dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginTop="20dp"
-                android:layout_toLeftOf="@+id/view2" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
 
-            <ImageView
-                android:id="@+id/img_dp_big4"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:visibility="gone"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/img_dp_big3"
-                android:layout_toRightOf="@+id/view2" />
+                    <com.github.siyamed.shapeimageview.CircularImageView
+                        android:id="@+id/img_dp_big_3"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@drawable/img_background"
+                        android:visibility="gone"
+                        app:siBorderColor="#fff"
+                        app:siBorderWidth="3dp"/>
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="1dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="35dp"
+                    android:background="#d5d5d5"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+
+                    <com.github.siyamed.shapeimageview.CircularImageView
+                        android:id="@+id/img_dp_big_4"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@drawable/img_background"
+                        android:visibility="gone"
+                        app:siBorderColor="#fff"
+                        app:siBorderWidth="3dp"/>
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/img_dp_big3">
+                android:layout_below="@+id/img_layout2"
+                android:layout_marginTop="10dp">
+
                 <com.mtvindia.connect.ui.custom.UbuntuTextView
                     android:id="@+id/txt_option_3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#fff"
-                    android:gravity="center_horizontal"
                     android:layout_gravity="fill_horizontal"
                     android:layout_weight="1"
-                    android:textSize="12sp" />
+                    android:gravity="center_horizontal"
+                    android:textColor="#fff"
+                    android:textSize="12sp"/>
 
                 <com.mtvindia.connect.ui.custom.UbuntuTextView
                     android:id="@+id/txt_option_4"
@@ -142,7 +187,7 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:textColor="#fff"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"/>
             </LinearLayout>
 
         </RelativeLayout>
@@ -157,6 +202,6 @@
         android:layout_centerInParent="true"
         android:indeterminateTint="#c5c5c5"
         android:indeterminateTintMode="src_atop"
-        android:visibility="invisible" />
+        android:visibility="invisible"/>
 
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.mtvindia.connect.ui.activity;
+package com.mtvindia.connect.data.model;
 
 import com.mtvindia.connect.R;
 

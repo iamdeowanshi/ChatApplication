@@ -1,12 +1,14 @@
 package com.mtvindia.connect.ui.custom;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.util.DisplayMetrics;
 
 import com.squareup.picasso.Transformation;
 
@@ -20,14 +22,21 @@ public class CircleStrokeTransformation implements Transformation {
     private final float strokeWidth;
     private final Paint strokePaint;
     private final int strokeColor;
+    private Context context;
 
     public CircleStrokeTransformation(Context context, int strokeColor, int strokeWidthDp) {
         this.strokeColor = strokeColor;
-        this.strokeWidth = strokeWidthDp;// * context.getResources().getDisplayMetrics().density;
-
+        this.strokeWidth = dpToPx(strokeWidthDp);// * context.getResources().getDisplayMetrics().density;
+        this.context = context;
         strokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         strokePaint.setStyle(Paint.Style.STROKE);
         strokePaint.setColor(strokeColor);
+    }
+
+    private int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
 
     @Override

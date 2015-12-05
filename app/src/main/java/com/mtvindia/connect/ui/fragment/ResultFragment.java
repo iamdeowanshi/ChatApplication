@@ -13,7 +13,6 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.data.model.ResultResponse;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
-import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuButton;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.QuestionPreference;
@@ -67,8 +66,6 @@ public class ResultFragment extends BaseFragment {
     @Bind(R.id.btn_continue)
     UbuntuButton btnContinue;
 
-    private CircleStrokeTransformation circleStrokeTransformation;
-    private int strokeColor;
     private static int count;
     private View[] progressBarView;
     private ResultResponse response;
@@ -99,10 +96,6 @@ public class ResultFragment extends BaseFragment {
 
         count = questionPreference.readQuestionCount();
         setProgress(count);
-
-        strokeColor = getContext().getResources().getColor(android.R.color.white);
-        circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
-
         loadResult();
     }
 
@@ -110,7 +103,7 @@ public class ResultFragment extends BaseFragment {
         txtQuestion.setText(response.getQuestion());
         txtOption.setText(response.getOption().getOption());
         txtOtherPeople.setText(response.getMatchingUserCount() + " other people answered option " + questionPreference.readOptionSelected());
-        Picasso.with(getContext()).load(response.getOption().getOptionUrl()).transform(circleStrokeTransformation).fit().into(imgDpBig);
+        Picasso.with(getContext()).load(response.getOption().getOptionUrl()).fit().into(imgDpBig);
         if (count < 10) {
             txtLeftQuestions.setText((10 - count) + " more to go");
         } else {

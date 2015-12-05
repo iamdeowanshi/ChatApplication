@@ -20,7 +20,7 @@ import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
-import com.mtvindia.connect.ui.activity.NavigationItem;
+import com.mtvindia.connect.data.model.NavigationItem;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.UserPreference;
 
