@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -35,13 +34,12 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     @Inject Gson gson;
     @Inject UserPreference userPreference;
     @Inject NetworkUtil networkUtil;
-    @Inject
-    DialogUtil dialogUtil;
+    @Inject DialogUtil dialogUtil;
 
     @Bind(R.id.progress_sign_in) ProgressBar progressSignIn;
 
     private SocialAuth socialAuth;
-    private String androidId;
+    private String deviceToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +48,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
 
         injectDependencies();
 
-        androidId = Secure.getString(this.getContentResolver(), Secure.ANDROID_ID);
+        deviceToken = userPreference.readDeviceToken();
 
         socialAuth = new SocialAuth(this);
         socialAuth.setCallback(this);
@@ -125,7 +123,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         LoginRequest loginRequest = new LoginRequest(authResult);
         loginRequest.setOsType(1);
         loginRequest.setCertificateType(0);
-        loginRequest.setDeviceToken(androidId);
+        loginRequest.setDeviceToken(deviceToken);
 
         presenter.login(loginRequest);
     }
@@ -158,8 +156,6 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
 
         userPreference.saveUser(response);
 
-        User user = userPreference.readUser();
-
         userPreference.saveLoginStatus(isRegister);
 
         startActivity(NavigationActivity.class, null);
@@ -171,4 +167,26 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     protected void onDestroy() {
         super.onDestroy();
     }
+
+    @Override
+    public void onBackPressed() {
+        final AlertDialog alertDialog = (AlertDialog) dialogUtil.createAlertDialog(this, "Exit", "Do you want to exit", "Yes", "No");
+        alertDialog.show();
+        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        Button negativeButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        negativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+    }
+
 }

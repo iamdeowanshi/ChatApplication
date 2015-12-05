@@ -17,11 +17,10 @@ import android.widget.ImageView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
+import com.mtvindia.connect.data.model.NavigationItem;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.ui.activity.NavigationCallBack;
-import com.mtvindia.connect.ui.activity.NavigationItem;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
-import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
@@ -55,8 +54,6 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     private List<NavigationItem> drawerItems;
     private NavigationCallBack navigationCallBack;
 
-    private CircleStrokeTransformation circleStrokeTransformation;
-
     private User user;
     private NavigationItem selectedItem;
 
@@ -78,8 +75,6 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        circleStrokeTransformation = new CircleStrokeTransformation(getContext(), android.R.color.transparent, 1);
-
         user = userPreference.readUser();
 
         drawerItems = Arrays.asList(NavigationItem.values());
@@ -87,7 +82,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         drawerList.setHasFixedSize(true);
 
         txtItemName.setText(user.getFullName());
-        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).fit().into(imgDp);
+        Picasso.with(getContext()).load(user.getProfilePic()).fit().into(imgDp);
 
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(drawerItems);
         adapter.setNavigationCallbacks(this);
@@ -130,7 +125,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
                 user = userPreference.readUser();
 
                 txtItemName.setText(user.getFullName());
-                Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).fit().into(imgDp);
+                Picasso.with(getContext()).load(user.getProfilePic()).fit().into(imgDp);
                 getActivity().invalidateOptionsMenu();
             }
         };
@@ -190,7 +185,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         user = userPreference.readUser();
 
         txtItemName.setText(user.getFullName());
-        Picasso.with(getContext()).load(user.getProfilePic()).transform(circleStrokeTransformation).fit().into(imgDp);
+        Picasso.with(getContext()).load(user.getProfilePic()).fit().into(imgDp);
     }
 
     @Override

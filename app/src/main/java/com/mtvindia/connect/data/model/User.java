@@ -31,10 +31,10 @@ public class User extends BaseModel {
     private String interestedIn;
     @SerializedName("gender")
     private String gender;
-/*    @SerializedName("deviceToken")
+    @SerializedName("deviceToken")
     private String deviceToken;
     @SerializedName("osType")
-    private int osztype*/
+    private int osztype;
 
 
     public int getId() {

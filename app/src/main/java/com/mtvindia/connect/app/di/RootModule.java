@@ -3,6 +3,9 @@ package com.mtvindia.connect.app.di;
 import android.content.Context;
 
 import com.mtvindia.connect.app.MtvConnectApplication;
+import com.mtvindia.connect.data.repository.realm.BaseRepositoryRealm;
+import com.mtvindia.connect.data.repository.realm.ChatListRepositoryRealm;
+import com.mtvindia.connect.data.repository.realm.ChatMessageRepositoryRealm;
 import com.mtvindia.connect.presenter.concrete.AboutUserPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.FindMatchPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.LoginPresenterImpl;
@@ -10,10 +13,13 @@ import com.mtvindia.connect.presenter.concrete.ProfilePicUpdatePresenterImpl;
 import com.mtvindia.connect.presenter.concrete.QuestionRequestPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.ResultPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.UpdatePresenterImpl;
+import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
 import com.mtvindia.connect.ui.activity.LoginActivity;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
-import com.mtvindia.connect.ui.fragment.ChatFragment;
+import com.mtvindia.connect.ui.adapter.ChatListAdapter;
+import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
+import com.mtvindia.connect.ui.fragment.DisplayUserFragment;
 import com.mtvindia.connect.ui.fragment.ChatListFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
@@ -43,11 +49,12 @@ import dagger.Provides;
         includes = {
                 PresenterModule.class,
                 UtilModule.class,
-                ApiModule.class
+                ApiModule.class,
+                OrmModule.class
         },
         injects = {
                 MtvConnectApplication.class,
-
+                BaseRepositoryRealm.class,
                 // View specific classes - activities, fragments, adapters etc
 
                 LaunchActivity.class,
@@ -59,9 +66,11 @@ import dagger.Provides;
                 PrimaryQuestionFragment.class,
                 SecondaryQuestionFragment.class,
                 ChatListFragment.class,
+                ChatActivity.class,
                 ChooseFragment.class,
                 ResultFragment.class,
-                ChatFragment.class,
+                DisplayUserFragment.class,
+                ChatMessageAdapter.class,
 
                 LoginPresenterImpl.class,
                 UpdatePresenterImpl.class,
@@ -70,6 +79,16 @@ import dagger.Provides;
                 FindMatchPresenterImpl.class,
                 AboutUserPresenterImpl.class,
                 ProfilePicUpdatePresenterImpl.class,
+                DisplayUserFragment.class,
+                ChatActivity.class,
+                ChatListFragment.class,
+
+                ChatListAdapter.class,
+
+                //Realm
+                BaseRepositoryRealm.class,
+                ChatListRepositoryRealm.class,
+                ChatMessageRepositoryRealm.class,
 
                 // Util classes
                 NetworkUtil.class,

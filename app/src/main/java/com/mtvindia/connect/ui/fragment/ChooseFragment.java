@@ -17,7 +17,6 @@ import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.presenter.FindMatchPresenter;
 import com.mtvindia.connect.presenter.FindMatchViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
-import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
@@ -54,8 +53,6 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
     @Bind(R.id.txt_user2_name)
     UbuntuTextView txtUser2Name;
 
-    private int strokeColor;
-    private CircleStrokeTransformation circleStrokeTransformation;
     private List<User> matchedUser;
 
 
@@ -81,9 +78,6 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
         User user = userPreference.readUser();
 
-        strokeColor = getContext().getResources().getColor(android.R.color.white);
-        circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
-
         matchedUser = userPreference.readMatchedUser();
 
         if(matchedUser.size() == 0) {
@@ -101,7 +95,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
         NavigationActivity navigationActivity = (NavigationActivity) getContext();
         Bundle bundle = new Bundle();
         bundle.putInt("UserId", matchedUser.get(0).getId());
-        Fragment fragment = ChatFragment.getInstance(bundle);
+        Fragment fragment = DisplayUserFragment.getInstance(bundle);
         navigationActivity.addFragment(fragment);
         changePreferences();
         toastShort("clicked first option");
@@ -114,7 +108,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
         NavigationActivity navigationActivity = (NavigationActivity) getContext();
         Bundle bundle = new Bundle();
         bundle.putInt("UserId", matchedUser.get(1).getId());
-        Fragment fragment = ChatFragment.getInstance(bundle);
+        Fragment fragment = DisplayUserFragment.getInstance(bundle);
         navigationActivity.addFragment(fragment);
         changePreferences();
         toastShort("clicked second option");
@@ -182,8 +176,8 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
         txtUser1Name.setText(users.get(0).getFullName());
         txtUser2Name.setText(users.get(1).getFullName());
-        Picasso.with(getContext()).load(users.get(0).getProfilePic()).transform(circleStrokeTransformation).fit().into(img1);
-        Picasso.with(getContext()).load(users.get(1).getProfilePic()).transform(circleStrokeTransformation).fit().into(img2);
+        Picasso.with(getContext()).load(users.get(0).getProfilePic()).fit().into(img1);
+        Picasso.with(getContext()).load(users.get(1).getProfilePic()).fit().into(img2);
     }
 
     @Override

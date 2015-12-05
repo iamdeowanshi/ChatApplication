@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.ui.activity.NavigationCallBack;
-import com.mtvindia.connect.ui.activity.NavigationItem;
+import com.mtvindia.connect.data.model.NavigationItem;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
     @Override
     public NavigationDrawerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_recycler_view_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_layout_recycler_view_item, parent, false);
 
         return new ViewHolder(view);
     }

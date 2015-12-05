@@ -21,6 +21,7 @@ public class UserPreference {
     public static final String USER = "_USER" ;
     public static final String IS_IN_REGISTRATION = "_IS_REGISTERED";
     public static final String MATCHED_USER = "_MATCHED_USER";
+    public static final String DEVICE_TOKEN = "_DEVICE_TOKEN";
 
     public UserPreference() {
         Injector.instance().inject(this);
@@ -63,6 +64,14 @@ public class UserPreference {
         Type listType = new TypeToken<List<User>>() {}.getType();
 
         return gson.fromJson(usersJson, listType);
+    }
+
+    public void saveDeviceToken(String token) {
+        preferenceUtil.save(UserPreference.DEVICE_TOKEN, token);
+    }
+
+    public String readDeviceToken() {
+        return preferenceUtil.readString(UserPreference.DEVICE_TOKEN, "");
     }
 
     public void removeMatchedUser() {

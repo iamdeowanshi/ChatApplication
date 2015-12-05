@@ -26,7 +26,6 @@ import com.mtvindia.connect.presenter.QuestionViewInteractor;
 import com.mtvindia.connect.presenter.ResultPresenter;
 import com.mtvindia.connect.presenter.ResultViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
-import com.mtvindia.connect.ui.custom.CircleStrokeTransformation;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
@@ -55,9 +54,9 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     ImageView picOption1;
     @Bind(R.id.img_dp_big_2)
     ImageView picOption2;
-    @Bind(R.id.img_dp_big3)
+    @Bind(R.id.img_dp_big_3)
     ImageView picOption3;
-    @Bind(R.id.img_dp_big4)
+    @Bind(R.id.img_dp_big_4)
     ImageView picOption4;
     @Bind(R.id.layer2)
     RelativeLayout layer2;
@@ -82,8 +81,6 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     @Bind(R.id.view2)
     View view2;
 
-    private CircleStrokeTransformation circleStrokeTransformation;
-    private int strokeColor;
     private int count;
     private User user;
     private ResultRequest resultRequest = new ResultRequest();
@@ -117,9 +114,6 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
         question = questionPreference.readQuestionResponse();
         count = questionPreference.readQuestionCount();
 
-        strokeColor = getContext().getResources().getColor(android.R.color.white);
-        circleStrokeTransformation = new CircleStrokeTransformation(getContext(), strokeColor, 1);
-
          if(isQuestionAnswered()) {
                 questionRequestPresenter.getSecondaryQuestion(questionPreference.readPrimaryQuestionId(), user.getAuthHeader());
          } else {
@@ -143,13 +137,13 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
         questionPreference.saveOptionSelected(2);
     }
 
-    @OnClick(R.id.img_dp_big3)
+    @OnClick(R.id.img_dp_big_3)
     void option3() {
         optionSelected(2);
         questionPreference.saveOptionSelected(3);
     }
 
-    @OnClick(R.id.img_dp_big4)
+    @OnClick(R.id.img_dp_big_4)
     void option4() {
         optionSelected(3);
         questionPreference.saveOptionSelected(4);
@@ -211,9 +205,9 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
 
             view.setVisibility(View.VISIBLE);
 
-            Picasso.with(getContext()).load(options.get(0).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption1);
+            Picasso.with(getContext()).load(options.get(0).getOptionUrl()).fit().into(picOption1);
             picOption1.setVisibility(View.VISIBLE);
-            Picasso.with(getContext()).load(options.get(1).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption2);
+            Picasso.with(getContext()).load(options.get(1).getOptionUrl()).fit().into(picOption2);
             picOption2.setVisibility(View.VISIBLE);
         }
         else {
@@ -221,20 +215,20 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
             view2.setVisibility(View.VISIBLE);
 
             txtOption1.setText(options.get(0).getOption());
-            Picasso.with(getContext()).load(options.get(0).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption1);
+            Picasso.with(getContext()).load(options.get(0).getOptionUrl()).fit().into(picOption1);
             picOption1.setVisibility(View.VISIBLE);
 
             txtOption2.setText(options.get(1).getOption());
-            Picasso.with(getContext()).load(options.get(1).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption2);
+            Picasso.with(getContext()).load(options.get(1).getOptionUrl()).fit().into(picOption2);
             picOption2.setVisibility(View.VISIBLE);
 
             txtOption3.setText(options.get(2).getOption());
-            Picasso.with(getContext()).load(options.get(2).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption3);
+            Picasso.with(getContext()).load(options.get(2).getOptionUrl()).fit().into(picOption3);
             picOption3.setVisibility(View.VISIBLE);
 
             try {
                 txtOption4.setText(options.get(3).getOption());
-                Picasso.with(getContext()).load(options.get(3).getOptionUrl()).transform(circleStrokeTransformation).fit().into(picOption4);
+                Picasso.with(getContext()).load(options.get(3).getOptionUrl()).fit().into(picOption4);
                 picOption4.setVisibility(View.VISIBLE);
             } catch (IndexOutOfBoundsException e) {
                 Timber.e("option size is not appropriate: " + size, e);
