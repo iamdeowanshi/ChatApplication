@@ -6,6 +6,8 @@ import com.mtvindia.connect.app.MtvConnectApplication;
 import com.mtvindia.connect.data.repository.realm.BaseRepositoryRealm;
 import com.mtvindia.connect.data.repository.realm.ChatListRepositoryRealm;
 import com.mtvindia.connect.data.repository.realm.ChatMessageRepositoryRealm;
+import com.mtvindia.connect.services.SmackConnection;
+import com.mtvindia.connect.services.XmppReciever;
 import com.mtvindia.connect.presenter.concrete.AboutUserPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.FindMatchPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.LoginPresenterImpl;
@@ -55,6 +57,7 @@ import dagger.Provides;
         injects = {
                 MtvConnectApplication.class,
                 BaseRepositoryRealm.class,
+                SmackConnection.class,
                 // View specific classes - activities, fragments, adapters etc
 
                 LaunchActivity.class,
@@ -89,6 +92,8 @@ import dagger.Provides;
                 BaseRepositoryRealm.class,
                 ChatListRepositoryRealm.class,
                 ChatMessageRepositoryRealm.class,
+
+                XmppReciever.class,
 
                 // Util classes
                 NetworkUtil.class,

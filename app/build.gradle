@@ -101,6 +101,9 @@ dependencies {
     compile 'net.danlew:android.joda:2.9.0'
     //circular image
     compile 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
+    //smack framework
+    compile "org.igniterealtime.smack:smack-android-extensions:4.1.0-alpha6"
+    compile "org.igniterealtime.smack:smack-tcp:4.1.0-alpha6"
 
 }
 
