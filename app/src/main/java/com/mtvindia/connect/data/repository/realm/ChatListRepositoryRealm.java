@@ -18,11 +18,9 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     }
 
     @Override
-    public ChatMessage lastMessage(String userId) {
+    public ChatMessage lastMessage(int userId) {
         List<ChatMessage> result = realm.where(ChatMessage.class)
-                .equalTo("from", userId)
-                .or()
-                .equalTo("to", userId)
+                .equalTo("userId", userId)
                 .findAll();
 
         return result.get(result.size() -1);
@@ -49,6 +47,11 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
         ChatList item = find(id);
         item.setTime(time);
         realm.commitTransaction();
+    }
+
+    @Override
+    public boolean searchUser(long userId) {
+        return (realm.where(modelType).equalTo("id", userId).count() != 0);
     }
 
 }
