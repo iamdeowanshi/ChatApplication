@@ -34,6 +34,7 @@ import com.mtvindia.connect.data.model.NavigationItem;
 import com.mtvindia.connect.data.model.Question;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.data.repository.ChatListRepository;
+import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
@@ -82,6 +83,8 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
+
+        startService(new Intent(this, SmackService.class));
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION);
@@ -160,9 +163,15 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
             case LOGOUT:
                 startActivity(LoginActivity.class, null);
                 userPreference.removeUser();
+                disconnectChatServer();
                 finish();
                 break;
         }
+    }
+
+    private void disconnectChatServer() {
+        Intent intent = new Intent(this, SmackService.class);
+        this.stopService(intent);
     }
 
     private void showFindMorePeople() {
