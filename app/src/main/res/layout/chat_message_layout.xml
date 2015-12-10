@@ -4,43 +4,39 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:id="@+id/left_txt_layout"
+        android:id="@+id/txt_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/msg_received_bg"
-        android:layout_marginLeft="27dp"
-        android:layout_marginTop="20dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:paddingTop="5dp"
         android:paddingLeft="5dp"
         android:paddingBottom="5dp"
         android:paddingRight="5dp">
 
         <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/left_txt_msg"
+            android:id="@+id/txt_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:text="bsjbf djkhfh djfjs jdnbkjf kjbsdkfj fjsbjbsd bjkdbfkjkdjdjddfjbcjbdfjbvbjdvjb" />
+            android:text="bsjbf djkhfh djfjs jdnbkjf bjbsd bjkd jbcj bd fjbv bjdvjb" />
 
         <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/left_txt_time"
+            android:id="@+id/txt_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/left_txt_msg"
+            android:layout_below="@id/txt_msg"
             android:layout_marginTop="10dp"
             android:textSize="10sp"
             android:textColor="#8a8691"
             android:text="23:22" />
 
         <ImageView
-            android:id="@+id/left_tick"
+            android:id="@+id/img_status"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_below="@id/left_txt_msg"
-            android:layout_toRightOf="@id/left_txt_time"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/icon_check" />
+            android:layout_below="@id/txt_msg"
+            android:layout_toRightOf="@id/txt_time"
+            android:layout_marginTop="5dp" />
 
     </RelativeLayout>
 

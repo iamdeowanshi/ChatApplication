@@ -57,7 +57,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         count++;
         Picasso.with(context).load(chatList.get(position).getImage()).fit().into(holder.imageDp);
         holder.txtName.setText(chatList.get(position).getName());
-        chatMessage = lastMessage("webUser" + chatList.get(position).getId());
+        chatMessage = lastMessage(chatList.get(position).getId());
         holder.txtChat.setText(chatMessage.getBody());
 
         holder.txtTime.setText(getTime(chatMessage.getCreatedTime()));
@@ -75,7 +75,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         }
     }
 
-    private ChatMessage lastMessage(String userId) {
+    private ChatMessage lastMessage(int userId) {
        return chatListRepository.lastMessage(userId);
 
     }

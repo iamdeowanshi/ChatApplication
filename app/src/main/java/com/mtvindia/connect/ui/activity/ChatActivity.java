@@ -1,5 +1,7 @@
 package com.mtvindia.connect.ui.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,12 +13,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mtvindia.connect.R;
+import com.mtvindia.connect.app.Config;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.data.model.ChatList;
 import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.data.repository.ChatMessageRepository;
+import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
 import com.mtvindia.connect.ui.custom.UbuntuEditText;
 import com.mtvindia.connect.util.UserPreference;
@@ -35,34 +39,31 @@ import butterknife.Bind;
  */
 public class ChatActivity extends BaseActivity {
 
-    @Inject
-    ChatMessageRepository chatMessageRepository;
-    @Inject
-    ChatListRepository chatListRepository;
-    @Inject
-    UserPreference userPreference;
+    @Inject ChatMessageRepository chatMessageRepository;
+    @Inject ChatListRepository chatListRepository;
+    @Inject UserPreference userPreference;
 
-    @Bind(R.id.toolbar_actionbar)
-    Toolbar toolbarActionbar;
-    @Bind(R.id.chat_messages)
-    RecyclerView chatMessages;
-    @Bind(R.id.icon_back)
-    ImageButton iconBack;
-    @Bind(R.id.img_dp)
-    ImageView imgDp;
-    @Bind(R.id.txt_name)
-    TextView txtName;
-    @Bind(R.id.icon_send)
-    ImageView iconSend;
-    @Bind(R.id.edt_message)
-    UbuntuEditText edtMessage;
+    @Bind(R.id.toolbar_actionbar) Toolbar toolbarActionbar;
+    @Bind(R.id.chat_messages) RecyclerView chatMessages;
+    @Bind(R.id.icon_back) ImageButton iconBack;
+    @Bind(R.id.img_dp) ImageView imgDp;
+    @Bind(R.id.txt_name) TextView txtName;
+    @Bind(R.id.txt_status) TextView txtStatus;
+    @Bind(R.id.icon_send) ImageView iconSend;
+    @Bind(R.id.edt_message) UbuntuEditText edtMessage;
 
     private ChatList chatList;
     private List<ChatMessage> chatMessagesList;
-    private ChatMessage message = new ChatMessage();
+    private ChatMessage chatMessage = new ChatMessage();
     private int userId;
     private User user;
     private ChatMessageAdapter chatMessageAdapter;
+    private String message;
+    private BroadcastReceiver receiver;
+
+    public static enum MessageState {
+        Sending, Sent, Delivered, Read;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,7 @@ public class ChatActivity extends BaseActivity {
 
         userId = getIntent().getIntExtra("userId", 0);
         chatList = chatListRepository.find(userId);
-        chatMessagesList = chatMessageRepository.searchMessage("webUser" + userId);
+        chatMessagesList = chatMessageRepository.searchMessage(userId);
 
         chatMessages.setLayoutManager(layoutManager);
         chatMessages.setHasFixedSize(true);
@@ -110,19 +111,54 @@ public class ChatActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+/*        receiver = new XmppReciever();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SmackService.NEW_MESSAGE);
+        registerReceiver(receiver, intentFilter);*/
+        super.onResume();
+
+
+     /*   IntentFilter filter = new IntentFilter(SmackService.NEW_ROSTER);
+        filter.addAction(SmackService.NEW_MESSAGE);
+        registerReceiver(receiver, filter);*/
+    }
+
+
     private void sendMessage() {
+        message = edtMessage.getText().toString();
+
+        if (message.equals("")) return;
+
         DateTime time = DateTime.now();
-        message.setCreatedTime(time.toString());
-        message.setBody(edtMessage.getText().toString());
-        message.setStatus("delivered");
-        message.setFrom("webUser" + user.getId());
-        message.setTo("webUser" + userId);
-        message.setUserId(chatList.getId());
+        chatMessage.setCreatedTime(time.toString());
+        chatMessage.setBody(message);
+        chatMessage.setStatus(MessageState.Sending.toString());
+        chatMessage.setFrom("webuser" + user.getId());
+        chatMessage.setTo("webuser" + userId);
+        chatMessage.setUserId(userId);
         chatListRepository.updateTime(userId, time.toString());
         edtMessage.setText("");
-        chatMessageRepository.save(message);
+        chatMessageRepository.save(chatMessage);
         chatMessageAdapter.notifyDataSetChanged();
         chatMessages.scrollToPosition(chatMessagesList.size() - 1);
+        sendTOChatServer();
+    }
+
+    private void messageUpdate() {
+        chatMessageAdapter.notifyDataSetChanged();
+    }
+
+    private void sendTOChatServer() {
+        Intent intent = new Intent(SmackService.SEND_MESSAGE);
+        intent.setPackage(this.getPackageName());
+        intent.putExtra(SmackService.BUNDLE_MESSAGE_BODY, message);
+        intent.putExtra(SmackService.BUNDLE_TO, chatMessage.getTo() + "@" + Config.CHAT_SERVER);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+        }
+        this.sendBroadcast(intent);
     }
 
     @Override

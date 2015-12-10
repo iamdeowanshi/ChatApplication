@@ -17,6 +17,7 @@ import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.ChatCallBack;
 import com.mtvindia.connect.ui.adapter.ChatListAdapter;
+import com.mtvindia.connect.ui.custom.UbuntuTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,8 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack {
 
     @Bind(R.id.chat_list)
     RecyclerView userList;
+    @Bind(R.id.empty_view)
+    UbuntuTextView emptyView;
     private List<ChatList> chatList = new ArrayList<>();
     private ChatMessage chatMessage;
 
@@ -49,6 +52,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chat_list_fragment, container, false);
 
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -66,6 +70,14 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack {
         ChatListAdapter chatListAdapter = new ChatListAdapter(getContext(), chatList);
         chatListAdapter.setChatCallBack(this);
         userList.setAdapter(chatListAdapter);
+        if (chatList.isEmpty()) {
+            userList.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }
+        else {
+            userList.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
 
     }
 
@@ -85,7 +97,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack {
     @Override
     public void onItemSelected(ChatList chatList) {
         Bundle bundle = new Bundle();
-        bundle.putInt("userId",chatList.getId());
+        bundle.putInt("userId", chatList.getId());
         startActivity(ChatActivity.class, bundle);
         getActivity().finish();
     }
