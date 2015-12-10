@@ -11,8 +11,8 @@ import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.data.repository.ChatMessageRepository;
+import com.mtvindia.connect.presenter.AboutUserPresenter;
 import com.mtvindia.connect.presenter.AboutUserViewInteractor;
-import com.mtvindia.connect.presenter.concrete.AboutUserPresenterImpl;
 import com.mtvindia.connect.util.UserPreference;
 
 import org.joda.time.DateTime;
@@ -33,7 +33,7 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
     @Inject
     UserPreference userPreference;
     @Inject
-    AboutUserPresenterImpl aboutUserPresenter;
+    AboutUserPresenter aboutUserPresenter;
 
     private int userId;
     private String from;
