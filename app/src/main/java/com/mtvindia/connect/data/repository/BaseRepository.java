@@ -15,4 +15,8 @@ public interface BaseRepository<T> {
 
     void remove(long id);
 
+    void setDataChangeListener(DataChangeListener changeListener);
+
+    void removeDataChangeListener();
+
 }

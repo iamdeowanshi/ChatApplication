@@ -3,9 +3,11 @@ package com.mtvindia.connect.data.repository.realm;
 import com.mtvindia.connect.data.model.ChatList;
 import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.repository.ChatListRepository;
+import com.mtvindia.connect.data.repository.DataChangeListener;
 
 import java.util.List;
 
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 /**
@@ -13,8 +15,19 @@ import io.realm.RealmResults;
  */
 public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> implements ChatListRepository {
 
+    private DataChangeListener dataChangeListener;
+    private RealmChangeListener realmListener;
+    private String status;
     public ChatListRepositoryRealm() {
         super(ChatList.class);
+        realmListener = new RealmChangeListener() {
+            @Override
+            public void onChange() {
+                if( dataChangeListener != null) {
+                    dataChangeListener.onStatusChanged(status);
+                }
+            }
+        };
     }
 
     @Override
@@ -54,4 +67,25 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
         return (realm.where(modelType).equalTo("id", userId).count() != 0);
     }
 
+    @Override
+    public void updateStatus(int id, String status) {
+        realm.beginTransaction();
+        ChatList item = find(id);
+        if(item != null) item.setStatus(status);
+        realm.copyToRealmOrUpdate(item);
+        realm.commitTransaction();
+        this.status = status;
+        realm.addChangeListener(realmListener);
+    }
+
+    @Override
+    public void setDataChangeListener(DataChangeListener dataChangeListener) {
+        this.dataChangeListener = dataChangeListener;
+    }
+
+    @Override
+    public void removeDataChangeListener() {
+        super.removeDataChangeListener();
+        realm.removeChangeListener(realmListener);
+    }
 }
