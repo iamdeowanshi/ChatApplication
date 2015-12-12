@@ -1,6 +1,5 @@
 package com.mtvindia.connect.ui.activity;
 
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +19,7 @@ import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.data.repository.ChatMessageRepository;
+import com.mtvindia.connect.data.repository.DataChangeListener;
 import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
 import com.mtvindia.connect.ui.custom.UbuntuEditText;
@@ -37,7 +37,7 @@ import butterknife.Bind;
 /**
  * Created by Sibi on 27/11/15.
  */
-public class ChatActivity extends BaseActivity {
+public class ChatActivity extends BaseActivity implements DataChangeListener {
 
     @Inject ChatMessageRepository chatMessageRepository;
     @Inject ChatListRepository chatListRepository;
@@ -59,7 +59,6 @@ public class ChatActivity extends BaseActivity {
     private User user;
     private ChatMessageAdapter chatMessageAdapter;
     private String message;
-    private BroadcastReceiver receiver;
 
     public static enum MessageState {
         Sending, Sent, Delivered, Read;
@@ -79,7 +78,7 @@ public class ChatActivity extends BaseActivity {
         userId = getIntent().getIntExtra("userId", 0);
         chatList = chatListRepository.find(userId);
         chatMessagesList = chatMessageRepository.searchMessage(userId);
-
+        chatMessageRepository.setDataChangeListener(this);
         chatMessages.setLayoutManager(layoutManager);
         chatMessages.setHasFixedSize(true);
         chatMessages.scrollToPosition(chatMessagesList.size() -1);
@@ -94,6 +93,20 @@ public class ChatActivity extends BaseActivity {
         getSupportActionBar().setTitle(chatList.getName().toString());
         txtName.setText(chatList.getName());
         Picasso.with(this).load(chatList.getImage()).fit().into(imgDp);
+
+/*        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                toastShort("deleted");
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(chatMessages);*/
 
         iconBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +124,8 @@ public class ChatActivity extends BaseActivity {
         });
     }
 
+
+
     @Override
     protected void onResume() {
 /*        receiver = new XmppReciever();
@@ -118,6 +133,7 @@ public class ChatActivity extends BaseActivity {
         intentFilter.addAction(SmackService.NEW_MESSAGE);
         registerReceiver(receiver, intentFilter);*/
         super.onResume();
+        startService(new Intent(this, SmackService.class));
 
 
      /*   IntentFilter filter = new IntentFilter(SmackService.NEW_ROSTER);
@@ -125,6 +141,16 @@ public class ChatActivity extends BaseActivity {
         registerReceiver(receiver, filter);*/
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        disconnectChatServer();
+    }
+
+    private void disconnectChatServer() {
+        Intent intent = new Intent(this, SmackService.class);
+        this.stopService(intent);
+    }
 
     private void sendMessage() {
         message = edtMessage.getText().toString();
@@ -146,10 +172,6 @@ public class ChatActivity extends BaseActivity {
         sendTOChatServer();
     }
 
-    private void messageUpdate() {
-        chatMessageAdapter.notifyDataSetChanged();
-    }
-
     private void sendTOChatServer() {
         Intent intent = new Intent(SmackService.SEND_MESSAGE);
         intent.setPackage(this.getPackageName());
@@ -160,6 +182,18 @@ public class ChatActivity extends BaseActivity {
         }
         this.sendBroadcast(intent);
     }
+
+    @Override
+    public void onChange(List updatedData) {
+        chatMessageAdapter.notifyDataSetChanged();
+        chatMessages.scrollToPosition(chatMessagesList.size() -1);
+    }
+
+    @Override
+    public void onStatusChanged(String status) {
+        txtStatus.setText(status);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

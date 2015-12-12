@@ -5,9 +5,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.daimajia.swipe.SimpleSwipeListener;
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
+import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.data.model.ChatList;
@@ -25,11 +32,12 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * Created by Sibi on 26/11/15.
  */
-public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
+public class ChatListAdapter extends RecyclerSwipeAdapter<ChatListAdapter.ViewHolder> {
 
     @Inject ChatListRepository chatListRepository;
 
@@ -38,6 +46,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     private ChatMessage chatMessage;
     private ChatCallBack chatCallBack;
     private int count = 0;
+
+    protected SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
 
     public ChatListAdapter(Context context, List<ChatList> chatList) {
         this.context = context;
@@ -53,7 +63,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ChatListAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ChatListAdapter.ViewHolder holder, final int position) {
         count++;
         Picasso.with(context).load(chatList.get(position).getImage()).fit().into(holder.imageDp);
         holder.txtName.setText(chatList.get(position).getName());
@@ -73,7 +83,33 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         if (count == getItemCount()) {
             holder.view.setVisibility(View.INVISIBLE);
         }
+
+        holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+        holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
+            @Override
+            public void onOpen(SwipeLayout layout) {
+                holder.itemView.setClickable(false);
+                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
+
+            }
+
+            @Override
+            public void onClose(SwipeLayout layout) {
+                super.onClose(layout);
+                holder.itemView.setClickable(true);
+            }
+        });
+
+        holder.trash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Timber.d("deleted");
+            }
+        });
+
+        mItemManger.bindView(holder.itemView, position);
     }
+
 
     private ChatMessage lastMessage(int userId) {
        return chatListRepository.lastMessage(userId);
@@ -115,6 +151,11 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         return chatList.size();
     }
 
+    @Override
+    public int getSwipeLayoutResourceId(int position) {
+        return R.id.swipe;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.img_dp)
@@ -125,8 +166,12 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         TextView txtChat;
         @Bind(R.id.right_txt_time)
         TextView txtTime;
+        @Bind(R.id.swipe)
+        SwipeLayout swipeLayout;
         @Bind(R.id.view)
         View view;
+        @Bind(R.id.trash)
+        ImageButton trash;
 
         public ViewHolder(View itemView) {
             super(itemView);

@@ -21,6 +21,8 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 /**
  * Created by Sibi on 09/12/15.
  */
@@ -61,19 +63,13 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
                     return;
                 }
                 for (String s : roster) {
-                    // messageLog = s+"\n"+ messageLog;
+                    Timber.d(s);
+                    int id = Integer.parseInt(s.split("user")[1].split("@")[0]);
+                    String status = s.split(":")[1];
+                    chatListRepository.updateStatus(id, status);
                 }
                 break;
         }
-
-        /*IntentFilter filter = new IntentFilter();
-        filter.addAction(SmackService.NEW_MESSAGE);
-        context.registerReceiver(this,filter);
-
-        IntentFilter rosterFilter = new IntentFilter(SmackService.NEW_ROSTER);
-        filter.addAction(SmackService.NEW_MESSAGE);
-        context.registerReceiver(this, rosterFilter);*/
-
     }
 
     private void saveToDB(String from, String message) {

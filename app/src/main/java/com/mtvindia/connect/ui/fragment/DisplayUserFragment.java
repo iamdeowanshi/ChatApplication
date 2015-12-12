@@ -105,9 +105,10 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
             chatList.setLastMessage(edtMessage.getText().toString());
             chatList.setTime(time.toString());
             Timber.d(time.toString());
-            chatMessage.setFrom("webUser" + userPreference.readUser().getId());
-            chatMessage.setTo("webUser" + selectedUser.getId());
+            chatMessage.setFrom("webuser" + userPreference.readUser().getId());
+            chatMessage.setTo("webuser" + selectedUser.getId());
             chatMessage.setStatus("sent");
+            chatMessage.setUserId(selectedUser.getId());
             chatMessage.setCreatedTime(time.toString());
             chatMessage.setBody(edtMessage.getText().toString());
             chatMessage.setCreatedTime(time.toString());

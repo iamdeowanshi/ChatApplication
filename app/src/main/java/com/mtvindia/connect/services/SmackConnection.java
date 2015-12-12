@@ -57,16 +57,14 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
     private XMPPTCPConnection connection;
     private ArrayList<String> roster;
     private BroadcastReceiver receiver;
-    private int port;
 
     public SmackConnection(Context pContext) {
         Injector.instance().inject(this);
         user = userPreference.readUser();
         Timber.d("Chat Connection");
         context = pContext.getApplicationContext();
-        port = Config.PORT;
         serviceName = Config.CHAT_SERVER;
-        username = "webuser119"; //+ user.getId();
+        username = "webuser" + user.getId();
         password = new StringBuilder(username).reverse().toString();
     }
 
@@ -76,11 +74,9 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         XMPPTCPConnectionConfiguration.XMPPTCPConnectionConfigurationBuilder builder = XMPPTCPConnectionConfiguration.builder();
 
         builder.setServiceName(serviceName);
-        builder.setResource("MtvIndiaConnect");
+        builder.setResource("SmackAndroidTestClient");
         builder.setUsernameAndPassword(username , password);
         builder.setRosterLoadedAtLogin(true);
-        builder.setHost(serviceName);
-        builder.setDebuggerEnabled(true);
         builder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
 
         connection = new XMPPTCPConnection(builder.build());

@@ -11,8 +11,6 @@ import org.jivesoftware.smack.XMPPException;
 
 import java.io.IOException;
 
-import timber.log.Timber;
-
 public class SmackService extends Service {
 
     public static final String NEW_MESSAGE = "com.mtvindia.connect.newmessage";
@@ -44,7 +42,6 @@ public class SmackService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Timber.d("1");
     }
 
     @Override
@@ -54,9 +51,7 @@ public class SmackService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Timber.d("2");
         start();
-        Timber.d("3");
         return Service.START_STICKY;
     }
 
@@ -67,13 +62,10 @@ public class SmackService extends Service {
     }
 
     public void start() {
-        Timber.d("4");
         if ( !isActive) {
             isActive = true;
-            Timber.d("5");
             // Create ConnectionThread Loop
             if (thread == null || ! thread.isAlive()) {
-                Timber.d("6");
                 thread = new Thread(new Runnable() {
                     @Override
                     public void run() {

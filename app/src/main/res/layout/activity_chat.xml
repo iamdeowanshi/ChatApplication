@@ -59,7 +59,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
                     android:textSize="10sp"
-                    android:text="Online"
+                    android:text="Offline"
                     android:layout_below="@+id/txt_name"/>
 
             </RelativeLayout>
@@ -106,14 +106,14 @@
         <com.mtvindia.connect.ui.custom.UbuntuEditText
             android:id="@+id/edt_message"
             android:layout_width="wrap_content"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_toLeftOf="@+id/icon_send"
             android:layout_toRightOf="@+id/img_smiley"
-            android:background="@android:color/transparent"
+            android:backgroundTint="@android:color/transparent"
             android:hint="Type message here..."
+            android:maxLines="6"
             android:imeOptions="actionSend|flagNoEnterAction"
-            android:maxHeight="90dp"
             android:scrollbars="vertical"
             android:textColorHint="#c0c0c0" />
 
