@@ -79,6 +79,7 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
         chatList = chatListRepository.find(userId);
         chatMessagesList = chatMessageRepository.searchMessage(userId);
         chatMessageRepository.setDataChangeListener(this);
+        chatListRepository.setDataChangeListener(this);
         chatMessages.setLayoutManager(layoutManager);
         chatMessages.setHasFixedSize(true);
         chatMessages.scrollToPosition(chatMessagesList.size() -1);
@@ -128,17 +129,8 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
 
     @Override
     protected void onResume() {
-/*        receiver = new XmppReciever();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(SmackService.NEW_MESSAGE);
-        registerReceiver(receiver, intentFilter);*/
         super.onResume();
         startService(new Intent(this, SmackService.class));
-
-
-     /*   IntentFilter filter = new IntentFilter(SmackService.NEW_ROSTER);
-        filter.addAction(SmackService.NEW_MESSAGE);
-        registerReceiver(receiver, filter);*/
     }
 
     @Override

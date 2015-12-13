@@ -71,8 +71,10 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     public void updateStatus(int id, String status) {
         realm.beginTransaction();
         ChatList item = find(id);
-        if(item != null) item.setStatus(status);
-        realm.copyToRealmOrUpdate(item);
+        if(item != null) {
+            item.setStatus(status);
+            realm.copyToRealmOrUpdate(item);
+        }
         realm.commitTransaction();
         this.status = status;
         realm.addChangeListener(realmListener);

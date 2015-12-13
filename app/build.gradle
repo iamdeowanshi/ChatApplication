@@ -21,10 +21,6 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
 
- /*   packagingOptions {
-        exclude "lib/arm64-v8a/librealm-jni.so"
-    }*/
-
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude 'META-INF/LICENSE.txt'
@@ -41,7 +37,7 @@ android {
     }
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "135g"
     }
 
     buildTypes {
@@ -94,7 +90,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics-ndk:1.1.2@aar') {
         transitive = true;
     }
-  //  compile 'com.android.support:multidex:1.0.1' if transformation error occurs again
+    compile 'com.android.support:multidex:1.0.1' //if transformation error occurs again
     //rockerhieu emoji
     compile 'com.rockerhieu.emojicon:library:1.3.1'
     //joda time
