@@ -15,6 +15,7 @@ import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.data.model.ChatList;
 import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.repository.ChatListRepository;
+import com.mtvindia.connect.data.repository.DataChangeListener;
 import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.ChatCallBack;
@@ -32,7 +33,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Sibi on 16/10/15.
  */
-public class ChatListFragment extends BaseFragment implements ChatCallBack {
+public class ChatListFragment extends BaseFragment implements ChatCallBack, DataChangeListener {
 
     @Inject
     ChatListRepository chatListRepository;
@@ -43,6 +44,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack {
     UbuntuTextView emptyView;
     private List<ChatList> chatList = new ArrayList<>();
     private ChatMessage chatMessage;
+    private ChatListAdapter chatListAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,9 +71,14 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack {
         chatList = chatListRepository.sortList();
 
 
-        ChatListAdapter chatListAdapter = new ChatListAdapter(getContext(), chatList);
+        chatListAdapter = new ChatListAdapter(getContext(), chatList);
         chatListAdapter.setChatCallBack(this);
         userList.setAdapter(chatListAdapter);
+        emptyView();
+
+    }
+
+    private void emptyView() {
         if (chatList.isEmpty()) {
             userList.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
@@ -80,7 +87,6 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack {
             userList.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -124,4 +130,14 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack {
         getActivity().finish();
     }
 
+    @Override
+    public void onChange(List updatedData) {
+        chatListAdapter.notifyDataSetChanged();
+        emptyView();
+    }
+
+    @Override
+    public void onStatusChanged(String status) {
+
+    }
 }

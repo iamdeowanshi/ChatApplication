@@ -103,7 +103,12 @@ public class ChatListAdapter extends RecyclerSwipeAdapter<ChatListAdapter.ViewHo
         holder.trash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Timber.d("deleted");
+                chatListRepository.remove(chatList.get(position).getId());
+                mItemManger.removeShownLayouts(holder.swipeLayout);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, chatList.size());
+                mItemManger.closeAllItems();
+               // Timber.d("deleted :" + chatList.get(position).getId());
             }
         });
 
@@ -171,7 +176,7 @@ public class ChatListAdapter extends RecyclerSwipeAdapter<ChatListAdapter.ViewHo
         @Bind(R.id.view)
         View view;
         @Bind(R.id.trash)
-        ImageButton trash;
+        ImageView trash;
 
         public ViewHolder(View itemView) {
             super(itemView);

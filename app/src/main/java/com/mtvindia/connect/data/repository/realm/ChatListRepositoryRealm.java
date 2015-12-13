@@ -25,6 +25,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
             public void onChange() {
                 if( dataChangeListener != null) {
                     dataChangeListener.onStatusChanged(status);
+                    dataChangeListener.onChange(null);
                 }
             }
         };
@@ -60,6 +61,14 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
         ChatList item = find(id);
         item.setTime(time);
         realm.commitTransaction();
+    }
+
+    @Override
+    public void remove(long id) {
+        realm.beginTransaction();
+        find(id).removeFromRealm();
+        realm.commitTransaction();
+        realm.addChangeListener(realmListener);
     }
 
     @Override

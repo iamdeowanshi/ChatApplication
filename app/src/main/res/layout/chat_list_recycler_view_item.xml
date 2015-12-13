@@ -13,7 +13,7 @@
         android:gravity="center"
         android:tag="Bottom2">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/trash"
             android:layout_width="32dp"
             android:layout_height="32dp"
