@@ -75,9 +75,10 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
        // layoutManager.setReverseLayout(true);
 
+        user = userPreference.readUser();
         userId = getIntent().getIntExtra("userId", 0);
         chatList = chatListRepository.find(userId);
-        chatMessagesList = chatMessageRepository.searchMessage(userId);
+        chatMessagesList = chatMessageRepository.searchMessage("webuser" + userId, "webuser" + user.getId());
         chatMessageRepository.setDataChangeListener(this);
         chatListRepository.setDataChangeListener(this);
         chatMessages.setLayoutManager(layoutManager);
@@ -85,7 +86,6 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
         chatMessages.scrollToPosition(chatMessagesList.size() -1);
 
 
-        user = userPreference.readUser();
 
         chatMessageAdapter = new ChatMessageAdapter(this, chatMessagesList);
         chatMessages.setAdapter(chatMessageAdapter);

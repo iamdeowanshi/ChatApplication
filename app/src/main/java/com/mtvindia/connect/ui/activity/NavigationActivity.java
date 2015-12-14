@@ -72,6 +72,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     @Bind(R.id.drawer) DrawerLayout drawerLayout;
 
     private NavigationDrawerFragment navigationDrawerFragment;
+    private boolean isInRegistration;
     private Fragment fragment;
     private User user;
 
@@ -212,7 +213,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     }
 
     private void loadInitialItem() {
-        boolean isInRegistration = userPreference.readLoginStatus();
+        isInRegistration = userPreference.readLoginStatus();
 
         if (isInRegistration) {
             setDrawerEnabled(false);
@@ -427,6 +428,9 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_navigation, menu);
+
+        if(isInRegistration) return false;
+
         if(chatListRepository.size() != 0) return true;
 
         return false;

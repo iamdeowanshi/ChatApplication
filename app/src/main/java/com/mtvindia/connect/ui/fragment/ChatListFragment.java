@@ -22,6 +22,7 @@ import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.ChatCallBack;
 import com.mtvindia.connect.ui.adapter.ChatListAdapter;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
+import com.mtvindia.connect.util.UserPreference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,8 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
 
     @Inject
     ChatListRepository chatListRepository;
+    @Inject
+    UserPreference userPreference;
 
     @Bind(R.id.chat_list)
     RecyclerView userList;
@@ -70,7 +73,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
 
         userList.setLayoutManager(layoutManager);
         userList.setHasFixedSize(true);
-        chatList = chatListRepository.sortList();
+        chatList = chatListRepository.sortList(userPreference.readUser().getId());
 
 
         chatListAdapter = new ChatListAdapter(this.getContext(), chatList);

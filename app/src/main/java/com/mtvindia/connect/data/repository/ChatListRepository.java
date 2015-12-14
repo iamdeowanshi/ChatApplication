@@ -12,7 +12,7 @@ public interface ChatListRepository extends BaseRepository<ChatList> {
 
     ChatMessage lastMessage(int userId);
 
-    List<ChatList> sortList();
+    List<ChatList> sortList(int id);
 
     long size();
 

@@ -41,8 +41,9 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     }
 
     @Override
-    public List<ChatList> sortList() {
+    public List<ChatList> sortList(int id) {
         RealmResults<ChatList> result = realm.where(modelType)
+                                            .equalTo("logedinUser", id)
                                           .findAll();
         result.sort("time", RealmResults.SORT_ORDER_DESCENDING);
 

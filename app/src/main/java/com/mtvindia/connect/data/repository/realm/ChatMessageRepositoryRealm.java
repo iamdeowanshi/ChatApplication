@@ -44,9 +44,13 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
     }
 
     @Override
-    public List<ChatMessage> searchMessage(int userId) {
+    public List<ChatMessage> searchMessage(String from, String to) {
         return realm.where(modelType)
-                .equalTo("userId", userId)
+                .equalTo("from", from)
+                .equalTo("to", to)
+                .or()
+                .equalTo("from", to)
+                .equalTo("to", from)
                 .findAll();
     }
 
