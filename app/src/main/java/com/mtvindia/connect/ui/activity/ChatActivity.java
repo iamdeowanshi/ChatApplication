@@ -145,9 +145,12 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
     }
 
     private void sendMessage() {
-        message = edtMessage.getText().toString();
+        message = edtMessage.getText().toString().trim();
 
-        if (message.equals("")) return;
+        if (message.equals("")) {
+            edtMessage.setText("");
+            return;
+        }
 
         DateTime time = DateTime.now();
         chatMessage.setCreatedTime(time.toString());

@@ -33,14 +33,6 @@
             android:textSize="10sp"
             android:textColor="#8a8691"
             android:text="23:22" />
-<!--
-        <ImageView
-            android:id="@+id/left_img_status"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_below="@id/left_txt_msg"
-            android:layout_toRightOf="@id/left_txt_time"
-            android:layout_marginTop="5dp" />-->
 
     </RelativeLayout>
 
@@ -81,8 +73,8 @@
             android:layout_height="20dp"
             android:layout_below="@id/right_txt_msg"
             android:layout_toRightOf="@id/right_txt_time"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/icon_check" />
+            android:src="@drawable/img_double_tick_grey"
+            android:layout_marginTop="5dp" />
     </RelativeLayout>
 
 </LinearLayout>

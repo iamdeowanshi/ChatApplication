@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -50,6 +51,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         injectDependencies();
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -71,10 +73,17 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
         chatList = chatListRepository.sortList();
 
 
-        chatListAdapter = new ChatListAdapter(getContext(), chatList);
+        chatListAdapter = new ChatListAdapter(this.getContext(), chatList);
         chatListAdapter.setChatCallBack(this);
         userList.setAdapter(chatListAdapter);
         emptyView();
+
+        userList.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return false;
+            }
+        });
 
     }
 
@@ -128,6 +137,12 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
         bundle.putInt("userId", chatList.getId());
         startActivity(ChatActivity.class, bundle);
         getActivity().finish();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.chat).setVisible(false);
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override

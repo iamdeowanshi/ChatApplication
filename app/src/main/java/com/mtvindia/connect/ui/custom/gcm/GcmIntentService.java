@@ -12,7 +12,6 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.mtvindia.connect.R;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
 
 public class GcmIntentService extends IntentService {
@@ -70,8 +69,8 @@ public class GcmIntentService extends IntentService {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.icon_launcher)
-                        .setContentTitle(msg.getString("title"))
+                        .setSmallIcon(this.getApplicationInfo().icon)
+                        .setContentTitle("MtvConnect")
                         .setContentText(msg.getString("message"))
                         .setDefaults(Notification.DEFAULT_ALL)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getString("message")))

@@ -70,6 +70,7 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
                 }
                 break;
         }
+
     }
 
     private void saveToDB(String from, String message) {

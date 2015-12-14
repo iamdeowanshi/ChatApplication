@@ -82,13 +82,13 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
     private void setStatus(ViewHolder holder, int position) {
         if (chatMessages.get(position).getStatus().equals(ChatActivity.MessageState.Sending.toString())) {
-            holder.rightTick.setImageResource(R.drawable.icon_check);
+            holder.rightTick.setImageResource(R.drawable.img_double_tick_grey);
         } else if (chatMessages.get(position).getStatus().equals(ChatActivity.MessageState.Sent.toString())) {
-            holder.rightTick.setImageResource(R.drawable.icon_double_tick);
+            holder.rightTick.setImageResource(R.drawable.img_double_tick_grey);
         } else if (chatMessages.get(position).getStatus().equals(ChatActivity.MessageState.Delivered.toString())) {
-            holder.rightTick.setImageResource(R.drawable.icon_double_tick);
+            holder.rightTick.setImageResource(R.drawable.img_double_tick_grey);
         } else if (chatMessages.get(position).getStatus().equals(ChatActivity.MessageState.Read.toString())) {
-            holder.rightTick.setImageResource(R.drawable.icon_double_tick);
+            holder.rightTick.setImageResource(R.drawable.img_double_tick_color);
         }
     }
 

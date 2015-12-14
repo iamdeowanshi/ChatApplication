@@ -18,6 +18,7 @@ import org.jivesoftware.smack.ChatManagerListener;
 import org.jivesoftware.smack.ChatMessageListener;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.SmackException;
@@ -43,6 +44,8 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
 
     @Inject UserPreference userPreference;
 
+    private Roster roster;
+
     public static enum ConnectionState {
         CONNECTED, CONNECTING, RECONNECTING, DISCONNECTED;
     }
@@ -55,7 +58,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
     private User user;
 
     private XMPPTCPConnection connection;
-    private ArrayList<String> roster;
+    private ArrayList<String> userList;
     private BroadcastReceiver receiver;
 
     public SmackConnection(Context pContext) {
@@ -87,6 +90,11 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         connection.connect();
         connection.login();
 
+        Roster.setDefaultSubscriptionMode(Roster.SubscriptionMode.accept_all);
+
+        roster = connection.getRoster();
+        Timber.d(roster.toString());
+
         PingManager.setDefaultPingInterval(600); //Ping every 10 minutes
         PingManager pingManager = PingManager.getInstanceFor(connection);
         pingManager.registerPingFailedListener(this);
@@ -116,7 +124,8 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
     }
 
     private void rebuildRoster() {
-        roster = new ArrayList<>();
+        userList = new ArrayList<>();
+
         String status;
         for (RosterEntry entry : connection.getRoster().getEntries()) {
             if (connection.getRoster().getPresence(entry.getUser()).isAvailable()) {
@@ -124,12 +133,12 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
             } else {
                 status = "Offline";
             }
-            roster.add(entry.getUser() + ": " + status);
+            userList.add(entry.getUser() + ": " + status);
         }
 
         Intent intent = new Intent(SmackService.NEW_ROSTER);
         intent.setPackage(context.getPackageName());
-        intent.putStringArrayListExtra(SmackService.BUNDLE_ROSTER, roster);
+        intent.putStringArrayListExtra(SmackService.BUNDLE_ROSTER, userList);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         }
@@ -157,9 +166,14 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         Chat chat = ChatManager.getInstanceFor(connection).createChat(toJid, this);
         try {
             chat.sendMessage(body);
+            roster.createEntry(toJid,toJid,null);
         } catch (SmackException.NotConnectedException | XMPPException e) {
             e.printStackTrace();
             toast("send failed");
+        } catch (SmackException.NotLoggedInException e) {
+            e.printStackTrace();
+        } catch (SmackException.NoResponseException e) {
+            e.printStackTrace();
         }
     }
 
@@ -182,6 +196,17 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
                 intent.putExtra(SmackService.BUNDLE_FROM_JID, message.getFrom());
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                     intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                }
+                try {
+                    roster.createEntry(message.getFrom(), message.getFrom(),null);
+                } catch (SmackException.NotLoggedInException e) {
+                    e.printStackTrace();
+                } catch (SmackException.NoResponseException e) {
+                    e.printStackTrace();
+                } catch (XMPPException.XMPPErrorException e) {
+                    e.printStackTrace();
+                } catch (SmackException.NotConnectedException e) {
+                    e.printStackTrace();
                 }
                 context.sendBroadcast(intent);
                 Log.i(TAG, "processMessage() BroadCast send");

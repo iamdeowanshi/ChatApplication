@@ -15,6 +15,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -119,6 +121,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         } else {
             final AlertDialog alertDialog = (AlertDialog) dialogUtil.createAlertDialog(NavigationActivity.this, "Exit", "Do you want to exit", "Yes", "No");
             alertDialog.show();
+            alertDialog.setCancelable(true);
             Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
             Button negativeButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
             positiveButton.setOnClickListener(new View.OnClickListener() {
@@ -421,4 +424,23 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_navigation, menu);
+        if(chatListRepository.size() != 0) return true;
+
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                onItemSelected(NavigationItem.CHAT);
+                return true;
+            }
+        });
+        return super.onOptionsItemSelected(item);
+    }
 }

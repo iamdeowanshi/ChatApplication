@@ -210,7 +210,8 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
             user.setLastName("");
         }
 
-        user.setAbout(edtAbout.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", ""));
+        //user.setAbout(edtAbout.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", ""));
+            user.setAbout(edtAbout.getText().toString().trim());
               user.setBirthDate(year + "-" + (month) + "-" + date);
               user.setGender(txtGender.getText().toString());
 
@@ -219,9 +220,9 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
     }
 
     boolean validation() {
-        if (edtName == null || edtName.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", "").equals("")) {
+        if (edtName == null || edtName.getText().toString().trim().equals("")) {
             return validationDialogName();
-        } else if(edtAbout == null || edtAbout.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", "").equals("")) {
+        } else if(edtAbout == null || edtAbout.getText().toString().trim().equals("")) {
             return validationDialogAbout();
         } else if(txtDay == null || txtMonth == null || txtYear == null || txtDay.getText().equals("") || txtMonth.getText().equals("") || txtYear .getText().equals("")) {
             return validationDialogBirthDate();

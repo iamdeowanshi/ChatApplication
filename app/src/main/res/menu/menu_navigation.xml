@@ -2,9 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.mtvindia.connect.ui.activity.NavigationActivity">
+
+
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/chat"
+        android:icon="@drawable/icon_all_chat"
+        android:title=""
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
 </menu>
