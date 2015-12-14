@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
@@ -21,7 +22,6 @@ import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.ChatCallBack;
 import com.mtvindia.connect.ui.adapter.ChatListAdapter;
-import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.UserPreference;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
     @Bind(R.id.chat_list)
     RecyclerView userList;
     @Bind(R.id.empty_view)
-    UbuntuTextView emptyView;
+    ImageView emptyView;
     private List<ChatList> chatList = new ArrayList<>();
     private ChatMessage chatMessage;
     private ChatListAdapter chatListAdapter;

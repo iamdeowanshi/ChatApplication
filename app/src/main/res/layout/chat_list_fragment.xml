@@ -22,15 +22,13 @@
         android:id="@+id/chat_list"
         android:layout_below="@+id/txt_active_chat" />
 
-    <com.mtvindia.connect.ui.custom.UbuntuTextView
+    <ImageView
         android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone"
-        android:textColor="#fff"
-        android:textSize="20sp"
-        android:text="No chats Available " />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="visible"
+        android:src="@drawable/img_no_chat" />
 
 
 </RelativeLayout>
