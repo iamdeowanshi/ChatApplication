@@ -73,7 +73,6 @@
             android:layout_height="20dp"
             android:layout_below="@id/right_txt_msg"
             android:layout_toRightOf="@id/right_txt_time"
-            android:src="@drawable/img_double_tick_grey"
             android:layout_marginTop="5dp" />
     </RelativeLayout>
 

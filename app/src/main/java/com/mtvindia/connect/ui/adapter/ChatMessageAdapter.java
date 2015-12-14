@@ -69,7 +69,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             holder.rightTxtLayout.setVisibility(View.VISIBLE);
             holder.leftTxtLayout.setVisibility(View.GONE);
             holder.rightTxtMsg.setText(chatMessages.get(position).getBody());
-            setStatus(holder, position);
+            //setStatus(holder, position);
             holder.rightTxtTime.setText(getTime(chatMessages.get(position).getCreatedTime()));
         } else {
             holder.leftTxtMsg.setMaxWidth((int)(getWidth()*.6));
