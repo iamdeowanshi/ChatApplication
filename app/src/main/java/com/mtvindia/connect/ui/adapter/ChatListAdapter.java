@@ -66,7 +66,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         Picasso.with(context).load(chatList.get(position).getImage()).fit().into(holder.imageDp);
         holder.txtName.setText(chatList.get(position).getName());
         chatMessage = lastMessage(chatList.get(position).getId());
-        holder.txtChat.setText(chatMessage.getBody());
+        holder.txtChat.setText(getText(chatMessage));
 
         holder.txtTime.setText(getTime(chatMessage.getCreatedTime()));
 
@@ -82,52 +82,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             holder.view.setVisibility(View.INVISIBLE);
         }
 
-        /*holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-        holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
-            @Override
-            public void onOpen(SwipeLayout layout) {
-                holder.itemView.setClickable(false);
-                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
-
-            }
-
-            @Override
-            public void onClose(SwipeLayout layout) {
-                super.onClose(layout);
-                holder.itemView.setClickable(true);
-            }
-        });
-
-        holder.trash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chatListRepository.remove(chatList.get(position).getId());
-                mItemManger.removeShownLayouts(holder.swipeLayout);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, chatList.size());
-                mItemManger.closeAllItems();
-               // Timber.d("deleted :" + chatList.get(position).getId());
-            }
-        });*/
-
-        //mItemManger.bindView(holder.itemView, position);
-
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-          /*      final CharSequence[] items = {"Delete"};
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        chatListRepository.remove(chatList.get(position).getId());
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, chatList.size());
-                    }
-                });
-                AlertDialog alert = builder.create();
-                alert.show();
-                Timber.d("deleted");
-                return true;*/
                 final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog((Activity) context, "Delete Chat", "Are you sure you want to delete chat", "Yes", "No");
                 alertDialog.show();
                 alertDialog.setCancelable(true);
@@ -154,6 +111,13 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         });
     }
 
+    private String getText(ChatMessage chatMessage) {
+        if (chatMessage.getBody().length() > 15) {
+            return chatMessage.getBody().substring(0,12) + "...";
+        }
+
+        return chatMessage.getBody();
+    }
 
     private ChatMessage lastMessage(int userId) {
        return chatListRepository.lastMessage(userId);
@@ -169,20 +133,23 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         long diffInMin = period.getMinutes();
         long diffInHours = period.getHours();
         long diffInDays = period.getDays();
+        long diffInWeeks = period.getWeeks();
         long diffInMonths = period.getMonths();
 
         if (diffInMonths > 12) {
             return "long time back";
         } else if (diffInMonths < 12 && diffInMonths > 0) {
             return diffInMonths + " months ago";
-        } else if (diffInDays > 0 && diffInDays < 30) {
+        } else if (diffInWeeks > 0 && diffInWeeks < 5) {
+            return diffInWeeks + " weeks ago";
+        } else if (diffInDays > 0 && diffInDays < 6) {
             return diffInDays + " days ago";
         } else if (diffInHours > 0 && diffInHours < 24) {
             return diffInHours + " hours ago";
         } else if (diffInMin > 0 && diffInMin < 60) {
             return diffInMin + " mins ago";
         } else {
-            return "moments ago";
+            return "now";
         }
     }
 

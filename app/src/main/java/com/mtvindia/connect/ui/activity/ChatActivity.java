@@ -82,7 +82,7 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
         chatMessageRepository.setDataChangeListener(this);
         chatListRepository.setDataChangeListener(this);
         chatMessages.setLayoutManager(layoutManager);
-        chatMessages.setHasFixedSize(true);
+        chatMessages.setHasFixedSize(false);
         chatMessages.scrollToPosition(chatMessagesList.size() -1);
 
 

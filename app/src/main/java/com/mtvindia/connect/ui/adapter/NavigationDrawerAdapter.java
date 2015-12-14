@@ -144,7 +144,6 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
     }
 
 }

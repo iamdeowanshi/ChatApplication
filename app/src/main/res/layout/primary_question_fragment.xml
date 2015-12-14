@@ -45,6 +45,7 @@
         android:layout_below="@+id/txt_find_match"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
+        android:layout_marginLeft="60dp"
         android:gravity="center"
         android:textColor="#fff"
         android:textSize="15.67sp"/>

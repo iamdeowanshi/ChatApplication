@@ -94,7 +94,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
     private String getTime(String time) {
         DateTime dateTime = DateTime.parse(time);
-        return dateTime.toLocalTime().getHourOfDay() + ":" + dateTime.toLocalTime().getMinuteOfHour();
+        return dateTime.toString().split("T")[1].substring(0,5);
     }
 
     @Override
