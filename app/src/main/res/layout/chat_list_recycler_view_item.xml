@@ -1,9 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent">
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="40dp">
+
+    <LinearLayout
+        android:layout_width="40dp"
+        android:layout_height="70dp"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:tag="Bottom2">
+
+        <ImageView
+            android:id="@+id/trash"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/trash" />
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <com.github.siyamed.shapeimageview.CircularImageView
+        android:id="@+id/img_dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/img_background" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@+id/img_dp"
+        android:orientation="vertical">
+
+        <com.mtvindia.connect.ui.custom.UbuntuMediumTextView
+            android:id="@+id/txt_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Priyanka"
+            android:textColor="#fff"
+            android:textSize="18sp" />
+
+        <com.mtvindia.connect.ui.custom.UbuntuTextView
+            android:id="@+id/txt_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="I dont know"
+            android:textColor="#fff"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
+        android:id="@+id/right_txt_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:text="45 mins"
+        android:textColor="#fff" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/img_dp"
+        android:layout_marginTop="15dp"
+        android:alpha=".4"
+        android:background="#ffffff" />
+    </RelativeLayout>
+
+</com.daimajia.swipe.SwipeLayout>
+
+    <!--
+
+        <?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
 
     <com.github.siyamed.shapeimageview.CircularImageView
         android:layout_width="50dp"
@@ -57,4 +140,4 @@
         android:layout_marginTop="15dp"
         android:layout_below="@+id/img_dp"/>
 
-</RelativeLayout>
+    </RelativeLayout>-->

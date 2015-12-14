@@ -87,7 +87,19 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".services.XmppReciever">
+            <intent-filter>
+                <action android:name="com.mtvindia.connect.newmessage"/>
+                <action android:name="com.mtvindia.connect.newroster"/>
+            </intent-filter>
+        </receiver>
+
         <service android:name=".ui.custom.gcm.GcmIntentService" />
+        <service
+            android:name=".services.SmackService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

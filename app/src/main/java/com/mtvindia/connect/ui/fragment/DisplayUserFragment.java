@@ -18,8 +18,8 @@ import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.data.repository.ChatMessageRepository;
+import com.mtvindia.connect.presenter.AboutUserPresenter;
 import com.mtvindia.connect.presenter.AboutUserViewInteractor;
-import com.mtvindia.connect.presenter.concrete.AboutUserPresenterImpl;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.custom.UbuntuEditText;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
@@ -40,7 +40,7 @@ import timber.log.Timber;
 public class DisplayUserFragment extends BaseFragment implements AboutUserViewInteractor {
 
     @Inject
-    AboutUserPresenterImpl presenter;
+    AboutUserPresenter presenter;
     @Inject
     UserPreference userPreference;
     @Inject
@@ -105,9 +105,10 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
             chatList.setLastMessage(edtMessage.getText().toString());
             chatList.setTime(time.toString());
             Timber.d(time.toString());
-            chatMessage.setFrom("webUser" + userPreference.readUser().getId());
-            chatMessage.setTo("webUser" + selectedUser.getId());
+            chatMessage.setFrom("webuser" + userPreference.readUser().getId());
+            chatMessage.setTo("webuser" + selectedUser.getId());
             chatMessage.setStatus("sent");
+            chatMessage.setUserId(selectedUser.getId());
             chatMessage.setCreatedTime(time.toString());
             chatMessage.setBody(edtMessage.getText().toString());
             chatMessage.setCreatedTime(time.toString());

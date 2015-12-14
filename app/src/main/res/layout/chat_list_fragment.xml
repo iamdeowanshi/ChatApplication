@@ -20,9 +20,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/chat_list"
-        android:layout_below="@+id/txt_active_chat"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="40dp"/>
+        android:layout_below="@+id/txt_active_chat" />
+
+    <com.mtvindia.connect.ui.custom.UbuntuTextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:text="No chats Available " />
 
 
 </RelativeLayout>

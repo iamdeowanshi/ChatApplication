@@ -28,6 +28,7 @@ public class AboutUserPresenterImpl extends BaseNetworkPresenter<AboutUserViewIn
         public void onResult(AboutUser result) {
             viewInteractor.hideProgress();
             viewInteractor.aboutUser(result);
+
         }
 
         @Override

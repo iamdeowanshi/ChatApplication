@@ -10,13 +10,17 @@ import java.util.List;
  */
 public interface ChatListRepository extends BaseRepository<ChatList> {
 
-    ChatMessage lastMessage(String userId);
+    ChatMessage lastMessage(int userId);
 
     List<ChatList> sortList();
 
     long size();
 
     void updateTime(long id, String time);
+
+    boolean searchUser(long userId);
+
+    void updateStatus(int id, String status);
 
 }
 
