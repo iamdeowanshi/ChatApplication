@@ -36,9 +36,9 @@ import com.mtvindia.connect.data.model.NavigationItem;
 import com.mtvindia.connect.data.model.Question;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.data.repository.ChatListRepository;
-import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
+import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
 import com.mtvindia.connect.ui.fragment.ChatListFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
@@ -222,6 +222,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
             onItemSelected(NavigationItem.PREFERENCE);
         } else if (chatListRepository.searchChat(user.getId()) != null) {
             onItemSelected(NavigationItem.CHAT);
+
         } else {
             onItemSelected(NavigationItem.FIND_PEOPLE);
         }

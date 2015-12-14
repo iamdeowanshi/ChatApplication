@@ -70,24 +70,25 @@
         android:background="@drawable/chat_box">
 
         <ImageButton
+            android:id="@+id/img_smiley"
             android:layout_width="50dp"
             android:layout_height="45dp"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:id="@+id/img_smiley"
             android:background="@android:color/transparent"
             android:src="@drawable/icon_smiley" />
 
         <com.mtvindia.connect.ui.custom.UbuntuEditText
             android:id="@+id/edt_message"
             android:layout_width="wrap_content"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_toRightOf="@+id/img_smiley"
             android:layout_toLeftOf="@+id/icon_send"
-            android:background="@android:color/transparent"
+            android:layout_toRightOf="@+id/img_smiley"
+            android:backgroundTint="@android:color/transparent"
             android:hint="Type message here..."
-            android:maxHeight="90dp"
+            android:imeOptions="actionSend|flagNoEnterAction"
+            android:maxLines="6"
             android:scrollbars="vertical"
             android:textColorHint="#c0c0c0" />
 
@@ -95,10 +96,10 @@
             android:id="@+id/icon_send"
             android:layout_width="50dp"
             android:layout_height="45dp"
-            android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
+            android:background="@android:color/transparent"
             android:src="@drawable/icon_send" />
 
     </RelativeLayout>

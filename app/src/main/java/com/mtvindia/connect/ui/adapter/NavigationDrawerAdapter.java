@@ -10,10 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mtvindia.connect.R;
+import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.ui.activity.NavigationCallBack;
 import com.mtvindia.connect.data.model.NavigationItem;
+import com.mtvindia.connect.util.UserPreference;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,6 +27,7 @@ import butterknife.ButterKnife;
  */
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDrawerAdapter.ViewHolder> {
 
+    @Inject UserPreference userPreference;
     private NavigationCallBack navigationCallbacks;
     private List<NavigationItem> navigationItems;
 
@@ -36,6 +41,9 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     @Override
     public NavigationDrawerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_layout_recycler_view_item, parent, false);
+        Injector.instance().inject(this);
+        
+        selectedPosition = (userPreference.readLoginStatus()) ? 0 : 3;
 
         return new ViewHolder(view);
     }

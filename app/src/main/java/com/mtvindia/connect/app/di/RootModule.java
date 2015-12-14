@@ -21,6 +21,7 @@ import com.mtvindia.connect.ui.activity.LoginActivity;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.adapter.ChatListAdapter;
 import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
+import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
 import com.mtvindia.connect.ui.fragment.DisplayUserFragment;
 import com.mtvindia.connect.ui.fragment.ChatListFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
@@ -63,6 +64,7 @@ import dagger.Provides;
                 LaunchActivity.class,
                 LoginActivity.class,
                 NavigationDrawerFragment.class,
+                NavigationDrawerAdapter.class,
                 NavigationActivity.class,
                 PreferenceFragment.class,
                 ProfileFragment.class,
