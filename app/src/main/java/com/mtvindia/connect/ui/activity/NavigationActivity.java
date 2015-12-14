@@ -112,6 +112,8 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
         navigationDrawerFragment.initDrawer(R.id.fragment_drawer, drawerLayout, toolbar);
 
+        user = userPreference.readUser();
+
         loadInitialItem();
     }
 
@@ -218,7 +220,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         if (isInRegistration) {
             setDrawerEnabled(false);
             onItemSelected(NavigationItem.PREFERENCE);
-        } else if (chatListRepository.size() != 0) {
+        } else if (chatListRepository.searchChat(user.getId()) != null) {
             onItemSelected(NavigationItem.CHAT);
         } else {
             onItemSelected(NavigationItem.FIND_PEOPLE);
@@ -271,7 +273,6 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
             @Override
             public void onLocationChanged(Location location) {
                 if (location != null) {
-                    user = userPreference.readUser();
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
 
@@ -431,7 +432,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
 
         if(isInRegistration) return false;
 
-        if(chatListRepository.size() != 0) return true;
+        if(chatListRepository.searchChat(user.getId()) != null) return true;
 
         return false;
     }

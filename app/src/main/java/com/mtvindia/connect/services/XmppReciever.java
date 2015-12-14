@@ -91,7 +91,7 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
     }
 
     private boolean userPresent(int userId) {
-        if ( ! chatListRepository.searchUser(userId)) {
+        if ( ! chatListRepository.searchUser(userId, user.getId())) {
             aboutUserPresenter.getAboutUser(userId, user.getAuthHeader());
             return false;
         }

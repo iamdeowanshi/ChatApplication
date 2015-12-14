@@ -65,6 +65,11 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     }
 
     @Override
+    public ChatList searchChat(long id) {
+        return realm.where(modelType).equalTo("logedinUser", id).findFirst();
+    }
+
+    @Override
     public void remove(long id) {
         realm.beginTransaction();
         find(id).removeFromRealm();
@@ -73,8 +78,10 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     }
 
     @Override
-    public boolean searchUser(long userId) {
-        return (realm.where(modelType).equalTo("id", userId).count() != 0);
+    public boolean searchUser(long userId, long logedinUser) {
+        return (realm.where(modelType)
+                .equalTo("id", userId)
+                .equalTo("logedinUser", logedinUser).count() != 0);
     }
 
     @Override
