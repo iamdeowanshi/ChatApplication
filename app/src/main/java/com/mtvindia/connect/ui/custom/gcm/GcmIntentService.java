@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.mtvindia.connect.R;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
 
 public class GcmIntentService extends IntentService {
@@ -69,8 +70,9 @@ public class GcmIntentService extends IntentService {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(this.getApplicationInfo().icon)
-                        .setContentTitle("MtvConnect")
+                        .setSmallIcon(R.drawable.icon_chat)
+                        .setContentTitle(msg.getString("name"))
+                        .setColor(getResources().getColor(R.color.purple))
                         .setContentText(msg.getString("message"))
                         .setDefaults(Notification.DEFAULT_ALL)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getString("message")))
@@ -84,4 +86,9 @@ public class GcmIntentService extends IntentService {
         mNotificationManager.notify((int) (System.currentTimeMillis()/1000), mBuilder.build());//time stamp for making different bw notification.
 
         }
+
+    private int getNotificationIcon() {
+        boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
+        return useWhiteIcon ? R.drawable.icon_launcher : R.drawable.icon_launcher;
+    }
 }

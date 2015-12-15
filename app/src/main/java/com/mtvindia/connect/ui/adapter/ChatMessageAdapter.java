@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.di.Injector;
@@ -38,6 +39,10 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     private List<ChatMessage> chatMessages;
     private User user;
 
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_HEADER = 1;
+
+
     public ChatMessageAdapter(Context context, List<ChatMessage> chatMessages) {
         this.context = context;
         this.chatMessages = chatMessages;
@@ -45,10 +50,14 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message_layout, parent, false);
         Injector.instance().inject(this);
-
         user = userPreference.readUser();
+        View view = null;
+        if (viewType == TYPE_HEADER) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message_layout, parent, false);
+
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message_header, parent, false);
+        }
 
         return new ViewHolder(view);
     }
@@ -121,6 +130,15 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+    }
+
+    class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        @Bind(R.id.txt_header)
+        TextView txtHeader;
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
         }
     }
 }
