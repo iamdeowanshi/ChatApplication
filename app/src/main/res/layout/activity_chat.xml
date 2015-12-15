@@ -91,7 +91,7 @@
     <RelativeLayout
         android:id="@+id/layout_chat"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:layout_marginBottom="5dp"
@@ -118,7 +118,7 @@
             android:backgroundTint="@android:color/transparent"
             android:hint="Type message here..."
             android:imeOptions="actionSend|flagNoEnterAction"
-            android:maxLines="6"
+            android:maxHeight="90dp"
             android:scrollbars="vertical"
             android:textColorHint="#c0c0c0" />
 

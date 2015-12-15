@@ -116,7 +116,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             return chatMessage.getBody().substring(0,12) + "...";
         }
 
-        return chatMessage.getBody();
+        return chatMessage.getBody().replace("\n"," ");
     }
 
     private ChatMessage lastMessage(int userId) {
