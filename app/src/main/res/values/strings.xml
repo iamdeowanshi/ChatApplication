@@ -13,6 +13,8 @@
     <string name="drawer_close">List Closed</string>
 
     <string name="facebook_app_id">1670274839923097</string>
+    <string name="cleverId">ZW8-W4Z-W54Z</string>
+    <string name="cleverToken">140-b01</string>
 
     <string-array name="interested_array">
         <item>Dating</item>

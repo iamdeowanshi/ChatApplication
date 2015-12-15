@@ -124,7 +124,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     private void setSeletedPosition() {
         if (userPreference.readLoginStatus()) {
             selectedPosition = 0;
-        } else {
+        } else if (userPreference.readUser() != null){
             if (chatListRepository.searchChat(userPreference.readUser().getId()) != null) {
                 selectedPosition = 3;
             } else {
