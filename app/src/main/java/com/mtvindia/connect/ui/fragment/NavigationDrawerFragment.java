@@ -55,7 +55,6 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     private NavigationCallBack navigationCallBack;
 
     private User user;
-    private NavigationItem selectedItem;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -168,8 +167,6 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         if (drawerLayout != null) {
             drawerLayout.closeDrawer(fragmentContainerView);
         }
-
-        selectedItem = item;
 
         if (navigationCallBack != null) {
             navigationCallBack.onItemSelected(item);

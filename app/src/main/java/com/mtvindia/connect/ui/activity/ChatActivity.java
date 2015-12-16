@@ -7,8 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mtvindia.connect.R;
@@ -45,12 +45,13 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
 
     @Bind(R.id.toolbar_actionbar) Toolbar toolbarActionbar;
     @Bind(R.id.chat_messages) RecyclerView chatMessages;
-    @Bind(R.id.icon_back) ImageButton iconBack;
     @Bind(R.id.img_dp) ImageView imgDp;
     @Bind(R.id.txt_name) TextView txtName;
     @Bind(R.id.txt_status) TextView txtStatus;
     @Bind(R.id.icon_send) ImageView iconSend;
     @Bind(R.id.edt_message) UbuntuEditText edtMessage;
+    @Bind(R.id.back_layout)
+    LinearLayout backClick;
 
     private ChatList chatList;
     private List<ChatMessage> chatMessagesList;
@@ -109,7 +110,7 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(chatMessages);*/
 
-        iconBack.setOnClickListener(new View.OnClickListener() {
+        backClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(NavigationActivity.class, null);

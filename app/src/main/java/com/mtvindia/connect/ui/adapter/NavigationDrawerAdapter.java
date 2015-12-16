@@ -11,14 +11,10 @@ import android.widget.TextView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.di.Injector;
-import com.mtvindia.connect.data.repository.ChatListRepository;
-import com.mtvindia.connect.ui.activity.NavigationCallBack;
 import com.mtvindia.connect.data.model.NavigationItem;
-import com.mtvindia.connect.util.UserPreference;
+import com.mtvindia.connect.ui.activity.NavigationCallBack;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,8 +24,6 @@ import butterknife.ButterKnife;
  */
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDrawerAdapter.ViewHolder> {
 
-    @Inject UserPreference userPreference;
-    @Inject ChatListRepository chatListRepository;
     private NavigationCallBack navigationCallbacks;
     private List<NavigationItem> navigationItems;
 
@@ -44,7 +38,6 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     public NavigationDrawerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_layout_recycler_view_item, parent, false);
         Injector.instance().inject(this);
-
         return new ViewHolder(view);
     }
 
@@ -52,9 +45,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     public void onBindViewHolder(NavigationDrawerAdapter.ViewHolder holder, int position) {
         holder.textView.setText(navigationItems.get(position).getText());
         holder.imageView.setImageResource(navigationItems.get(position).getIcon());
-
         handleRowEvents(holder.itemView, position);
-        if (selectedPosition == position || touchedPosition == position) {
+        if ( touchedPosition == position) {
             holder.itemView.setBackgroundResource(R.color.selected_color);
         } else {
             holder.itemView.setBackgroundColor(Color.TRANSPARENT);
@@ -118,18 +110,6 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         selectedPosition = position;
         notifyItemChanged(lastPosition);
         notifyItemChanged(position);
-    }
-
-    private void setSelectedPosition() {
-        if (userPreference.readLoginStatus()) {
-            selectedPosition = 0;
-        } else if (userPreference.readUser() != null){
-            if (chatListRepository.searchChat(userPreference.readUser().getId()) != null) {
-                selectedPosition = 3;
-            } else {
-                selectedPosition = 0;
-            }
-        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

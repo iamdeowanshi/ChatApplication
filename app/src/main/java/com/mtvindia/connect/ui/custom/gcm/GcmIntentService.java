@@ -71,6 +71,7 @@ public class GcmIntentService extends IntentService {
     private void receivedNotification(Bundle msg) {
 
         Log.v("PushMessage", msg.toString());
+        int notifyID = 1;
         int id = Integer.parseInt(msg.getString("fromUserId").split("user")[1].split("@")[0]);
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         /*Intent intent = new Intent(this, ChatActivity.class);
