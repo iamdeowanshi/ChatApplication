@@ -45,7 +45,6 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_layout_recycler_view_item, parent, false);
         Injector.instance().inject(this);
 
-        setSeletedPosition();
         return new ViewHolder(view);
     }
 
@@ -121,7 +120,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         notifyItemChanged(position);
     }
 
-    private void setSeletedPosition() {
+    private void setSelectedPosition() {
         if (userPreference.readLoginStatus()) {
             selectedPosition = 0;
         } else if (userPreference.readUser() != null){

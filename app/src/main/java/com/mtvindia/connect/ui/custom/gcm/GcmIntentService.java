@@ -13,11 +13,18 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mtvindia.connect.R;
+import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
+import com.mtvindia.connect.util.UserPreference;
+
+import javax.inject.Inject;
 
 public class GcmIntentService extends IntentService {
 
+    @Inject
+    UserPreference userPreference;
     private NotificationManager mNotificationManager;
+    private PendingIntent contentIntent;
 
 
     public GcmIntentService() {
@@ -27,6 +34,7 @@ public class GcmIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Injector.instance().inject(this);
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         // The getMessageType() intent parameter must be the intent you received
@@ -63,14 +71,25 @@ public class GcmIntentService extends IntentService {
     private void receivedNotification(Bundle msg) {
 
         Log.v("PushMessage", msg.toString());
-
+        int id = Integer.parseInt(msg.getString("fromUserId").split("user")[1].split("@")[0]);
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        /*Intent intent = new Intent(this, ChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("userID", id);
+        intent.putExtras(bundle);*/
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, LaunchActivity.class), 0);
-
+        /*if(userPreference.readUser() == null) {*/
+            contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, LaunchActivity.class), 0);
+        /*} else {
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addParentStack(ChatActivity.class);
+            stackBuilder.addNextIntent(intent);
+            contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT |  PendingIntent.FLAG_ONE_SHOT);
+        }
+*/
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.icon_chat)
+                        .setSmallIcon(R.drawable.mtv_chat_icon)
                         .setContentTitle(msg.getString("name"))
                         .setColor(getResources().getColor(R.color.purple))
                         .setContentText(msg.getString("message"))

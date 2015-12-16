@@ -166,7 +166,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         Chat chat = ChatManager.getInstanceFor(connection).createChat(toJid, this);
         try {
             chat.sendMessage(body);
-            roster.createEntry(toJid,toJid,null);
+            roster.createEntry(toJid.split("/")[0],toJid.split("/")[0],null);
         } catch (SmackException.NotConnectedException | XMPPException e) {
             e.printStackTrace();
             toast("send failed");
@@ -198,7 +198,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
                     intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                 }
                 try {
-                    roster.createEntry(message.getFrom(), message.getFrom(),null);
+                    roster.createEntry(message.getFrom().split("/")[0], message.getFrom().split("/")[0],null);
                 } catch (SmackException.NotLoggedInException e) {
                     e.printStackTrace();
                 } catch (SmackException.NoResponseException e) {
