@@ -16,6 +16,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -117,6 +119,12 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        Window window = getActivity().getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkRed));
+
         presenter.setViewInteractor(this);
         picUpdatePresenter.setViewInteractor(this);
 
@@ -210,7 +218,8 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
             user.setLastName("");
         }
 
-        user.setAbout(edtAbout.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", ""));
+        //user.setAbout(edtAbout.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", ""));
+            user.setAbout(edtAbout.getText().toString().trim());
               user.setBirthDate(year + "-" + (month) + "-" + date);
               user.setGender(txtGender.getText().toString());
 
@@ -219,9 +228,9 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
     }
 
     boolean validation() {
-        if (edtName == null || edtName.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", "").equals("")) {
+        if (edtName == null || edtName.getText().toString().trim().equals("")) {
             return validationDialogName();
-        } else if(edtAbout == null || edtAbout.getText().toString().replaceAll("(?m)^[ \t]*\r?\n", "").equals("")) {
+        } else if(edtAbout == null || edtAbout.getText().toString().trim().equals("")) {
             return validationDialogAbout();
         } else if(txtDay == null || txtMonth == null || txtYear == null || txtDay.getText().equals("") || txtMonth.getText().equals("") || txtYear .getText().equals("")) {
             return validationDialogBirthDate();

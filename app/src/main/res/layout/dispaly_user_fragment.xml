@@ -3,7 +3,6 @@
                 xmlns:app="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                xmlns:emojicon="http://schemas.android.com/apk/res-auto"
                 android:background="@drawable/gradient_purple_blue"
                 android:orientation="vertical">
 
@@ -58,51 +57,16 @@
         android:layout_centerHorizontal="true"
         android:text="Say HI to know more about them"/>
 
-    <RelativeLayout
-        android:id="@+id/layout_chat"
+    <include
+
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        layout="@layout/content"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:background="@drawable/chat_box">
-
-        <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="45dp"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:id="@+id/img_smiley"
-            android:background="@android:color/transparent"
-            android:src="@drawable/icon_smiley" />
-
-        <com.mtvindia.connect.ui.custom.UbuntuEditText
-            android:id="@+id/edt_message"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_toRightOf="@+id/img_smiley"
-            android:layout_toLeftOf="@+id/icon_send"
-            android:background="@android:color/transparent"
-            android:hint="Type message here..."
-            android:maxHeight="90dp"
-            android:scrollbars="vertical"
-            android:textColorHint="#c0c0c0" />
-
-        <ImageButton
-            android:id="@+id/icon_send"
-            android:layout_width="50dp"
-            android:layout_height="45dp"
-            android:background="@android:color/transparent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:src="@drawable/icon_send" />
-
-    </RelativeLayout>
-
+        android:id="@+id/layout_chat"/>
 
     <ProgressBar
         android:id="@+id/progress"

@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -75,7 +77,7 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.chat_fragment, container, false);
+        View view = inflater.inflate(R.layout.dispaly_user_fragment, container, false);
 
         ButterKnife.bind(this, view);
         return view;
@@ -86,6 +88,12 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        Window window = getActivity().getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkPurple));
+
         presenter.setViewInteractor(this);
 
         userId = getArguments().getInt("UserId");
@@ -97,13 +105,14 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
     }
 
     void sendMessage(AboutUser selectedUser) {
-        if(edtMessage != null || edtMessage.getText().equals("")) {
+        if( ! edtMessage.getText().toString().trim().equals("")) {
             DateTime time = DateTime.now();
-            chatList.setId(selectedUser.getId());
+            chatList.setUserId(selectedUser.getId());
             chatList.setImage(selectedUser.getProfilePic());
             chatList.setName(selectedUser.getFullName());
-            chatList.setLastMessage(edtMessage.getText().toString());
+            chatList.setLastMessage(edtMessage.getText().toString().trim());
             chatList.setTime(time.toString());
+            chatList.setLogedinUser(userPreference.readUser().getId());
             Timber.d(time.toString());
             chatMessage.setFrom("webuser" + userPreference.readUser().getId());
             chatMessage.setTo("webuser" + selectedUser.getId());
@@ -117,10 +126,12 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
 
             chatListRepository.save(chatList);
             Bundle bundle = new Bundle();
-            bundle.putInt("userId", chatList.getId());
+            bundle.putInt("userId", chatList.getUserId());
             startActivity(ChatActivity.class, bundle);
             getActivity().finish();
         }
+
+        edtMessage.setText("");
     }
 
 

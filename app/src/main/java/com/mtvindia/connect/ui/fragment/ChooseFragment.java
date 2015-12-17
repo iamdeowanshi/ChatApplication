@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -14,8 +16,10 @@ import android.widget.ProgressBar;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.data.model.User;
+import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.presenter.FindMatchPresenter;
 import com.mtvindia.connect.presenter.FindMatchViewInteractor;
+import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.QuestionPreference;
@@ -39,6 +43,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
     @Inject UserPreference userPreference;
     @Inject QuestionPreference questionPreference;
     @Inject FindMatchPresenter presenter;
+    @Inject ChatListRepository chatListRepository;
 
     @Bind(R.id.img_1)
     ImageView img1;
@@ -74,6 +79,12 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        Window window = getActivity().getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkPurple));
+
         presenter.setViewInteractor(this);
 
         User user = userPreference.readUser();
@@ -90,28 +101,47 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
     @OnClick(R.id.img_1)
     void clickedFirst() {
+        int id = matchedUser.get(0).getId();
         questionPreference.saveQuestionCount(0);
         questionPreference.savePrimaryQuestionId(0);
-        NavigationActivity navigationActivity = (NavigationActivity) getContext();
         Bundle bundle = new Bundle();
-        bundle.putInt("UserId", matchedUser.get(0).getId());
-        Fragment fragment = DisplayUserFragment.getInstance(bundle);
-        navigationActivity.addFragment(fragment);
+
+        if (userPresent(id)) {
+            bundle.putInt("userId", id);
+            startActivity(ChatActivity.class, bundle);
+            getActivity().finish();
+        } else {
+            NavigationActivity navigationActivity = (NavigationActivity) getContext();
+            bundle.putInt("UserId", id);
+            Fragment fragment = DisplayUserFragment.getInstance(bundle);
+            navigationActivity.addFragment(fragment);
+        }
+
         changePreferences();
-        toastShort("clicked first option");
     }
 
     @OnClick(R.id.img_2)
     void clickedSecond() {
+        int id = matchedUser.get(1).getId();
         questionPreference.saveQuestionCount(0);
         questionPreference.savePrimaryQuestionId(0);
-        NavigationActivity navigationActivity = (NavigationActivity) getContext();
         Bundle bundle = new Bundle();
-        bundle.putInt("UserId", matchedUser.get(1).getId());
-        Fragment fragment = DisplayUserFragment.getInstance(bundle);
-        navigationActivity.addFragment(fragment);
-        changePreferences();
-        toastShort("clicked second option");
+
+        if (userPresent(id)) {
+            bundle.putInt("userId", id);
+            startActivity(ChatActivity.class, bundle);
+            getActivity().finish();
+        } else {
+            NavigationActivity navigationActivity = (NavigationActivity) getContext();
+            bundle.putInt("UserId", id);
+            Fragment fragment = DisplayUserFragment.getInstance(bundle);
+            navigationActivity.addFragment(fragment);
+        }
+            changePreferences();
+    }
+
+    private boolean userPresent(int id) {
+        return chatListRepository.searchUser(id, userPreference.readUser().getId());
     }
 
     @OnClick(R.id.btn_skip)

@@ -20,16 +20,6 @@ public class ChatMessage extends RealmObject {
     public ChatMessage() {
     }
 
-    public ChatMessage(int id, int userId, String body, String createdTime, String status, String from, String to) {
-        this.id = id;
-        this.userId = userId;
-        this.body = body;
-        this.createdTime = createdTime;
-        this.status = status;
-        this.from = from;
-        this.to = to;
-    }
-
     public int getId() {
         return id;
     }

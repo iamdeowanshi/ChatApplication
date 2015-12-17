@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="purple">#651367</color>
+    <color name="darkPurple">#4e0e50</color>
     <color name="red">#e8204e</color>
+    <color name="darkRed">#ca1c44</color>
     <color name="blue">#00cccc</color>
     <color name="yellow">#ffcc00</color>
+    <color name="darkYellow">#eabb00</color>
     <color name="selected_color">#cdcdcd</color>
     <color name="touch_color">#be15c0</color>
     <color name="white">#fff</color>

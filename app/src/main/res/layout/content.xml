@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_chat"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_alignParentBottom="true"
+    android:background="@drawable/chat_box"
+    android:gravity="center">
+
+    <ImageButton
+        android:id="@+id/img_smiley"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent"
+        android:src="@drawable/icon_smiley" />
+
+    <com.mtvindia.connect.ui.custom.UbuntuEditText
+        android:id="@+id/edt_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="2dp"
+        android:layout_toLeftOf="@+id/icon_send"
+        android:layout_toRightOf="@+id/img_smiley"
+        android:backgroundTint="@android:color/transparent"
+        android:hint="Type message here..."
+        android:imeOptions="actionSend|flagNoEnterAction"
+        android:maxHeight="90dp"
+        android:scrollbars="vertical"
+        android:textColorHint="#c0c0c0" />
+
+    <ImageButton
+        android:id="@+id/icon_send"
+        android:layout_width="50dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent"
+        android:src="@drawable/icon_send" />
+
+</RelativeLayout>

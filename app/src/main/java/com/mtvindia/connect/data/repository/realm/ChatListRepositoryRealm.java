@@ -18,6 +18,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     private DataChangeListener dataChangeListener;
     private RealmChangeListener realmListener;
     private String status;
+
     public ChatListRepositoryRealm() {
         super(ChatList.class);
         realmListener = new RealmChangeListener() {
@@ -32,17 +33,37 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     }
 
     @Override
-    public ChatMessage lastMessage(int userId) {
+    public void save(ChatList obj) {
+        realm.beginTransaction();
+        if (realm.where(modelType).count() != 0) {
+            obj.setId((int) (getNextKey() + 1));
+        }
+        realm.copyToRealmOrUpdate(obj);
+        realm.commitTransaction();
+        realm.addChangeListener(realmListener);
+    }
+
+    private long getNextKey() {
+        return realm.where(ChatMessage.class).maximumInt("id");
+    }
+
+    @Override
+    public ChatMessage lastMessage(int id, int userId) {
         List<ChatMessage> result = realm.where(ChatMessage.class)
-                .equalTo("userId", userId)
+                .equalTo("from", "webuser" + id)
+                .equalTo("to", "webuser" + userId)
+                .or()
+                .equalTo("from", "webuser" + userId)
+                .equalTo("to", "webuser" + id)
                 .findAll();
 
         return result.get(result.size() -1);
     }
 
     @Override
-    public List<ChatList> sortList() {
+    public List<ChatList> sortList(int id) {
         RealmResults<ChatList> result = realm.where(modelType)
+                                            .equalTo("logedinUser", id)
                                           .findAll();
         result.sort("time", RealmResults.SORT_ORDER_DESCENDING);
 
@@ -56,30 +77,37 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     }
 
     @Override
-    public void updateTime(long id, String time) {
+    public void updateTime(long id, int userId, String time) {
         realm.beginTransaction();
-        ChatList item = find(id);
+        ChatList item = find(id, userId);
         item.setTime(time);
         realm.commitTransaction();
     }
 
     @Override
-    public void remove(long id) {
+    public ChatList searchChat(long id) {
+        return realm.where(modelType).equalTo("logedinUser", id).findFirst();
+    }
+
+    @Override
+    public void remove(long id, int userId) {
         realm.beginTransaction();
-        find(id).removeFromRealm();
+        find(id, userId).removeFromRealm();
         realm.commitTransaction();
         realm.addChangeListener(realmListener);
     }
 
     @Override
-    public boolean searchUser(long userId) {
-        return (realm.where(modelType).equalTo("id", userId).count() != 0);
+    public boolean searchUser(long userId, long logedinUser) {
+        return (realm.where(modelType)
+                .equalTo("userId", userId)
+                .equalTo("logedinUser", logedinUser).count() != 0);
     }
 
     @Override
-    public void updateStatus(int id, String status) {
+    public void updateStatus(int id, int userId, String status) {
         realm.beginTransaction();
-        ChatList item = find(id);
+        ChatList item = find(id, userId);
         if(item != null) {
             item.setStatus(status);
             realm.copyToRealmOrUpdate(item);

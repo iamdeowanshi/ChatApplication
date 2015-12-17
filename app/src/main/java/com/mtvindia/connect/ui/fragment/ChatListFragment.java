@@ -1,5 +1,7 @@
 package com.mtvindia.connect.ui.fragment;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,8 +9,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
@@ -20,7 +26,7 @@ import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.ChatCallBack;
 import com.mtvindia.connect.ui.adapter.ChatListAdapter;
-import com.mtvindia.connect.ui.custom.UbuntuTextView;
+import com.mtvindia.connect.util.UserPreference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +43,13 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
 
     @Inject
     ChatListRepository chatListRepository;
+    @Inject
+    UserPreference userPreference;
 
     @Bind(R.id.chat_list)
     RecyclerView userList;
     @Bind(R.id.empty_view)
-    UbuntuTextView emptyView;
+    ImageView emptyView;
     private List<ChatList> chatList = new ArrayList<>();
     private ChatMessage chatMessage;
     private ChatListAdapter chatListAdapter;
@@ -50,13 +58,17 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         injectDependencies();
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.chat_list_fragment, container, false);
+     /*   final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.BlueTheme);
+        LayoutInflater layoutInflater = inflater.cloneInContext(contextThemeWrapper);*/
 
+        View view = inflater.inflate(R.layout.chat_list_fragment, container, false);
         ButterKnife.bind(this, view);
+
         return view;
     }
 
@@ -65,16 +77,27 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        Window window = getActivity().getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkPurple));
 
         userList.setLayoutManager(layoutManager);
         userList.setHasFixedSize(true);
-        chatList = chatListRepository.sortList();
+        chatList = chatListRepository.sortList(userPreference.readUser().getId());
 
 
-        chatListAdapter = new ChatListAdapter(getContext(), chatList);
+        chatListAdapter = new ChatListAdapter(this.getContext(), chatList);
         chatListAdapter.setChatCallBack(this);
         userList.setAdapter(chatListAdapter);
         emptyView();
+
+        userList.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return false;
+            }
+        });
 
     }
 
@@ -92,16 +115,15 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
     @Override
     public void onResume() {
         super.onResume();
-        //getContext().startService(new Intent(getContext(), SmackService.class));
-       /* String ns = Context.NOTIFICATION_SERVICE;
+        getContext().startService(new Intent(getContext(), SmackService.class));
+        String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager nMgr = (NotificationManager) getContext().getSystemService(ns);
-*/
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        //disconnectChatServer();
+        disconnectChatServer();
     }
 
     private void disconnectChatServer() {
@@ -125,9 +147,15 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
     @Override
     public void onItemSelected(ChatList chatList) {
         Bundle bundle = new Bundle();
-        bundle.putInt("userId", chatList.getId());
+        bundle.putInt("userId", chatList.getUserId());
         startActivity(ChatActivity.class, bundle);
         getActivity().finish();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.chat).setVisible(false);
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override

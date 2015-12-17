@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface ChatMessageRepository extends BaseRepository<ChatMessage> {
 
-    List<ChatMessage> searchMessage(int userId);
+    List<ChatMessage> searchMessage(String from, String to);
 
 }
 

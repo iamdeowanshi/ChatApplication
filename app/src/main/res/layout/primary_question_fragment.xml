@@ -45,6 +45,7 @@
         android:layout_below="@+id/txt_find_match"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
+        android:layout_marginLeft="60dp"
         android:gravity="center"
         android:textColor="#fff"
         android:textSize="15.67sp"/>
@@ -65,7 +66,6 @@
             android:id="@+id/img_dp_big_1"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:src="@drawable/img_background"
             android:visibility="visible"
             app:siBorderColor="#fff"
             app:siBorderWidth="3dp"/>
@@ -77,7 +77,7 @@
             android:layout_height="60dp"
             android:layout_marginTop="35dp"
             android:background="#d5d5d5"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -87,7 +87,6 @@
             android:id="@+id/img_dp_big_2"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:src="@drawable/img_background"
             android:visibility="visible"
             app:siBorderColor="#fff"
             app:siBorderWidth="3dp"/>
@@ -127,7 +126,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:indeterminateTint="#c5c5c5"
-        android:indeterminateTintMode="src_atop"
         android:visibility="invisible"/>
 
 </RelativeLayout>

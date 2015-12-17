@@ -21,6 +21,8 @@ import com.mtvindia.connect.ui.activity.LoginActivity;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.adapter.ChatListAdapter;
 import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
+import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
+import com.mtvindia.connect.ui.custom.gcm.GcmIntentService;
 import com.mtvindia.connect.ui.fragment.DisplayUserFragment;
 import com.mtvindia.connect.ui.fragment.ChatListFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
@@ -58,11 +60,13 @@ import dagger.Provides;
                 MtvConnectApplication.class,
                 BaseRepositoryRealm.class,
                 SmackConnection.class,
+                GcmIntentService.class,
                 // View specific classes - activities, fragments, adapters etc
 
                 LaunchActivity.class,
                 LoginActivity.class,
                 NavigationDrawerFragment.class,
+                NavigationDrawerAdapter.class,
                 NavigationActivity.class,
                 PreferenceFragment.class,
                 ProfileFragment.class,

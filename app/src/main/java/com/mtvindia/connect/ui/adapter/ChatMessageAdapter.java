@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.di.Injector;
@@ -29,7 +30,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Sibi on 01/12/15.
  */
-public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.ViewHolder> {
+public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Inject
     UserPreference userPreference;
@@ -38,19 +39,37 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     private List<ChatMessage> chatMessages;
     private User user;
 
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_HEADER = 1;
+
+
     public ChatMessageAdapter(Context context, List<ChatMessage> chatMessages) {
         this.context = context;
         this.chatMessages = chatMessages;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message_layout, parent, false);
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return TYPE_HEADER;
+        }
+        DateTime currentDateTime = DateTime.parse(chatMessages.get(position -1).getCreatedTime());
+        DateTime messageDateTime = DateTime.parse(chatMessages.get(position).getCreatedTime());
+
+        int value = messageDateTime.getDayOfYear() - currentDateTime.getDayOfYear();
+
+        return (value != 0) ? TYPE_HEADER : TYPE_ITEM;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Injector.instance().inject(this);
-
         user = userPreference.readUser();
-
-        return new ViewHolder(view);
+        switch (viewType) {
+            case TYPE_HEADER: return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message_header, parent, false));
+            case TYPE_ITEM: return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message_layout, parent, false));
+        }
+        return null;
     }
 
     private int getWidth() {
@@ -59,17 +78,39 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch (holder.getItemViewType()) {
+            case TYPE_HEADER:
+                HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
+                configureHeaderViewHolder(headerViewHolder, position);
+                break;
+            case TYPE_ITEM:
+                ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+                configureItemViewHolder(itemViewHolder, position);
+                break;
+        }
+    }
 
-      /*  RelativeLayout.LayoutParams leftParams = (RelativeLayout.LayoutParams)holder.leftTxtLayout.getLayoutParams();
-        RelativeLayout.LayoutParams rightParams = (RelativeLayout.LayoutParams)holder.rightTxtLayout.getLayoutParams();
-*/
+    private void configureHeaderViewHolder (HeaderViewHolder holder, int position) {
+        DateTime currentDateTime = DateTime.now();
+        DateTime messageDateTime = DateTime.parse(chatMessages.get(position).getCreatedTime());
+
+        int value = currentDateTime.getDayOfYear() - messageDateTime.getDayOfYear();
+
+        if( value == 0) {
+            holder.txtHeader.setText("TODAY");
+        } else if( value == 1) {
+            holder.txtHeader.setText("YESTERDAY");
+        } else {
+            holder.txtHeader.setText(chatMessages.get(position).getCreatedTime().split("T")[0]);
+        }
+
         if (chatMessages.get(position).getFrom().equals("webuser" + user.getId())) {
             holder.rightTxtMsg.setMaxWidth((int)(getWidth()* .6));
             holder.rightTxtLayout.setVisibility(View.VISIBLE);
             holder.leftTxtLayout.setVisibility(View.GONE);
             holder.rightTxtMsg.setText(chatMessages.get(position).getBody());
-            setStatus(holder, position);
+            //setStatus(holder, position);
             holder.rightTxtTime.setText(getTime(chatMessages.get(position).getCreatedTime()));
         } else {
             holder.leftTxtMsg.setMaxWidth((int)(getWidth()*.6));
@@ -80,21 +121,38 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         }
     }
 
-    private void setStatus(ViewHolder holder, int position) {
+    private void configureItemViewHolder (ItemViewHolder holder, int position) {
+        if (chatMessages.get(position).getFrom().equals("webuser" + user.getId())) {
+            holder.rightTxtMsg.setMaxWidth((int)(getWidth()* .6));
+            holder.rightTxtLayout.setVisibility(View.VISIBLE);
+            holder.leftTxtLayout.setVisibility(View.GONE);
+            holder.rightTxtMsg.setText(chatMessages.get(position).getBody());
+            //setStatus(holder, position);
+            holder.rightTxtTime.setText(getTime(chatMessages.get(position).getCreatedTime()));
+        } else {
+            holder.leftTxtMsg.setMaxWidth((int)(getWidth()*.6));
+            holder.rightTxtLayout.setVisibility(View.GONE);
+            holder.leftTxtLayout.setVisibility(View.VISIBLE);
+            holder.leftTxtMsg.setText(chatMessages.get(position).getBody());
+            holder.leftTxtTime.setText(getTime(chatMessages.get(position).getCreatedTime()));
+        }
+    }
+
+    private void setStatus(ItemViewHolder holder, int position) {
         if (chatMessages.get(position).getStatus().equals(ChatActivity.MessageState.Sending.toString())) {
-            holder.rightTick.setImageResource(R.drawable.icon_check);
+            holder.rightTick.setImageResource(R.drawable.img_double_tick_grey);
         } else if (chatMessages.get(position).getStatus().equals(ChatActivity.MessageState.Sent.toString())) {
-            holder.rightTick.setImageResource(R.drawable.icon_double_tick);
+            holder.rightTick.setImageResource(R.drawable.img_double_tick_grey);
         } else if (chatMessages.get(position).getStatus().equals(ChatActivity.MessageState.Delivered.toString())) {
-            holder.rightTick.setImageResource(R.drawable.icon_double_tick);
+            holder.rightTick.setImageResource(R.drawable.img_double_tick_grey);
         } else if (chatMessages.get(position).getStatus().equals(ChatActivity.MessageState.Read.toString())) {
-            holder.rightTick.setImageResource(R.drawable.icon_double_tick);
+            holder.rightTick.setImageResource(R.drawable.img_double_tick_color);
         }
     }
 
     private String getTime(String time) {
         DateTime dateTime = DateTime.parse(time);
-        return dateTime.toLocalTime().getHourOfDay() + ":" + dateTime.toLocalTime().getMinuteOfHour();
+        return dateTime.toString().split("T")[1].substring(0,5);
     }
 
     @Override
@@ -102,7 +160,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         return chatMessages.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ItemViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.left_txt_msg)
         UbuntuTextView leftTxtMsg;
@@ -118,7 +176,31 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         ImageView rightTick;
         @Bind(R.id.right_txt_layout)
         RelativeLayout rightTxtLayout;
-        public ViewHolder(View itemView) {
+        public ItemViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        @Bind(R.id.txt_header)
+        TextView txtHeader;
+        @Bind(R.id.left_txt_msg)
+        UbuntuTextView leftTxtMsg;
+        @Bind(R.id.left_txt_time)
+        UbuntuTextView leftTxtTime;
+        @Bind(R.id.left_txt_layout)
+        RelativeLayout leftTxtLayout;
+        @Bind(R.id.right_txt_msg)
+        UbuntuTextView rightTxtMsg;
+        @Bind(R.id.right_txt_time)
+        UbuntuTextView rightTxtTime;
+        @Bind(R.id.right_tick)
+        ImageView rightTick;
+        @Bind(R.id.right_txt_layout)
+        RelativeLayout rightTxtLayout;
+        public HeaderViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

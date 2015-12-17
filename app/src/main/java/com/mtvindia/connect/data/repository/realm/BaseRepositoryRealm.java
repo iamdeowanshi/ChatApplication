@@ -35,8 +35,8 @@ public abstract class BaseRepositoryRealm<T extends RealmObject> implements Base
     }
 
     @Override
-    public T find(long id) {
-        return realm.where(modelType).equalTo("id", id).findFirst();
+    public T find(long id, int userId) {
+        return realm.where(modelType).equalTo("userId", id).equalTo("logedinUser", userId).findFirst();
     }
 
     @Override
@@ -45,9 +45,9 @@ public abstract class BaseRepositoryRealm<T extends RealmObject> implements Base
     }
 
     @Override
-    public void remove(long id) {
+    public void remove(long id, int userId) {
         realm.beginTransaction();
-        find(id).removeFromRealm();
+        find(id, userId).removeFromRealm();
         realm.commitTransaction();
     }
 

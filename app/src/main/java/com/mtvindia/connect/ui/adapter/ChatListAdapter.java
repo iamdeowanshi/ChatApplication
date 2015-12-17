@@ -1,26 +1,24 @@
 package com.mtvindia.connect.ui.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
-import com.daimajia.swipe.SimpleSwipeListener;
-import com.daimajia.swipe.SwipeLayout;
-import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
-import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.data.model.ChatList;
 import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.ui.activity.ChatCallBack;
+import com.mtvindia.connect.util.DialogUtil;
+import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -32,14 +30,15 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 /**
  * Created by Sibi on 26/11/15.
  */
-public class ChatListAdapter extends RecyclerSwipeAdapter<ChatListAdapter.ViewHolder> {
+public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
 
     @Inject ChatListRepository chatListRepository;
+    @Inject DialogUtil dialogUtil;
+    @Inject UserPreference userPreference;
 
     private List<ChatList> chatList;
     private Context context;
@@ -47,7 +46,7 @@ public class ChatListAdapter extends RecyclerSwipeAdapter<ChatListAdapter.ViewHo
     private ChatCallBack chatCallBack;
     private int count = 0;
 
-    protected SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
+   // protected SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
 
     public ChatListAdapter(Context context, List<ChatList> chatList) {
         this.context = context;
@@ -67,8 +66,8 @@ public class ChatListAdapter extends RecyclerSwipeAdapter<ChatListAdapter.ViewHo
         count++;
         Picasso.with(context).load(chatList.get(position).getImage()).fit().into(holder.imageDp);
         holder.txtName.setText(chatList.get(position).getName());
-        chatMessage = lastMessage(chatList.get(position).getId());
-        holder.txtChat.setText(chatMessage.getBody());
+        chatMessage = lastMessage(chatList.get(position).getUserId());
+        holder.txtChat.setText(getText(chatMessage));
 
         holder.txtTime.setText(getTime(chatMessage.getCreatedTime()));
 
@@ -84,40 +83,45 @@ public class ChatListAdapter extends RecyclerSwipeAdapter<ChatListAdapter.ViewHo
             holder.view.setVisibility(View.INVISIBLE);
         }
 
-        holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-        holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onOpen(SwipeLayout layout) {
-                holder.itemView.setClickable(false);
-                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
+            public boolean onLongClick(View view) {
+                final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog((Activity) context, "Delete Chat", "Are you sure you want to delete chat", "Yes", "No");
+                alertDialog.show();
+                alertDialog.setCancelable(true);
+                Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                Button negativeButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        chatListRepository.remove(chatList.get(position).getUserId(), userPreference.readUser().getId());
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, chatList.size());
+                        alertDialog.dismiss();
+                    }
+                });
 
-            }
-
-            @Override
-            public void onClose(SwipeLayout layout) {
-                super.onClose(layout);
-                holder.itemView.setClickable(true);
+                negativeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+                    }
+                });
+                return true;
             }
         });
-
-        holder.trash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chatListRepository.remove(chatList.get(position).getId());
-                mItemManger.removeShownLayouts(holder.swipeLayout);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, chatList.size());
-                mItemManger.closeAllItems();
-               // Timber.d("deleted :" + chatList.get(position).getId());
-            }
-        });
-
-        mItemManger.bindView(holder.itemView, position);
     }
 
+    private String getText(ChatMessage chatMessage) {
+        if (chatMessage.getBody().length() > 15) {
+            return chatMessage.getBody().substring(0,12) + "...";
+        }
+
+        return chatMessage.getBody().replace("\n"," ");
+    }
 
     private ChatMessage lastMessage(int userId) {
-       return chatListRepository.lastMessage(userId);
+       return chatListRepository.lastMessage(userId, userPreference.readUser().getId());
 
     }
 
@@ -130,20 +134,23 @@ public class ChatListAdapter extends RecyclerSwipeAdapter<ChatListAdapter.ViewHo
         long diffInMin = period.getMinutes();
         long diffInHours = period.getHours();
         long diffInDays = period.getDays();
+        long diffInWeeks = period.getWeeks();
         long diffInMonths = period.getMonths();
 
         if (diffInMonths > 12) {
             return "long time back";
         } else if (diffInMonths < 12 && diffInMonths > 0) {
             return diffInMonths + " months ago";
-        } else if (diffInDays > 0 && diffInDays < 30) {
+        } else if (diffInWeeks > 0 && diffInWeeks < 5) {
+            return diffInWeeks + " weeks ago";
+        } else if (diffInDays > 0 && diffInDays < 6) {
             return diffInDays + " days ago";
         } else if (diffInHours > 0 && diffInHours < 24) {
             return diffInHours + " hours ago";
         } else if (diffInMin > 0 && diffInMin < 60) {
             return diffInMin + " mins ago";
         } else {
-            return "moments ago";
+            return "now";
         }
     }
 
@@ -156,11 +163,6 @@ public class ChatListAdapter extends RecyclerSwipeAdapter<ChatListAdapter.ViewHo
         return chatList.size();
     }
 
-    @Override
-    public int getSwipeLayoutResourceId(int position) {
-        return R.id.swipe;
-    }
-
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.img_dp)
@@ -171,12 +173,8 @@ public class ChatListAdapter extends RecyclerSwipeAdapter<ChatListAdapter.ViewHo
         TextView txtChat;
         @Bind(R.id.right_txt_time)
         TextView txtTime;
-        @Bind(R.id.swipe)
-        SwipeLayout swipeLayout;
         @Bind(R.id.view)
         View view;
-        @Bind(R.id.trash)
-        ImageView trash;
 
         public ViewHolder(View itemView) {
             super(itemView);

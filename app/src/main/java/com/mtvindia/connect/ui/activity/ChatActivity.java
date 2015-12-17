@@ -7,8 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mtvindia.connect.R;
@@ -45,12 +45,13 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
 
     @Bind(R.id.toolbar_actionbar) Toolbar toolbarActionbar;
     @Bind(R.id.chat_messages) RecyclerView chatMessages;
-    @Bind(R.id.icon_back) ImageButton iconBack;
     @Bind(R.id.img_dp) ImageView imgDp;
     @Bind(R.id.txt_name) TextView txtName;
     @Bind(R.id.txt_status) TextView txtStatus;
     @Bind(R.id.icon_send) ImageView iconSend;
     @Bind(R.id.edt_message) UbuntuEditText edtMessage;
+    @Bind(R.id.back_layout)
+    LinearLayout backClick;
 
     private ChatList chatList;
     private List<ChatMessage> chatMessagesList;
@@ -75,17 +76,18 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
        // layoutManager.setReverseLayout(true);
 
+
+        user = userPreference.readUser();
         userId = getIntent().getIntExtra("userId", 0);
-        chatList = chatListRepository.find(userId);
-        chatMessagesList = chatMessageRepository.searchMessage(userId);
+        chatList = chatListRepository.find(userId, user.getId());
+        chatMessagesList = chatMessageRepository.searchMessage("webuser" + userId, "webuser" + user.getId());
         chatMessageRepository.setDataChangeListener(this);
         chatListRepository.setDataChangeListener(this);
         chatMessages.setLayoutManager(layoutManager);
-        chatMessages.setHasFixedSize(true);
+        chatMessages.setHasFixedSize(false);
         chatMessages.scrollToPosition(chatMessagesList.size() -1);
 
 
-        user = userPreference.readUser();
 
         chatMessageAdapter = new ChatMessageAdapter(this, chatMessagesList);
         chatMessages.setAdapter(chatMessageAdapter);
@@ -109,7 +111,7 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(chatMessages);*/
 
-        iconBack.setOnClickListener(new View.OnClickListener() {
+        backClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(NavigationActivity.class, null);
@@ -145,9 +147,12 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
     }
 
     private void sendMessage() {
-        message = edtMessage.getText().toString();
+        message = edtMessage.getText().toString().trim();
 
-        if (message.equals("")) return;
+        if (message.equals("")) {
+            edtMessage.setText("");
+            return;
+        }
 
         DateTime time = DateTime.now();
         chatMessage.setCreatedTime(time.toString());
@@ -156,7 +161,7 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
         chatMessage.setFrom("webuser" + user.getId());
         chatMessage.setTo("webuser" + userId);
         chatMessage.setUserId(userId);
-        chatListRepository.updateTime(userId, time.toString());
+        chatListRepository.updateTime(userId, user.getId(), time.toString());
         edtMessage.setText("");
         chatMessageRepository.save(chatMessage);
         chatMessageAdapter.notifyDataSetChanged();

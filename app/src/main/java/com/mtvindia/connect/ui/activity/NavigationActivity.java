@@ -15,6 +15,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -34,9 +36,9 @@ import com.mtvindia.connect.data.model.NavigationItem;
 import com.mtvindia.connect.data.model.Question;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.data.repository.ChatListRepository;
-import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
+import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
 import com.mtvindia.connect.ui.fragment.ChatListFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
@@ -70,6 +72,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     @Bind(R.id.drawer) DrawerLayout drawerLayout;
 
     private NavigationDrawerFragment navigationDrawerFragment;
+    private boolean isInRegistration;
     private Fragment fragment;
     private User user;
 
@@ -109,6 +112,8 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
         navigationDrawerFragment.initDrawer(R.id.fragment_drawer, drawerLayout, toolbar);
 
+        user = userPreference.readUser();
+
         loadInitialItem();
     }
 
@@ -119,6 +124,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         } else {
             final AlertDialog alertDialog = (AlertDialog) dialogUtil.createAlertDialog(NavigationActivity.this, "Exit", "Do you want to exit", "Yes", "No");
             alertDialog.show();
+            alertDialog.setCancelable(true);
             Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
             Button negativeButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
             positiveButton.setOnClickListener(new View.OnClickListener() {
@@ -209,13 +215,14 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     }
 
     private void loadInitialItem() {
-        boolean isInRegistration = userPreference.readLoginStatus();
+        isInRegistration = userPreference.readLoginStatus();
 
         if (isInRegistration) {
             setDrawerEnabled(false);
             onItemSelected(NavigationItem.PREFERENCE);
-        } else if (chatListRepository.size() != 0) {
+        } else if (chatListRepository.searchChat(user.getId()) != null) {
             onItemSelected(NavigationItem.CHAT);
+
         } else {
             onItemSelected(NavigationItem.FIND_PEOPLE);
         }
@@ -267,7 +274,6 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
             @Override
             public void onLocationChanged(Location location) {
                 if (location != null) {
-                    user = userPreference.readUser();
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
 
@@ -421,4 +427,26 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_navigation, menu);
+
+        if(isInRegistration) return false;
+
+        if(chatListRepository.searchChat(user.getId()) != null) return true;
+
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                onItemSelected(NavigationItem.CHAT);
+                return true;
+            }
+        });
+        return super.onOptionsItemSelected(item);
+    }
 }
