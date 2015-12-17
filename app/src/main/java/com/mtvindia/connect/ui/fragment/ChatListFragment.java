@@ -1,5 +1,7 @@
 package com.mtvindia.connect.ui.fragment;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.mtvindia.connect.R;
@@ -59,9 +63,12 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.chat_list_fragment, container, false);
+     /*   final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.BlueTheme);
+        LayoutInflater layoutInflater = inflater.cloneInContext(contextThemeWrapper);*/
 
+        View view = inflater.inflate(R.layout.chat_list_fragment, container, false);
         ButterKnife.bind(this, view);
+
         return view;
     }
 
@@ -70,6 +77,10 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        Window window = getActivity().getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkPurple));
 
         userList.setLayoutManager(layoutManager);
         userList.setHasFixedSize(true);
@@ -104,16 +115,15 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
     @Override
     public void onResume() {
         super.onResume();
-        //getContext().startService(new Intent(getContext(), SmackService.class));
-       /* String ns = Context.NOTIFICATION_SERVICE;
+        getContext().startService(new Intent(getContext(), SmackService.class));
+        String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager nMgr = (NotificationManager) getContext().getSystemService(ns);
-*/
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        //disconnectChatServer();
+        disconnectChatServer();
     }
 
     private void disconnectChatServer() {

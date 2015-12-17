@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.mtvindia.connect.R;
@@ -90,6 +92,11 @@ public class ResultFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        Window window = getActivity().getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkYellow));
 
         response = questionPreference.readResultResponse();
         progressBarView = new View[]{circle1, circle2, circle3, circle4, circle5, circle6, circle7, circle8, circle9, circle10};

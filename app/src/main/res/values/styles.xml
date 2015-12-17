@@ -3,10 +3,18 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowActionBarOverlay">false</item>
         <!--<item name="colorPrimaryDark">#dd204b</item>-->
 </style>
+
+    <style name="BlueTheme" parent="AppTheme">
+        <item name="android:colorPrimaryDark">@color/darkPurple</item>
+    </style>
+
+    <style name="RedTheme" parent="AppTheme">
+        <item name="android:colorPrimaryDark">@color/darkRed</item>
+    </style>
 
     <style name="ChatTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowFullscreen">true</item>
@@ -50,5 +58,10 @@
     <style name="InvisibleProgress">
         <item name="android:visibility">gone</item>
     </style>
+
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>
