@@ -9,11 +9,11 @@ public interface BaseRepository<T> {
 
     void save(T obj);
 
-    T find(long id);
+    T find(long id, int userId);
 
     List<T> readAll();
 
-    void remove(long id);
+    void remove(long id, int userId);
 
     void setDataChangeListener(DataChangeListener changeListener);
 

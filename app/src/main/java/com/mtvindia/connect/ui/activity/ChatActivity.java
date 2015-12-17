@@ -79,7 +79,7 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
 
         user = userPreference.readUser();
         userId = getIntent().getIntExtra("userId", 0);
-        chatList = chatListRepository.find(userId);
+        chatList = chatListRepository.find(userId, user.getId());
         chatMessagesList = chatMessageRepository.searchMessage("webuser" + userId, "webuser" + user.getId());
         chatMessageRepository.setDataChangeListener(this);
         chatListRepository.setDataChangeListener(this);
@@ -161,7 +161,7 @@ public class ChatActivity extends BaseActivity implements DataChangeListener {
         chatMessage.setFrom("webuser" + user.getId());
         chatMessage.setTo("webuser" + userId);
         chatMessage.setUserId(userId);
-        chatListRepository.updateTime(userId, time.toString());
+        chatListRepository.updateTime(userId, user.getId(), time.toString());
         edtMessage.setText("");
         chatMessageRepository.save(chatMessage);
         chatMessageAdapter.notifyDataSetChanged();

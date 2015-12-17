@@ -107,7 +107,7 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
     void sendMessage(AboutUser selectedUser) {
         if( ! edtMessage.getText().toString().trim().equals("")) {
             DateTime time = DateTime.now();
-            chatList.setId(selectedUser.getId());
+            chatList.setUserId(selectedUser.getId());
             chatList.setImage(selectedUser.getProfilePic());
             chatList.setName(selectedUser.getFullName());
             chatList.setLastMessage(edtMessage.getText().toString().trim());
@@ -126,7 +126,7 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
 
             chatListRepository.save(chatList);
             Bundle bundle = new Bundle();
-            bundle.putInt("userId", chatList.getId());
+            bundle.putInt("userId", chatList.getUserId());
             startActivity(ChatActivity.class, bundle);
             getActivity().finish();
         }

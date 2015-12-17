@@ -147,7 +147,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
     @Override
     public void onItemSelected(ChatList chatList) {
         Bundle bundle = new Bundle();
-        bundle.putInt("userId", chatList.getId());
+        bundle.putInt("userId", chatList.getUserId());
         startActivity(ChatActivity.class, bundle);
         getActivity().finish();
     }

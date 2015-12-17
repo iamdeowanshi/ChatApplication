@@ -12,6 +12,7 @@ public class ChatList extends RealmObject {
 
     @PrimaryKey
     private int id;
+    private int userId;
     private int logedinUser;
     private String image;
     private String name;
@@ -25,6 +26,14 @@ public class ChatList extends RealmObject {
 
     public void setId(int userId) {
         this.id = userId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getLogedinUser() {

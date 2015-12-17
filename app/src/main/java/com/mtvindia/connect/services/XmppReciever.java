@@ -66,7 +66,7 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
                     Timber.d(s);
                     int id = Integer.parseInt(s.split("user")[1].split("@")[0]);
                     String status = s.split(":")[1];
-                    chatListRepository.updateStatus(id, status);
+                    chatListRepository.updateStatus(id, user.getId(), status);
                 }
                 break;
         }
@@ -85,7 +85,7 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
         chatMessage.setUserId(userId);
         chatMessageRepository.save(chatMessage);
         if(userPresent(userId)) {
-            chatListRepository.updateTime(userId, time.toString());
+            chatListRepository.updateTime(userId, user.getId(),  time.toString());
         }
 
     }
@@ -116,11 +116,11 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
 
     @Override
     public void aboutUser(AboutUser aboutUser) {
-        chatList.setId(aboutUser.getId());
+        chatList.setUserId(aboutUser.getId());
         chatList.setImage(aboutUser.getProfilePic());
         chatList.setName(aboutUser.getFullName());
         chatList.setLogedinUser(user.getId());
         chatListRepository.save(chatList);
-        chatListRepository.updateTime(userId, time.toString());
+        chatListRepository.updateTime(userId, user.getId(), time.toString());
     }
 }

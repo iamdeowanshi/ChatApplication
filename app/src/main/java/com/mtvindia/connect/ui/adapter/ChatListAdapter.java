@@ -18,6 +18,7 @@ import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.ui.activity.ChatCallBack;
 import com.mtvindia.connect.util.DialogUtil;
+import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -36,8 +37,8 @@ import butterknife.ButterKnife;
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
 
     @Inject ChatListRepository chatListRepository;
-    @Inject
-    DialogUtil dialogUtil;
+    @Inject DialogUtil dialogUtil;
+    @Inject UserPreference userPreference;
 
     private List<ChatList> chatList;
     private Context context;
@@ -65,7 +66,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         count++;
         Picasso.with(context).load(chatList.get(position).getImage()).fit().into(holder.imageDp);
         holder.txtName.setText(chatList.get(position).getName());
-        chatMessage = lastMessage(chatList.get(position).getId());
+        chatMessage = lastMessage(chatList.get(position).getUserId());
         holder.txtChat.setText(getText(chatMessage));
 
         holder.txtTime.setText(getTime(chatMessage.getCreatedTime()));
@@ -93,7 +94,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        chatListRepository.remove(chatList.get(position).getId());
+                        chatListRepository.remove(chatList.get(position).getUserId(), userPreference.readUser().getId());
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, chatList.size());
                         alertDialog.dismiss();
@@ -120,7 +121,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     }
 
     private ChatMessage lastMessage(int userId) {
-       return chatListRepository.lastMessage(userId);
+       return chatListRepository.lastMessage(userId, userPreference.readUser().getId());
 
     }
 
