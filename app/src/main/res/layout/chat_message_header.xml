@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp">
 
@@ -37,11 +39,12 @@
             android:paddingBottom="5dp"
             android:paddingRight="5dp">
 
-            <com.mtvindia.connect.ui.custom.UbuntuTextView
+            <com.rockerhieu.emojicon.EmojiconTextView
                 android:id="@+id/left_txt_msg"
+                emojicon:emojiconSize="22sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
+                android:textSize="17sp"
                 android:text="bsjbf djkhfh djfjs jdnbkjf bjbsd bjkd jbcj bd fjbv bjdvjb" />
 
             <com.mtvindia.connect.ui.custom.UbuntuTextView
@@ -71,12 +74,13 @@
             android:paddingBottom="5dp"
             android:paddingRight="5dp">
 
-            <com.mtvindia.connect.ui.custom.UbuntuTextView
+            <com.rockerhieu.emojicon.EmojiconTextView
                 android:id="@+id/right_txt_msg"
+                emojicon:emojiconSize="22sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="iuwfwbiuwfb bjuwf dnfjnd"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <com.mtvindia.connect.ui.custom.UbuntuTextView
                 android:id="@+id/right_txt_time"

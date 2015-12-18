@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_chat"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -19,7 +20,7 @@
         android:background="@android:color/transparent"
         android:src="@drawable/icon_smiley" />
 
-    <com.mtvindia.connect.ui.custom.UbuntuEditText
+<!--    <com.mtvindia.connect.ui.custom.UbuntuEditText
         android:id="@+id/edt_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +33,24 @@
         android:imeOptions="actionSend|flagNoEnterAction"
         android:maxHeight="90dp"
         android:scrollbars="vertical"
-        android:textColorHint="#c0c0c0" />
+        android:textColorHint="#c0c0c0" />-->
+
+    <com.rockerhieu.emojicon.EmojiconEditText
+        android:id="@+id/edt_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="2dp"
+        android:layout_toLeftOf="@+id/icon_send"
+        android:layout_toRightOf="@+id/img_smiley"
+        android:backgroundTint="@android:color/transparent"
+        android:hint="Type message here..."
+        android:imeOptions="flagNoExtractUi|actionSend|flagNoEnterAction"
+        android:inputType="textAutoCorrect|textCapSentences|textMultiLine"
+        android:maxHeight="90dp"
+        android:scrollbars="vertical"
+        android:textColorHint="#c0c0c0"
+        emojicon:emojiconSize="22sp" />
 
     <ImageButton
         android:id="@+id/icon_send"

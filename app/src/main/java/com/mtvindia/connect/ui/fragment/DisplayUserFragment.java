@@ -26,6 +26,7 @@ import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.custom.UbuntuEditText;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.UserPreference;
+import com.rockerhieu.emojicon.EmojiconEditText;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -61,7 +62,7 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
     @Bind(R.id.txt_common)
     UbuntuTextView txtCommon;
     @Bind(R.id.edt_message)
-    UbuntuEditText edtMessage;
+    EmojiconEditText edtMessage;
     @Bind(R.id.icon_send)
     ImageView iconSend;
 

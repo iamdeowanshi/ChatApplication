@@ -17,6 +17,7 @@ import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.UserPreference;
+import com.rockerhieu.emojicon.EmojiconTextView;
 
 import org.joda.time.DateTime;
 
@@ -163,13 +164,13 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.left_txt_msg)
-        UbuntuTextView leftTxtMsg;
+        EmojiconTextView leftTxtMsg;
         @Bind(R.id.left_txt_time)
         UbuntuTextView leftTxtTime;
         @Bind(R.id.left_txt_layout)
         RelativeLayout leftTxtLayout;
         @Bind(R.id.right_txt_msg)
-        UbuntuTextView rightTxtMsg;
+        EmojiconTextView rightTxtMsg;
         @Bind(R.id.right_txt_time)
         UbuntuTextView rightTxtTime;
         @Bind(R.id.right_tick)
@@ -187,13 +188,13 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         @Bind(R.id.txt_header)
         TextView txtHeader;
         @Bind(R.id.left_txt_msg)
-        UbuntuTextView leftTxtMsg;
+        EmojiconTextView leftTxtMsg;
         @Bind(R.id.left_txt_time)
         UbuntuTextView leftTxtTime;
         @Bind(R.id.left_txt_layout)
         RelativeLayout leftTxtLayout;
         @Bind(R.id.right_txt_msg)
-        UbuntuTextView rightTxtMsg;
+        EmojiconTextView rightTxtMsg;
         @Bind(R.id.right_txt_time)
         UbuntuTextView rightTxtTime;
         @Bind(R.id.right_tick)

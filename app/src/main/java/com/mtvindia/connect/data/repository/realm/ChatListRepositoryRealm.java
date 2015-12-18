@@ -17,7 +17,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     private DataChangeListener dataChangeListener;
     private RealmChangeListener realmListener;
-    private String status;
+    private String status = "Offline";
 
     public ChatListRepositoryRealm() {
         super(ChatList.class);
@@ -111,9 +111,9 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
         if(item != null) {
             item.setStatus(status);
             realm.copyToRealmOrUpdate(item);
+            this.status = status;
         }
         realm.commitTransaction();
-        this.status = status;
         realm.addChangeListener(realmListener);
     }
 

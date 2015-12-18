@@ -62,6 +62,12 @@
         android:layout_marginRight="5dp"
         android:id="@+id/layout_chat"/>
 
+    <FrameLayout
+        android:id="@+id/emojicons"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:visibility="gone"/>
+
 <!--    <RelativeLayout
         android:id="@+id/layout_chat"
         android:layout_width="match_parent"

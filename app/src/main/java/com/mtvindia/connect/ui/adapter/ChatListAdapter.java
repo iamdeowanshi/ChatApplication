@@ -19,6 +19,7 @@ import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.ui.activity.ChatCallBack;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.UserPreference;
+import com.rockerhieu.emojicon.EmojiconTextView;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -170,7 +171,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         @Bind(R.id.txt_name)
         TextView txtName;
         @Bind(R.id.txt_chat)
-        TextView txtChat;
+        EmojiconTextView txtChat;
         @Bind(R.id.right_txt_time)
         TextView txtTime;
         @Bind(R.id.view)
