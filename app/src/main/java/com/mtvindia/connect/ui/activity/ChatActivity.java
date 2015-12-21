@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -59,7 +60,7 @@ public class ChatActivity extends BaseActivity implements DataChangeListener, Em
     @Inject
     UserPreference userPreference;
     @Inject
-    ViewUtil  viewUtil;
+    ViewUtil viewUtil;
 
     @Bind(R.id.toolbar_actionbar)
     Toolbar toolbarActionbar;
@@ -121,7 +122,7 @@ public class ChatActivity extends BaseActivity implements DataChangeListener, Em
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         // layoutManager.setReverseLayout(true);
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, (int) (getHeight()*.4));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, (int) (getHeight() * .4));
         emojicons.setLayoutParams(lp);
 
         user = userPreference.readUser();
@@ -158,7 +159,7 @@ public class ChatActivity extends BaseActivity implements DataChangeListener, Em
             }
         });
 
-        smiley.setOnClickListener(new View.OnClickListener() {
+   /*     smiley.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (emojicons.getVisibility() == View.GONE ) {
@@ -175,23 +176,31 @@ public class ChatActivity extends BaseActivity implements DataChangeListener, Em
             public void onClick(View view) {
                 if (emojicons.getVisibility() == View.VISIBLE) emojicons.setVisibility(View.GONE);
             }
+        });*/
+
+        edtMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        chatMessages.scrollToPosition(chatMessagesList.size() - 1);
+                    }
+                }, 1000);
+            }
         });
 
     }
 
-    public boolean keyopen()
-    {
-        Rect rectgle= new Rect();
-        Window window= getWindow();
+    public boolean keyopen() {
+        Rect rectgle = new Rect();
+        Window window = getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(rectgle);
-        int curheight= rectgle.bottom;
+        int curheight = rectgle.bottom;
 
-        if (curheight!=getHeight())
-        {
+        if (curheight != getHeight()) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -267,7 +276,7 @@ public class ChatActivity extends BaseActivity implements DataChangeListener, Em
 
     @Override
     public void onStatusChanged(String status) {
-        txtStatus.setText(status);
+        txtStatus.setText(chatListRepository.getStatus(userId, user.getId()));
     }
 
 
@@ -279,7 +288,7 @@ public class ChatActivity extends BaseActivity implements DataChangeListener, Em
 
     @Override
     public void onBackPressed() {
-        if(emojicons.getVisibility() == View.VISIBLE) {
+        if (emojicons.getVisibility() == View.VISIBLE) {
             emojicons.setVisibility(View.GONE);
             return;
         }

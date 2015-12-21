@@ -86,6 +86,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
         userList.setHasFixedSize(true);
         chatList = chatListRepository.sortList(userPreference.readUser().getId());
 
+        chatListRepository.setDataChangeListener(this);
 
         chatListAdapter = new ChatListAdapter(this.getContext(), chatList);
         chatListAdapter.setChatCallBack(this);
@@ -115,6 +116,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
     @Override
     public void onResume() {
         super.onResume();
+        chatListAdapter.notifyDataSetChanged();
         getContext().startService(new Intent(getContext(), SmackService.class));
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager nMgr = (NotificationManager) getContext().getSystemService(ns);
@@ -141,7 +143,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+       // ButterKnife.unbind(this);
     }
 
     @Override
