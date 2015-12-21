@@ -51,6 +51,8 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
         user = userPreference.readUser();
         aboutUserPresenter.setViewInteractor(this);
 
+        if(user == null) return;
+
         switch (action) {
             case SmackService.NEW_MESSAGE:
                 String from = intent.getStringExtra(SmackService.BUNDLE_FROM_JID);

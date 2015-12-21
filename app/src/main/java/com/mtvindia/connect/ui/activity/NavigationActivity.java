@@ -39,6 +39,7 @@ import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
 import com.mtvindia.connect.services.SmackService;
+import com.mtvindia.connect.services.XmppReciever;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
 import com.mtvindia.connect.ui.fragment.ChatListFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
@@ -77,6 +78,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     private User user;
 
     final static int REQUEST_LOCATION = 1000;
+    private final BroadcastReceiver xmppReciever = new XmppReciever();
 
     private GoogleApiClient googleApiClient;
 

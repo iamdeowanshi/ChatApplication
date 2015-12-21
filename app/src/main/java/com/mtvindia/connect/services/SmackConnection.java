@@ -107,6 +107,10 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
 
     public void disconnect() {
         Log.i(TAG, "disconnect()");
+        if (receiver != null) {
+            context.unregisterReceiver(receiver);
+            receiver = null;
+        }
         try {
             if (connection != null) {
                 connection.disconnect();
@@ -117,15 +121,11 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         }
 
         connection = null;
-        if (receiver != null) {
-            context.unregisterReceiver(receiver);
-            receiver = null;
-        }
     }
 
     private void rebuildRoster() {
         userList = new ArrayList<>();
-
+        if(connection == null) return;
         String status;
         for (RosterEntry entry : connection.getRoster().getEntries()) {
             if (connection.getRoster().getPresence(entry.getUser()).isAvailable()) {

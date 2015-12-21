@@ -17,7 +17,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     private DataChangeListener dataChangeListener;
     private RealmChangeListener realmListener;
-    private String status;
+    private String status = "Offline";
 
     public ChatListRepositoryRealm() {
         super(ChatList.class);
@@ -44,7 +44,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     }
 
     private long getNextKey() {
-        return realm.where(ChatMessage.class).maximumInt("id");
+        return realm.where(ChatList.class).maximumInt("id");
     }
 
     @Override
@@ -105,15 +105,22 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     }
 
     @Override
+    public String getStatus(int id, int userId) {
+        ChatList chatList = realm.where(modelType).equalTo("userId", id).equalTo("logedinUser", userId).findFirst();
+
+        return chatList.getStatus();
+    }
+
+    @Override
     public void updateStatus(int id, int userId, String status) {
         realm.beginTransaction();
         ChatList item = find(id, userId);
         if(item != null) {
             item.setStatus(status);
             realm.copyToRealmOrUpdate(item);
+            this.status = status;
         }
         realm.commitTransaction();
-        this.status = status;
         realm.addChangeListener(realmListener);
     }
 
@@ -127,4 +134,5 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
         super.removeDataChangeListener();
         realm.removeChangeListener(realmListener);
     }
+
 }

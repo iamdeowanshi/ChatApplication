@@ -23,6 +23,9 @@ public class GcmIntentService extends IntentService {
 
     @Inject
     UserPreference userPreference;
+
+    static final int MY_NOTIFICATION_ID = 1;
+
     private NotificationManager mNotificationManager;
     private PendingIntent contentIntent;
 
@@ -90,7 +93,7 @@ public class GcmIntentService extends IntentService {
 */
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.mtv_chat_icon)
+                        .setSmallIcon(getNotificationIcon())
                         .setContentTitle(msg.getString("name"))
                         .setColor(getResources().getColor(R.color.purple))
                         .setContentText(msg.getString("message"))
@@ -103,12 +106,12 @@ public class GcmIntentService extends IntentService {
         Notification note = mBuilder.build();
         note.defaults |= Notification.DEFAULT_VIBRATE;
         note.defaults |= Notification.DEFAULT_SOUND;
-        mNotificationManager.notify((int) (System.currentTimeMillis()/1000), mBuilder.build());//time stamp for making different bw notification.
-
+        mNotificationManager.notify(MY_NOTIFICATION_ID /*(int) (System.currentTimeMillis()/1000)*/, mBuilder.build());//time stamp for making different bw notification.
+       // mNotificationManager(MY_NOTIFICATION_ID, noti)
         }
 
     private int getNotificationIcon() {
         boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
-        return useWhiteIcon ? R.drawable.icon_launcher : R.drawable.icon_launcher;
+        return useWhiteIcon ? R.drawable.mtv_chat_icon : R.drawable.icon_launcher;
     }
 }
