@@ -103,7 +103,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         } else if( value == 1) {
             holder.txtHeader.setText("YESTERDAY");
         } else {
-            holder.txtHeader.setText(chatMessages.get(position).getCreatedTime().split("T")[0]);
+            holder.txtHeader.setText(DateTime.parse(chatMessages.get(position).getCreatedTime()).toString("MMMM dd YYYY"));
         }
 
         if (chatMessages.get(position).getFrom().equals("webuser" + user.getId())) {
@@ -153,7 +153,8 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private String getTime(String time) {
         DateTime dateTime = DateTime.parse(time);
-        return dateTime.toString().split("T")[1].substring(0,5);
+        return dateTime.toString("hh:mm a");
+
     }
 
     @Override
