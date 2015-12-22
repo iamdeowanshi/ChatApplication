@@ -1,5 +1,6 @@
 package com.mtvindia.connect.ui.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -83,7 +84,9 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
         Window window = getActivity().getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkPurple));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkPurple));
+        }
 
         presenter.setViewInteractor(this);
 

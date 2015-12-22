@@ -1,6 +1,8 @@
 package com.mtvindia.connect.app;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.clevertap.android.sdk.ActivityLifecycleCallback;
 import com.crashlytics.android.Crashlytics;
@@ -29,6 +31,12 @@ public class MtvConnectApplication extends Application {
         // Plant Timber tree for Logging
         Timber.plant(new Timber.DebugTree());
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
 }

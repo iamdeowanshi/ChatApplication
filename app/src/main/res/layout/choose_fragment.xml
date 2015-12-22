@@ -16,7 +16,7 @@
         android:textColor="#fff"
         android:textSize="20sp" />
 
-    <RelativeLayout
+   <!-- <RelativeLayout
         android:id="@+id/option_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -64,14 +64,84 @@
             android:textColor="#fff"
             android:textSize="12sp" />
 
-    </RelativeLayout>
+    </RelativeLayout>-->
+    <LinearLayout
+        android:id="@+id/img_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_choose"
+        android:layout_marginTop="30dp"
+        android:gravity="center_horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+            <com.github.siyamed.shapeimageview.CircularImageView
+                android:id="@+id/img_1"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:visibility="visible"
+                app:siBorderColor="#fff"
+                app:siBorderWidth="3dp"/>
+        </LinearLayout>
 
+        <View
+            android:id="@+id/view"
+            android:layout_width="1dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="35dp"
+            android:background="#d5d5d5"
+            android:visibility="gone"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal">
+            <com.github.siyamed.shapeimageview.CircularImageView
+                android:id="@+id/img_2"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:visibility="visible"
+                app:siBorderColor="#fff"
+                app:siBorderWidth="3dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/option_layout"
+        android:layout_below="@+id/img_layout"
+        android:layout_marginTop="10dp">
+
+        <com.mtvindia.connect.ui.custom.UbuntuTextView
+            android:id="@+id/txt_user1_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="#fff"
+            android:textSize="12sp"/>
+
+        <com.mtvindia.connect.ui.custom.UbuntuTextView
+            android:id="@+id/txt_user2_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/view"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="#fff"
+            android:textSize="12sp"/>
+    </LinearLayout>
     <com.mtvindia.connect.ui.custom.UbuntuButton
         android:id="@+id/btn_skip"
-        android:layout_width="260dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/option_layout"
         android:layout_marginLeft="60dp"
+        android:layout_marginRight="40dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/bg_button_state"
         android:text="Skip"
