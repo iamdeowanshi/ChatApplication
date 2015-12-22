@@ -1,12 +1,12 @@
 package com.mtvindia.connect.ui.activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
 import com.mtvindia.connect.R;
@@ -24,7 +24,6 @@ import com.mtvindia.connect.util.social.SocialAuthCallback;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
 
@@ -36,8 +35,9 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     @Inject NetworkUtil networkUtil;
     @Inject DialogUtil dialogUtil;
 
-    @Bind(R.id.progress_sign_in) ProgressBar progressSignIn;
+    /*@Bind(R.id.progress_sign_in) ProgressBar progressSignIn;*/
 
+    private ProgressDialog progressDialog;
     private SocialAuth socialAuth;
     private String deviceToken;
 
@@ -142,12 +142,18 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
 
     @Override
     public void showProgress() {
-        progressSignIn.setVisibility(View.VISIBLE);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setMessage("Logging in");
+        progressDialog.show();
+        //progressSignIn.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        progressSignIn.setVisibility(View.GONE);
+        progressDialog.dismiss();
+        //progressSignIn.setVisibility(View.GONE);
     }
 
     @Override

@@ -5,159 +5,168 @@
     android:background="@drawable/gradient_red_purple"
     android:orientation="vertical">
 
-    <com.mtvindia.connect.ui.custom.UbuntuTextView
-        android:id="@+id/txt_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="45dp"
-        android:layout_marginTop="70dp"
-        android:text="Edit your preference"
-        android:textColor="#fff"
-        android:textSize="22sp" />
-
     <LinearLayout
-        android:id="@+id/layout_interested"
-        android:layout_width="wrap_content"
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_view"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/img_dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:gravity="center"
-            android:src="@drawable/icon_interested" />
+        android:layout_marginRight="40dp"
+        android:orientation="vertical">
 
         <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/txt_view2"
+            android:id="@+id/txt_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/img_dp"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/img_dp"
-            android:gravity="center"
-            android:text="I&apos;m interested in"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="45dp"
+            android:layout_marginTop="70dp"
+            android:text="Edit your preference"
             android:textColor="#fff"
-            android:textSize="16.5sp" />
+            android:textSize="22sp" />
 
+        <LinearLayout
+            android:id="@+id/layout_interested"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_view"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img_dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                android:src="@drawable/icon_interested" />
+
+            <com.mtvindia.connect.ui.custom.UbuntuTextView
+                android:id="@+id/txt_view2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/img_dp"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/img_dp"
+                android:gravity="center"
+                android:text="I&apos;m interested in"
+                android:textColor="#fff"
+                android:textSize="16.5sp" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_dialog_interested"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/layout_interested"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center">
+
+            <com.mtvindia.connect.ui.custom.UbuntuTextView
+                android:id="@+id/txt_interested"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Select interested in"
+
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                android:textSize="13.5sp" />
+
+            <ImageView
+                android:id="@+id/icon_drop_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingRight="15dp"
+                android:src="@drawable/icon_dropdown" />
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/txt_interested"
+                android:background="#e9e9e9" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_meet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_dialog_interested"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img_meet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view1"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                android:src="@drawable/icon_meet" />
+
+            <com.mtvindia.connect.ui.custom.UbuntuTextView
+                android:id="@+id/txt_view3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:gravity="center"
+                android:text="I'd like to meet"
+                android:textColor="#fff"
+                android:textSize="16.5sp" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_dialog_meet"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/layout_meet"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center">
+
+            <com.mtvindia.connect.ui.custom.UbuntuTextView
+                android:id="@+id/txt_meet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Select like to meet"
+                android:textColor="#fff"
+                android:textColorHint="#fff"
+                android:textSize="13.5sp" />
+
+            <ImageView
+                android:id="@+id/icon_drop_down2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingRight="15dp"
+                android:src="@drawable/icon_dropdown" />
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/txt_meet"
+                android:background="#e9e9e9" />
+
+        </RelativeLayout>
     </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/layout_dialog_interested"
-        android:layout_width="270dp"
-        android:layout_height="30dp"
-        android:layout_below="@+id/layout_interested"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="15dp"
-        android:gravity="center">
-
-        <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/txt_interested"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Select interested in"
-
-            android:textColorHint="#fff"
-            android:textColor="#fff"
-            android:textSize="13.5sp" />
-
-        <ImageView
-            android:id="@+id/icon_drop_down"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:paddingRight="15dp"
-            android:src="@drawable/icon_dropdown" />
-
-        <View
-            android:id="@+id/view1"
-            android:layout_width="270dp"
-            android:layout_height="1dp"
-            android:layout_below="@+id/txt_interested"
-            android:background="#e9e9e9" />
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_meet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_dialog_interested"
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/img_meet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/view1"
-            android:layout_marginLeft="30dp"
-            android:gravity="center"
-            android:src="@drawable/icon_meet" />
-
-        <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/txt_view3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:gravity="center"
-            android:text="I'd like to meet"
-            android:textColor="#fff"
-            android:textSize="16.5sp" />
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/layout_dialog_meet"
-        android:layout_width="270dp"
-        android:layout_height="30dp"
-        android:layout_below="@+id/layout_meet"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="15dp"
-        android:gravity="center">
-
-        <com.mtvindia.connect.ui.custom.UbuntuTextView
-            android:id="@+id/txt_meet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Select like to meet"
-            android:textColorHint="#fff"
-            android:textColor="#fff"
-            android:textSize="13.5sp" />
-
-        <ImageView
-            android:id="@+id/icon_drop_down2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:paddingRight="15dp"
-            android:src="@drawable/icon_dropdown" />
-
-        <View
-            android:id="@+id/view2"
-            android:layout_width="270dp"
-            android:layout_height="1dp"
-            android:layout_below="@+id/txt_meet"
-            android:background="#e9e9e9" />
-
-    </RelativeLayout>
 
     <com.mtvindia.connect.ui.custom.UbuntuButton
         android:id="@+id/btn_save"
-        android:layout_width="270dp"
+        android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_below="@id/layout_dialog_meet"
+        android:layout_below="@id/layout_top"
         android:layout_marginLeft="60dp"
+        android:layout_marginRight="40dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/bg_button_state"
-        android:text="Save"
         android:fontFamily=""
+        android:text="Save"
         android:textAllCaps="false"
         android:textColor="#fff"
         android:textSize="14sp" />
