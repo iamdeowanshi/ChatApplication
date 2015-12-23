@@ -49,6 +49,8 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     @Override
     public ChatMessage lastMessage(int id, int userId) {
+        ChatMessage chatMessage;
+
         List<ChatMessage> result = realm.where(ChatMessage.class)
                 .equalTo("from", "webuser" + id)
                 .equalTo("to", "webuser" + userId)
@@ -57,7 +59,15 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
                 .equalTo("to", "webuser" + id)
                 .findAll();
 
-        return result.get(result.size() -1);
+        if ( result.size() == 0) {
+            chatMessage = new ChatMessage();
+            chatMessage.setBody("");
+            chatMessage.setCreatedTime("");
+        } else {
+            chatMessage =result.get(result.size() -1);
+        }
+
+        return chatMessage;
     }
 
     @Override
@@ -107,6 +117,8 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     @Override
     public String getStatus(int id, int userId) {
         ChatList chatList = realm.where(modelType).equalTo("userId", id).equalTo("logedinUser", userId).findFirst();
+
+        if (chatList == null) return "offline";
 
         return chatList.getStatus();
     }

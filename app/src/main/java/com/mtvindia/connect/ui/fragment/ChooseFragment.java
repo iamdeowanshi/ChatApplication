@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
+import com.mtvindia.connect.data.model.ChatList;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.presenter.FindMatchPresenter;
@@ -26,6 +27,8 @@ import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
+
+import org.joda.time.DateTime;
 
 import java.util.List;
 
@@ -46,20 +49,15 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
     @Inject FindMatchPresenter presenter;
     @Inject ChatListRepository chatListRepository;
 
-    @Bind(R.id.img_1)
-    ImageView img1;
-    @Bind(R.id.img_2)
-    ImageView img2;
-    @Bind(R.id.btn_skip)
-    Button btnSkip;
-    @Bind(R.id.progress)
-    ProgressBar progress;
-    @Bind(R.id.txt_user1_name)
-    UbuntuTextView txtUser1Name;
-    @Bind(R.id.txt_user2_name)
-    UbuntuTextView txtUser2Name;
+    @Bind(R.id.img_1) ImageView img1;
+    @Bind(R.id.img_2) ImageView img2;
+    @Bind(R.id.btn_skip) Button btnSkip;
+    @Bind(R.id.progress) ProgressBar progress;
+    @Bind(R.id.txt_user1_name) UbuntuTextView txtUser1Name;
+    @Bind(R.id.txt_user2_name) UbuntuTextView txtUser2Name;
 
     private List<User> matchedUser;
+    private ChatList chatList = new ChatList();
 
 
     @Override
@@ -118,6 +116,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
             bundle.putInt("UserId", id);
             Fragment fragment = DisplayUserFragment.getInstance(bundle);
             navigationActivity.addFragment(fragment);
+            saveUserToDb(0);
         }
 
         changePreferences();
@@ -139,6 +138,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
             bundle.putInt("UserId", id);
             Fragment fragment = DisplayUserFragment.getInstance(bundle);
             navigationActivity.addFragment(fragment);
+            saveUserToDb(1);
         }
             changePreferences();
     }
@@ -155,6 +155,18 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
         Fragment fragment = PrimaryQuestionFragment.getInstance(null);
         navigationActivity.addFragment(fragment);
         changePreferences();
+    }
+
+    private void saveUserToDb(int position) {
+        DateTime time = DateTime.now();
+        chatList.setUserId(matchedUser.get(position).getId());
+        chatList.setImage(matchedUser.get(position).getProfilePic());
+        chatList.setName(matchedUser.get(position).getFullName());
+        chatList.setLastMessage("");
+        chatList.setTime(time.toString());
+        chatList.setLogedinUser(userPreference.readUser().getId());
+
+        chatListRepository.save(chatList);
     }
 
     public static Fragment getInstance(Bundle bundle) {

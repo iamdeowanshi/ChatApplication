@@ -16,6 +16,7 @@ import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.data.model.ChatList;
 import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.repository.ChatListRepository;
+import com.mtvindia.connect.data.repository.ChatMessageRepository;
 import com.mtvindia.connect.ui.activity.ChatCallBack;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.UserPreference;
@@ -38,6 +39,7 @@ import butterknife.ButterKnife;
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
 
     @Inject ChatListRepository chatListRepository;
+    @Inject ChatMessageRepository chatMessageRepository;
     @Inject DialogUtil dialogUtil;
     @Inject UserPreference userPreference;
 
@@ -95,6 +97,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        chatMessageRepository.removeAllMessage(chatList.get(position).getUserId(), userPreference.readUser().getId());
                         chatListRepository.remove(chatList.get(position).getUserId(), userPreference.readUser().getId());
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, chatList.size());
@@ -127,6 +130,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     }
 
     private String getTime(String time) {
+        if (time == "") return "";
+
         DateTime now = DateTime.now();
         DateTime last = DateTime.parse(time);
 

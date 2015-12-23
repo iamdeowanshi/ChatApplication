@@ -9,11 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.di.Injector;
+import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
 import com.mtvindia.connect.util.UserPreference;
 
@@ -77,20 +79,19 @@ public class GcmIntentService extends IntentService {
         int notifyID = 1;
         int id = Integer.parseInt(msg.getString("fromUserId").split("user")[1].split("@")[0]);
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        /*Intent intent = new Intent(this, ChatActivity.class);
+        Intent intent = new Intent(this, ChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putInt("userID", id);
-        intent.putExtras(bundle);*/
+        bundle.putInt("userId", id);
+        intent.putExtras(bundle);
 
-        /*if(userPreference.readUser() == null) {*/
+        if(userPreference.readUser() == null) {
             contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, LaunchActivity.class), 0);
-        /*} else {
+        } else {
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
             stackBuilder.addParentStack(ChatActivity.class);
             stackBuilder.addNextIntent(intent);
             contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT |  PendingIntent.FLAG_ONE_SHOT);
         }
-*/
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(getNotificationIcon())

@@ -21,11 +21,20 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
         realmListener = new RealmChangeListener() {
             @Override
             public void onChange() {
-                if( dataChangeListener != null) {
+                if (dataChangeListener != null) {
                     dataChangeListener.onChange(null);
                 }
             }
         };
+    }
+
+    @Override
+    public void removeAllMessage(long from, int to) {
+        realm.beginTransaction();
+        List<ChatMessage> result = searchMessage("webuser" + from, "webuser" + to);
+        result.clear();
+        realm.commitTransaction();
+        realm.addChangeListener(realmListener);
     }
 
     @Override

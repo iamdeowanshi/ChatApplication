@@ -96,12 +96,12 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
         userList.setAdapter(chatListAdapter);
         emptyView();
 
-        userList.setOnLongClickListener(new View.OnLongClickListener() {
+       /* userList.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 return false;
             }
-        });
+        });*/
 
     }
 

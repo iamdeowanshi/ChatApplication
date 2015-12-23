@@ -124,5 +124,6 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
         chatList.setLogedinUser(user.getId());
         chatListRepository.save(chatList);
         chatListRepository.updateTime(userId, user.getId(), time.toString());
+
     }
 }

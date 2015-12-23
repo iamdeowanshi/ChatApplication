@@ -40,6 +40,11 @@ public abstract class BaseRepositoryRealm<T extends RealmObject> implements Base
     }
 
     @Override
+    public List<T> findAll(long id, int userId) {
+        return realm.where(modelType).equalTo("userId", id).equalTo("logedinUser", userId).findAll();
+    }
+
+    @Override
     public List<T> readAll() {
         return realm.where(modelType).findAll();
     }

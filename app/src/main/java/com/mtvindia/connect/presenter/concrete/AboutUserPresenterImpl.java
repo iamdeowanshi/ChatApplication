@@ -38,6 +38,7 @@ public class AboutUserPresenterImpl extends BaseNetworkPresenter<AboutUserViewIn
     };
     @Override
     public void getAboutUser(int id, String header) {
+        viewInteractor.showProgress();
         Observable<AboutUser> resultObservable = mtvConnectApi.aboutUser(id, header);
 
         subscribeForNetwork(resultObservable, apiObserver);

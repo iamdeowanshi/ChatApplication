@@ -166,6 +166,9 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         Chat chat = ChatManager.getInstanceFor(connection).createChat(toJid, this);
         try {
             chat.sendMessage(body);
+            Presence presence = new Presence(Presence.Type.subscribe);
+            presence.setTo(toJid);
+            connection.sendPacket(presence);
             roster.createEntry(toJid.split("/")[0],toJid.split("/")[0],null);
         } catch (SmackException.NotConnectedException | XMPPException e) {
             e.printStackTrace();
