@@ -1,5 +1,6 @@
 package com.mtvindia.connect.ui.fragment;
 
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.mtvindia.connect.presenter.FindMatchViewInteractor;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
+import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
@@ -48,6 +50,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
     @Inject QuestionPreference questionPreference;
     @Inject FindMatchPresenter presenter;
     @Inject ChatListRepository chatListRepository;
+    @Inject DialogUtil dialogUtil;
 
     @Bind(R.id.img_1) ImageView img1;
     @Bind(R.id.img_2) ImageView img2;
@@ -206,6 +209,24 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
     @Override
     public void showUsers(List<User> users) {
+        if( users.size() != 2) {
+            final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Sorry", "No compatible matches found", "Try Again", "");
+            alertDialog.show();
+            Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    questionPreference.saveQuestionCount(0);
+                    questionPreference.savePrimaryQuestionId(0);
+                    NavigationActivity navigationActivity = (NavigationActivity) getContext();
+                    Fragment fragment = PrimaryQuestionFragment.getInstance(null);
+                    navigationActivity.addFragment(fragment);
+                    changePreferences();
+                    alertDialog.dismiss();
+                }
+            });
+
+        }
         matchedUser = users;
         userPreference.saveMatchedUser(users);
         loadMatches(matchedUser);
