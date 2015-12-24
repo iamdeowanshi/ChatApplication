@@ -132,7 +132,7 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
             chatListRepository.updateTime(userId, userPreference.readUser().getId(), time.toString());
 
             sendToChatServer();
-        
+
             Bundle bundle = new Bundle();
             bundle.putInt("userId", chatList.getUserId());
             startActivity(ChatActivity.class, bundle);

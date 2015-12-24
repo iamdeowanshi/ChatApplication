@@ -28,6 +28,10 @@ android {
     }
 
     defaultConfig {
+        manifestPlaceholders = [manifestApplicationId: "${applicationId}",
+                                onesignal_app_id: "69b5a50a-e903-4ae5-9360-10a73fb921e0",
+                                onesignal_google_project_number: "762313245040"]
+
         multiDexEnabled true
         applicationId "com.mtvindia.connect"
         minSdkVersion 15
@@ -105,13 +109,11 @@ dependencies {
     //smack framework
     compile 'org.igniterealtime.smack:smack-android-extensions:4.1.0-alpha6'
     compile 'org.igniterealtime.smack:smack-tcp:4.1.0-alpha6'
-    //swipe
-    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
-    compile 'com.daimajia.androidanimations:library:1.1.2@aar'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'jp.wasabeef:recyclerview-animators:1.0.3@aar'
+    //cleverTap
     compile files('libs/CleverTapAndroidSDK.jar')
     compile files('libs/CleverTapAndroidSDK-v2.0.3-20151209.jar')
+    //one-signal
+    compile 'com.onesignal:OneSignal:2.+@aar'
 }
 
 crashlytics {
