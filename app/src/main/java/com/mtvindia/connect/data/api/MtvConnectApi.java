@@ -2,6 +2,7 @@ package com.mtvindia.connect.data.api;
 
 import com.mtvindia.connect.app.Config;
 import com.mtvindia.connect.data.model.AboutUser;
+import com.mtvindia.connect.data.model.ChatListResponse;
 import com.mtvindia.connect.data.model.LoginRequest;
 import com.mtvindia.connect.data.model.Question;
 import com.mtvindia.connect.data.model.ResultRequest;
@@ -12,6 +13,9 @@ import java.util.List;
 
 import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Multipart;
@@ -52,5 +56,15 @@ public interface MtvConnectApi {
     @Multipart
     @POST(Config.PROFILE_PIC_UPDATE)
     Observable<User> updatePic(@Part("userId") int userId, @Part("profilePic") TypedFile profilePic, @Header("Authorization") String accessToken);
+
+    @FormUrlEncoded
+    @POST(Config.CHAT_LIST)
+    Observable<Response> addUser(@Field("id") int id, @Field("chatUserId") int chatUserId, @Header("Authorization") String accessToken);
+
+    @DELETE(Config.CHAT_LIST)
+    Observable<Response> removeUser(@Query("chat_id") int chatUserId, @Header("Authorization") String accessToken);
+
+    @GET(Config.CHAT_LIST)
+    Observable<List<ChatListResponse>> getChatList(@Header("Authorization") String accessToken);
 
 }

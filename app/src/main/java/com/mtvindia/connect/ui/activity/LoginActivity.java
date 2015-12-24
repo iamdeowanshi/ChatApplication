@@ -13,6 +13,7 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.data.model.LoginRequest;
 import com.mtvindia.connect.data.model.User;
+import com.mtvindia.connect.presenter.ChatListPresenter;
 import com.mtvindia.connect.presenter.LoginPresenter;
 import com.mtvindia.connect.presenter.LoginViewInteractor;
 import com.mtvindia.connect.util.DialogUtil;
@@ -30,6 +31,7 @@ import timber.log.Timber;
 public class LoginActivity extends BaseActivity implements SocialAuthCallback, LoginViewInteractor {
 
     @Inject LoginPresenter presenter;
+    @Inject ChatListPresenter chatListPresenter;
     @Inject Gson gson;
     @Inject UserPreference userPreference;
     @Inject NetworkUtil networkUtil;
@@ -161,8 +163,9 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         Timber.d(gson.toJson(response));
 
         userPreference.saveUser(response);
-
         userPreference.saveLoginStatus(isRegister);
+
+        chatListPresenter.getChatUsers(userPreference.readUser().getAuthHeader());
 
         startActivity(NavigationActivity.class, null);
         socialAuth.disconnect();

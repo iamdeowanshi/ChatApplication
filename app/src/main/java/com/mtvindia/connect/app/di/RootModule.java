@@ -6,6 +6,7 @@ import com.mtvindia.connect.app.MtvConnectApplication;
 import com.mtvindia.connect.data.repository.realm.BaseRepositoryRealm;
 import com.mtvindia.connect.data.repository.realm.ChatListRepositoryRealm;
 import com.mtvindia.connect.data.repository.realm.ChatMessageRepositoryRealm;
+import com.mtvindia.connect.presenter.concrete.ChatListPresenterImpl;
 import com.mtvindia.connect.services.SmackConnection;
 import com.mtvindia.connect.services.XmppReciever;
 import com.mtvindia.connect.presenter.concrete.AboutUserPresenterImpl;
@@ -86,6 +87,7 @@ import dagger.Provides;
                 FindMatchPresenterImpl.class,
                 AboutUserPresenterImpl.class,
                 ProfilePicUpdatePresenterImpl.class,
+                ChatListPresenterImpl.class,
                 DisplayUserFragment.class,
                 ChatActivity.class,
                 ChatListFragment.class,

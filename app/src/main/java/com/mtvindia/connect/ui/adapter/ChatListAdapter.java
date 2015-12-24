@@ -17,6 +17,7 @@ import com.mtvindia.connect.data.model.ChatList;
 import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.data.repository.ChatMessageRepository;
+import com.mtvindia.connect.presenter.ChatListPresenter;
 import com.mtvindia.connect.ui.activity.ChatCallBack;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.UserPreference;
@@ -42,6 +43,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     @Inject ChatMessageRepository chatMessageRepository;
     @Inject DialogUtil dialogUtil;
     @Inject UserPreference userPreference;
+    @Inject ChatListPresenter chatListPresenter;
 
     private List<ChatList> chatList;
     private Context context;
@@ -82,9 +84,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             }
         });
 
-        if (count == getItemCount()) {
+        /*if (count == getItemCount()) {
             holder.view.setVisibility(View.INVISIBLE);
-        }
+        }*/
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -97,6 +99,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        chatListPresenter.removeUser(chatList.get(position).getUserId(), userPreference.readUser().getAuthHeader());
                         chatMessageRepository.removeAllMessage(chatList.get(position).getUserId(), userPreference.readUser().getId());
                         chatListRepository.remove(chatList.get(position).getUserId(), userPreference.readUser().getId());
                         notifyItemRemoved(position);
@@ -130,7 +133,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     }
 
     private String getTime(String time) {
-        if (time == "") return "";
+        if (time.equals("")) return "";
 
         DateTime now = DateTime.now();
         DateTime last = DateTime.parse(time);

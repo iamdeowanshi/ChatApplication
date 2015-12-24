@@ -20,6 +20,7 @@ import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.data.model.ChatList;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.data.repository.ChatListRepository;
+import com.mtvindia.connect.presenter.ChatListPresenter;
 import com.mtvindia.connect.presenter.FindMatchPresenter;
 import com.mtvindia.connect.presenter.FindMatchViewInteractor;
 import com.mtvindia.connect.ui.activity.ChatActivity;
@@ -29,8 +30,6 @@ import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
-
-import org.joda.time.DateTime;
 
 import java.util.List;
 
@@ -49,6 +48,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
     @Inject UserPreference userPreference;
     @Inject QuestionPreference questionPreference;
     @Inject FindMatchPresenter presenter;
+    @Inject ChatListPresenter chatListPresenter;
     @Inject ChatListRepository chatListRepository;
     @Inject DialogUtil dialogUtil;
 
@@ -161,15 +161,15 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
     }
 
     private void saveUserToDb(int position) {
-        DateTime time = DateTime.now();
         chatList.setUserId(matchedUser.get(position).getId());
         chatList.setImage(matchedUser.get(position).getProfilePic());
         chatList.setName(matchedUser.get(position).getFullName());
         chatList.setLastMessage("");
-        chatList.setTime(time.toString());
+        chatList.setTime("");
         chatList.setLogedinUser(userPreference.readUser().getId());
 
         chatListRepository.save(chatList);
+        chatListPresenter.addUser(userPreference.readUser().getId(), chatList.getUserId(), userPreference.readUser().getAuthHeader());
     }
 
     public static Fragment getInstance(Bundle bundle) {
@@ -209,6 +209,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
     @Override
     public void showUsers(List<User> users) {
+        Timber.d(String.valueOf(users.size()));
         if( users.size() != 2) {
             final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Sorry", "No compatible matches found", "Try Again", "");
             alertDialog.show();

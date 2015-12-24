@@ -32,6 +32,7 @@ import com.mtvindia.connect.data.repository.ChatMessageRepository;
 import com.mtvindia.connect.data.repository.DataChangeListener;
 import com.mtvindia.connect.presenter.AboutUserPresenter;
 import com.mtvindia.connect.presenter.AboutUserViewInteractor;
+import com.mtvindia.connect.presenter.ChatListPresenter;
 import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
 import com.mtvindia.connect.util.UserPreference;
@@ -63,6 +64,7 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
     @Inject UserPreference userPreference;
     @Inject ViewUtil viewUtil;
     @Inject AboutUserPresenter presenter;
+    @Inject ChatListPresenter chatListPresenter;
 
     @Bind(R.id.toolbar_actionbar)
     Toolbar toolbarActionbar;
@@ -317,6 +319,7 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         chatList.setLogedinUser(userPreference.readUser().getId());
 
         chatListRepository.save(chatList);
+        chatListPresenter.addUser(userPreference.readUser().getId(), chatList.getUserId(), userPreference.readUser().getAuthHeader());
 
         setSupportActionBar(toolbarActionbar);
         getSupportActionBar().setTitle(chatList.getName().toString());
