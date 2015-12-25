@@ -15,16 +15,21 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.di.Injector;
+import com.mtvindia.connect.data.model.PushMessage;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
 import com.mtvindia.connect.util.UserPreference;
+import com.onesignal.OneSignal;
+
+import org.json.JSONObject;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
-public class GcmIntentService extends IntentService {
+public class GcmIntentService extends IntentService implements OneSignal.NotificationOpenedHandler{
 
-    @Inject
-    UserPreference userPreference;
+    @Inject UserPreference userPreference;
 
     static final int MY_NOTIFICATION_ID = 1;
 
@@ -75,9 +80,16 @@ public class GcmIntentService extends IntentService {
     //push notificationis receiving here.
     private void receivedNotification(Bundle msg) {
 
+        PushMessage pushMessage = new PushMessage();
         Log.v("PushMessage", msg.toString());
         int notifyID = 1;
         int id = Integer.parseInt(msg.getString("fromUserId").split("user")[1].split("@")[0]);
+
+        pushMessage.setId(id);
+        pushMessage.setName(msg.getString("name"));
+        pushMessage.setMessage(msg.getString("message"));
+        userPreference.savePushMessage(pushMessage);
+
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         Intent intent = new Intent(this, ChatActivity.class);
         Bundle bundle = new Bundle();
@@ -92,6 +104,11 @@ public class GcmIntentService extends IntentService {
             stackBuilder.addNextIntent(intent);
             contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT |  PendingIntent.FLAG_ONE_SHOT);
         }
+
+        List<PushMessage> pushMessageList = userPreference.readPushMessage();
+        String messageListSize = pushMessageList.size() + " messages";
+        
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(getNotificationIcon())
@@ -102,6 +119,20 @@ public class GcmIntentService extends IntentService {
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getString("message")))
                         .setAutoCancel(true);
 
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+        String[] events = new String[6];
+// Sets a title for the Inbox in expanded layout
+        inboxStyle.setBigContentTitle("Event tracker details:");
+
+// Moves events into the expanded layout
+
+
+         /*   inboxStyle.addLine("i scream");
+            inboxStyle.addLine("you scream");*/
+            inboxStyle.addLine("Icecream");
+
+
+        mBuilder.setStyle(inboxStyle);
         mBuilder.setContentIntent(contentIntent);
 
         Notification note = mBuilder.build();
@@ -114,5 +145,19 @@ public class GcmIntentService extends IntentService {
     private int getNotificationIcon() {
         boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
         return useWhiteIcon ? R.drawable.mtv_chat_icon : R.drawable.icon_launcher;
+    }
+
+    @Override
+    public void notificationOpened(String message, JSONObject additionalData, boolean isActive) {
+        try {
+            if (additionalData != null) {
+                if (additionalData.has("actionSelected"))
+                    Log.d("OneSignalExample", "OneSignal notification button with id " + additionalData.getString("actionSelected") + " pressed");
+
+                Log.d("OneSignalExample", "Full additionalData:\n" + additionalData.toString());
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 }

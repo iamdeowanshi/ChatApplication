@@ -16,6 +16,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "762313245040-9aghtgm7llb6rdshvabfbi09ohllntl8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mtvindia.connect",
+            "certificate_hash": "1D99A7F892164B4850D05124C774083D8C9E7F44"
+          }
+        },
+        {
           "client_id": "762313245040-656k5tnq418luvksaejavcbsvtal8dfl.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -29,7 +37,7 @@
         "analytics_service": {
           "status": 2,
           "analytics_property": {
-            "tracking_id": "UA-71428318-1"
+            "tracking_id": "UA-67677016-2"
           }
         },
         "cloud_messaging_service": {
