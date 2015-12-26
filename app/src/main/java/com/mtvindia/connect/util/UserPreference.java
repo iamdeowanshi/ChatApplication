@@ -76,7 +76,7 @@ public class UserPreference {
         return preferenceUtil.readString(DEVICE_TOKEN, "");
     }
 
-    public void savePushMessage(PushMessage message) {
+    public void savePushMessage(List<PushMessage> message) {
         String pushMessage = gson.toJson(message);
 
         preferenceUtil.save(PUSH_NOTIFICATION, pushMessage);

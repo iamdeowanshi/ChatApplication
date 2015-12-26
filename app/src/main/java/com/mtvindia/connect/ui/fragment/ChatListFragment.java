@@ -85,6 +85,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
             window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkPurple));
         }
 
+        userPreference.removePushMessage();
         userList.setLayoutManager(layoutManager);
         userList.setHasFixedSize(true);
         chatList = chatListRepository.sortList(userPreference.readUser().getId());

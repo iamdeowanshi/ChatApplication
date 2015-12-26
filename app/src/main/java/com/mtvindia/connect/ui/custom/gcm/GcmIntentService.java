@@ -18,16 +18,19 @@ import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.data.model.PushMessage;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
+import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.util.UserPreference;
 import com.onesignal.OneSignal;
 
 import org.json.JSONObject;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
-public class GcmIntentService extends IntentService implements OneSignal.NotificationOpenedHandler{
+public class GcmIntentService extends IntentService implements OneSignal.NotificationOpenedHandler {
 
     @Inject UserPreference userPreference;
 
@@ -35,6 +38,8 @@ public class GcmIntentService extends IntentService implements OneSignal.Notific
 
     private NotificationManager mNotificationManager;
     private PendingIntent contentIntent;
+    private NotificationCompat.Builder mBuilder;
+    private List<PushMessage> pushMessageList;
 
 
     public GcmIntentService() {
@@ -50,7 +55,6 @@ public class GcmIntentService extends IntentService implements OneSignal.Notific
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
-
 
 
         if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
@@ -88,59 +92,77 @@ public class GcmIntentService extends IntentService implements OneSignal.Notific
         pushMessage.setId(id);
         pushMessage.setName(msg.getString("name"));
         pushMessage.setMessage(msg.getString("message"));
-        userPreference.savePushMessage(pushMessage);
+
+        pushMessageList = userPreference.readPushMessage();
+        pushMessageList.add(pushMessage);
+        userPreference.savePushMessage(pushMessageList);
 
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent intent = new Intent(this, ChatActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("userId", id);
-        intent.putExtras(bundle);
 
-        if(userPreference.readUser() == null) {
-            contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, LaunchActivity.class), 0);
+        pushMessageList = userPreference.readPushMessage();
+        int size = pushMessageList.size();
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+
+        if (userPreference.readUser() == null) {
+            Intent intent = new Intent(this, LaunchActivity.class);
+            stackBuilder.addParentStack(LaunchActivity.class);
+            stackBuilder.addNextIntent(intent);
+            //contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, LaunchActivity.class), 0);
+        } else if (size > 1) {
+            Intent intent = new Intent(this, NavigationActivity.class);
+            stackBuilder.addParentStack(NavigationActivity.class);
+            stackBuilder.addNextIntent(intent);
         } else {
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            Intent intent = new Intent(this, ChatActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("userId", id);
+            intent.putExtras(bundle);
             stackBuilder.addParentStack(ChatActivity.class);
             stackBuilder.addNextIntent(intent);
-            contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT |  PendingIntent.FLAG_ONE_SHOT);
         }
 
-        List<PushMessage> pushMessageList = userPreference.readPushMessage();
-        String messageListSize = pushMessageList.size() + " messages";
-        
+        contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(getNotificationIcon())
-                        .setContentTitle(msg.getString("name"))
-                        .setColor(getResources().getColor(R.color.purple))
-                        .setContentText(msg.getString("message"))
-                        .setDefaults(Notification.DEFAULT_ALL)
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getString("message")))
-                        .setAutoCancel(true);
+        if (size > 1) {
+            String message = size + " messages";
+            int count = 0;
+            Set<Integer> conversation = new HashSet<>();
+            for (PushMessage pushMessage1 : pushMessageList) {
+                conversation.add(pushMessage1.getId());
+            }
 
-        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-        String[] events = new String[6];
-// Sets a title for the Inbox in expanded layout
-        inboxStyle.setBigContentTitle("Event tracker details:");
+            String title = (conversation.size() > 1) ? conversation.size() + " conversation" : pushMessage.getName();
 
-// Moves events into the expanded layout
+            mBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(getNotificationIcon())
+                            .setContentTitle(title)
+                            .setColor(getResources().getColor(R.color.purple))
+                            .setContentText(message)
+                            .setDefaults(Notification.DEFAULT_ALL)
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                            .setAutoCancel(true);
+        } else {
+            mBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(getNotificationIcon())
+                            .setContentTitle(pushMessageList.get(0).getName())
+                            .setColor(getResources().getColor(R.color.purple))
+                            .setContentText(pushMessageList.get(0).getMessage())
+                            .setDefaults(Notification.DEFAULT_ALL)
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText(pushMessageList.get(0).getMessage()))
+                            .setAutoCancel(true);
+        }
 
-
-         /*   inboxStyle.addLine("i scream");
-            inboxStyle.addLine("you scream");*/
-            inboxStyle.addLine("Icecream");
-
-
-        mBuilder.setStyle(inboxStyle);
         mBuilder.setContentIntent(contentIntent);
 
         Notification note = mBuilder.build();
         note.defaults |= Notification.DEFAULT_VIBRATE;
         note.defaults |= Notification.DEFAULT_SOUND;
         mNotificationManager.notify(MY_NOTIFICATION_ID /*(int) (System.currentTimeMillis()/1000)*/, mBuilder.build());//time stamp for making different bw notification.
-       // mNotificationManager(MY_NOTIFICATION_ID, noti)
-        }
+        // mNotificationManager(MY_NOTIFICATION_ID, noti)
+    }
 
     private int getNotificationIcon() {
         boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
