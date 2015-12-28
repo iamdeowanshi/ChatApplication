@@ -34,13 +34,16 @@ public class GcmIntentService extends IntentService implements OneSignal.Notific
 
     @Inject UserPreference userPreference;
 
-    static final int MY_NOTIFICATION_ID = 1;
+    private static final int MY_NOTIFICATION_ID = 1;
 
     private NotificationManager mNotificationManager;
     private PendingIntent contentIntent;
     private NotificationCompat.Builder mBuilder;
+
     private List<PushMessage> pushMessageList;
 
+    private Set<Integer> conversation;
+    private int size;
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -52,41 +55,27 @@ public class GcmIntentService extends IntentService implements OneSignal.Notific
         Injector.instance().inject(this);
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-        // The getMessageType() intent parameter must be the intent you received
-        // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
 
-
-        if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
-            /*
-             * Filter messages based on message type. Since it is likely that GCM
-             * will be extended in the future with new message types, just ignore
-             * any message types you're not interested in, or that you don't
-             * recognize.
-             */
+        if (!extras.isEmpty()) {
             if (GoogleCloudMessaging.
                     MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
                 receivedNotification(extras);
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_DELETED.equals(messageType)) {
                 receivedNotification(extras);
-                // If it's a regular GCM message, do some work.
+
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 receivedNotification(extras);
-                Log.i("INTENT SERVICE", "gcm: " + extras.toString());
             }
         }
-        // Release the wake lock provided by the WakefulBroadcastReceiver.
+
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
-
-    //push notificationis receiving here.
     private void receivedNotification(Bundle msg) {
 
         PushMessage pushMessage = new PushMessage();
-        Log.v("PushMessage", msg.toString());
-        int notifyID = 1;
         int id = Integer.parseInt(msg.getString("fromUserId").split("user")[1].split("@")[0]);
 
         pushMessage.setId(id);
@@ -100,7 +89,9 @@ public class GcmIntentService extends IntentService implements OneSignal.Notific
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         pushMessageList = userPreference.readPushMessage();
-        int size = pushMessageList.size();
+        size = pushMessageList.size();
+
+        conversation = getConversationList(pushMessageList);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 
@@ -109,7 +100,7 @@ public class GcmIntentService extends IntentService implements OneSignal.Notific
             stackBuilder.addParentStack(LaunchActivity.class);
             stackBuilder.addNextIntent(intent);
             //contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, LaunchActivity.class), 0);
-        } else if (size > 1) {
+        } else if (conversation.size() > 1) {
             Intent intent = new Intent(this, NavigationActivity.class);
             stackBuilder.addParentStack(NavigationActivity.class);
             stackBuilder.addNextIntent(intent);
@@ -126,12 +117,6 @@ public class GcmIntentService extends IntentService implements OneSignal.Notific
 
         if (size > 1) {
             String message = size + " messages";
-            int count = 0;
-            Set<Integer> conversation = new HashSet<>();
-            for (PushMessage pushMessage1 : pushMessageList) {
-                conversation.add(pushMessage1.getId());
-            }
-
             String title = (conversation.size() > 1) ? conversation.size() + " conversation" : pushMessage.getName();
 
             mBuilder =
@@ -144,15 +129,14 @@ public class GcmIntentService extends IntentService implements OneSignal.Notific
                             .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                             .setAutoCancel(true);
         } else {
-            mBuilder =
-                    new NotificationCompat.Builder(this)
-                            .setSmallIcon(getNotificationIcon())
-                            .setContentTitle(pushMessageList.get(0).getName())
-                            .setColor(getResources().getColor(R.color.purple))
-                            .setContentText(pushMessageList.get(0).getMessage())
-                            .setDefaults(Notification.DEFAULT_ALL)
-                            .setStyle(new NotificationCompat.BigTextStyle().bigText(pushMessageList.get(0).getMessage()))
-                            .setAutoCancel(true);
+            mBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(getNotificationIcon())
+                    .setContentTitle(pushMessageList.get(0).getName())
+                    .setColor(getResources().getColor(R.color.purple))
+                    .setContentText(pushMessageList.get(0).getMessage())
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(pushMessageList.get(0).getMessage()))
+                    .setAutoCancel(true);
         }
 
         mBuilder.setContentIntent(contentIntent);
@@ -160,13 +144,21 @@ public class GcmIntentService extends IntentService implements OneSignal.Notific
         Notification note = mBuilder.build();
         note.defaults |= Notification.DEFAULT_VIBRATE;
         note.defaults |= Notification.DEFAULT_SOUND;
-        mNotificationManager.notify(MY_NOTIFICATION_ID /*(int) (System.currentTimeMillis()/1000)*/, mBuilder.build());//time stamp for making different bw notification.
-        // mNotificationManager(MY_NOTIFICATION_ID, noti)
+        mNotificationManager.notify(MY_NOTIFICATION_ID /*(int) (System.currentTimeMillis()/1000)*/, mBuilder.build());
     }
 
     private int getNotificationIcon() {
         boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
         return useWhiteIcon ? R.drawable.mtv_chat_icon : R.drawable.icon_launcher;
+    }
+
+    private Set<Integer> getConversationList(List<PushMessage> pushMessageList) {
+        conversation = new HashSet<>();
+        for (PushMessage pushMessage1 : pushMessageList) {
+            conversation.add(pushMessage1.getId());
+        }
+
+        return conversation;
     }
 
     @Override
