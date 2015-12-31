@@ -28,6 +28,8 @@ public class LoginRequest {
     private int osType;
     @SerializedName("certificateType")
     private int certificateType;
+    @SerializedName("playerId")
+    private String playerId;
 
     public LoginRequest() {
     }
@@ -122,4 +124,11 @@ public class LoginRequest {
         this.certificateType = certificateType;
     }
 
+    public String getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
+    }
 }
