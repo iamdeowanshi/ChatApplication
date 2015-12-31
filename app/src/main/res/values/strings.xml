@@ -6,13 +6,13 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_login">LoginActivity</string>
-    <string name="gcm_project_number">762313245040</string>
     <string name="title_activity_navigation">NavigationActivity</string>
 
     <string name="drawer_open">List Opened</string>
     <string name="drawer_close">List Closed</string>
 
-    <string name="facebook_app_id">1670274839923097</string>
+    <string name="facebook_app_id">999592656730786</string>
+    <string name="gcm_project_number">762313245040</string>
     <string name="cleverId">W67-5R9-ZR4Z</string>
     <string name="cleverToken">c25-a60</string>
 

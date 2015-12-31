@@ -3,7 +3,6 @@ package com.mtvindia.connect.ui.custom.gcm;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,10 +11,9 @@ import android.support.v4.app.TaskStackBuilder;
 
 import com.google.gson.Gson;
 import com.mtvindia.connect.R;
+import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.data.model.PushMessage;
 import com.mtvindia.connect.ui.activity.ChatActivity;
-import com.mtvindia.connect.ui.activity.LaunchActivity;
-import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.util.UserPreference;
 import com.onesignal.OneSignal;
 
@@ -33,10 +31,11 @@ import timber.log.Timber;
 /**
  * Created by Sibi on 28/12/15.
  */
-public class OneSignalBroadCastReceiver extends BroadcastReceiver implements OneSignal.NotificationOpenedHandler {
+public class OneSignalBroadCastReceiver extends BaseActivity implements OneSignal.NotificationOpenedHandler {
 
     @Inject UserPreference userPreference;
     @Inject Gson gson;
+    @Inject Context context;
 
     private static final int MY_NOTIFICATION_ID = 1;
 
@@ -48,7 +47,7 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
 
     private Set<Integer> conversation;
     private int size;
-
+/*
     @Override
     public void onReceive(Context context, Intent intent1) {
         Bundle dataBundle = intent1.getBundleExtra("data");
@@ -65,9 +64,9 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
         //int id = Integer.parseInt(msg.getString("fromUserId").split("user")[1].split("@")[0]);
 
 
-     /*   pushMessage.setId(id);
+     *//*   pushMessage.setId(id);
         pushMessage.setName(msg.getString("name"));
-        pushMessage.setMessage(msg.getString("message"));*/
+        pushMessage.setMessage(msg.getString("message"));*//*
 
 
         pushMessageList = userPreference.readPushMessage();
@@ -132,8 +131,8 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
         Notification note = mBuilder.build();
         note.defaults |= Notification.DEFAULT_VIBRATE;
         note.defaults |= Notification.DEFAULT_SOUND;
-        mNotificationManager.notify(MY_NOTIFICATION_ID /*(int) (System.currentTimeMillis()/1000)*/, mBuilder.build());
-    }
+        mNotificationManager.notify(MY_NOTIFICATION_ID *//*(int) (System.currentTimeMillis()/1000)*//*, mBuilder.build());
+    }*/
 
     private int getNotificationIcon() {
         boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
@@ -152,17 +151,10 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
     @Override
     public void notificationOpened(String message, JSONObject additionalData, boolean isActive) {
         Timber.d(String.valueOf(isActive));
-        /*if( isActive) {
-            *//*String msg = null;
-            try {
-                msg = new JSONObject(additionalData.get("custom").toString()).getString("a");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }*//*
+        if (isActive) {
             PushMessage pushMessage = new PushMessage();
             try {
-                pushMessage.setId(Integer.parseInt(additionalData.getString("fromUserId")));
+                pushMessage.setId(Integer.parseInt(additionalData.getString("fromUserId").split("user")[1].split("@")[0]));
                 pushMessage.setName(additionalData.getString("name"));
                 pushMessage.setMessage(additionalData.getString("message"));
             } catch (JSONException e) {
@@ -170,7 +162,7 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
             }
 
             int id = pushMessage.getId();
-            mBuilder = new NotificationCompat.Builder()
+            mBuilder = new NotificationCompat.Builder(context)
                     .setSmallIcon(getNotificationIcon())
                     .setContentTitle(pushMessage.getName())
                     .setColor(this.getResources().getColor(R.color.purple))
@@ -193,9 +185,21 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
             Notification note = mBuilder.build();
             note.defaults |= Notification.DEFAULT_VIBRATE;
             note.defaults |= Notification.DEFAULT_SOUND;
-            mNotificationManager.notify(MY_NOTIFICATION_ID*//*(int) (System.currentTimeMillis()/1000)*//*, mBuilder.build());*/
-    }
+            mNotificationManager.notify(MY_NOTIFICATION_ID/*(int) (System.currentTimeMillis()/1000)*/, mBuilder.build());
 
+        /*if (isActive) {
+            PushMessage pushMessage = new PushMessage();
+            try {
+                pushMessage.setId(Integer.parseInt(additionalData.getString("fromUserId").split("user")[1].split("@")[0]));
+                pushMessage.setName(additionalData.getString("name"));
+                pushMessage.setMessage(additionalData.getString("message"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //Snackbar.make(getContentView(),pushMessage.getMessage(),Snackbar.LENGTH_SHORT).show();
+        }*/
+        }
+    }
 }
 
 

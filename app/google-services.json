@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_id": "mtvconnectbeta",
-    "project_number": "762313245040",
-    "name": "MTVConnectBeta"
+    "project_id": "mtv-connect",
+    "project_number": "1031985356592",
+    "name": "MTV Connect"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:762313245040:android:bad61201acc8620e",
+        "mobilesdk_app_id": "1:1031985356592:android:bad61201acc8620e",
         "client_id": "android:com.mtvindia.connect",
         "client_type": 1,
         "android_client_info": {
@@ -16,19 +16,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "762313245040-9aghtgm7llb6rdshvabfbi09ohllntl8.apps.googleusercontent.com",
+          "client_id": "1031985356592-4r8n56e9js9833stg771nc9jb4aque0l.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.mtvindia.connect",
             "certificate_hash": "1D99A7F892164B4850D05124C774083D8C9E7F44"
-          }
-        },
-        {
-          "client_id": "762313245040-656k5tnq418luvksaejavcbsvtal8dfl.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.mtvindia.connect",
-            "certificate_hash": "4B52671716FE2B052B03EA3DD13330A897930919"
           }
         }
       ],
@@ -37,7 +29,7 @@
         "analytics_service": {
           "status": 2,
           "analytics_property": {
-            "tracking_id": "UA-67677016-2"
+            "tracking_id": "UA-56583965-10"
           }
         },
         "cloud_messaging_service": {
