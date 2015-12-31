@@ -1,10 +1,13 @@
 package com.mtvindia.connect.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Sibi on 25/12/15.
  */
 public class PushMessage {
 
+    @SerializedName("fromUserId")
     private int id;
     private String name;
     private String message;

@@ -5,12 +5,11 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 
 import com.clevertap.android.sdk.ActivityLifecycleCallback;
-import com.clevertap.android.sdk.GcmBroadcastReceiver;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.ndk.CrashlyticsNdk;
 import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.app.di.RootModule;
-import com.mtvindia.connect.ui.custom.gcm.GcmIntentService;
+import com.mtvindia.connect.ui.custom.gcm.OneSignalBroadCastReceiver;
 import com.onesignal.OneSignal;
 
 import io.fabric.sdk.android.Fabric;
@@ -25,7 +24,8 @@ public class MtvConnectApplication extends Application {
     public void onCreate() {
         ActivityLifecycleCallback.register(this);
         super.onCreate();
-        OneSignal.startInit(this).setNotificationOpenedHandler(new GcmIntentService()).init();
+        OneSignal.startInit(this).setNotificationOpenedHandler(new OneSignalBroadCastReceiver()).init();
+        //OneSignal.startInit(this).init();
 
         Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
 
