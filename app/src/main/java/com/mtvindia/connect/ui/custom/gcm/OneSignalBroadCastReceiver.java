@@ -3,6 +3,7 @@ package com.mtvindia.connect.ui.custom.gcm;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.data.model.PushMessage;
 import com.mtvindia.connect.ui.activity.ChatActivity;
+import com.mtvindia.connect.ui.activity.LaunchActivity;
+import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.util.UserPreference;
 import com.onesignal.OneSignal;
 
@@ -31,7 +34,7 @@ import timber.log.Timber;
 /**
  * Created by Sibi on 28/12/15.
  */
-public class OneSignalBroadCastReceiver extends BaseActivity implements OneSignal.NotificationOpenedHandler {
+public class OneSignalBroadCastReceiver extends BroadcastReceiver implements OneSignal.NotificationOpenedHandler {
 
     @Inject UserPreference userPreference;
     @Inject Gson gson;
@@ -47,7 +50,7 @@ public class OneSignalBroadCastReceiver extends BaseActivity implements OneSigna
 
     private Set<Integer> conversation;
     private int size;
-/*
+
     @Override
     public void onReceive(Context context, Intent intent1) {
         Bundle dataBundle = intent1.getBundleExtra("data");
@@ -63,10 +66,12 @@ public class OneSignalBroadCastReceiver extends BaseActivity implements OneSigna
         int id = pushMessage.getId();
         //int id = Integer.parseInt(msg.getString("fromUserId").split("user")[1].split("@")[0]);
 
+/*
 
-     *//*   pushMessage.setId(id);
+        pushMessage.setId(id);
         pushMessage.setName(msg.getString("name"));
-        pushMessage.setMessage(msg.getString("message"));*//*
+        pushMessage.setMessage(msg.getString("message"));
+*/
 
 
         pushMessageList = userPreference.readPushMessage();
@@ -131,8 +136,8 @@ public class OneSignalBroadCastReceiver extends BaseActivity implements OneSigna
         Notification note = mBuilder.build();
         note.defaults |= Notification.DEFAULT_VIBRATE;
         note.defaults |= Notification.DEFAULT_SOUND;
-        mNotificationManager.notify(MY_NOTIFICATION_ID *//*(int) (System.currentTimeMillis()/1000)*//*, mBuilder.build());
-    }*/
+        mNotificationManager.notify(MY_NOTIFICATION_ID /*(int) (System.currentTimeMillis()/1000)*/, mBuilder.build());
+    }
 
     private int getNotificationIcon() {
         boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
@@ -165,15 +170,15 @@ public class OneSignalBroadCastReceiver extends BaseActivity implements OneSigna
             mBuilder = new NotificationCompat.Builder(context)
                     .setSmallIcon(getNotificationIcon())
                     .setContentTitle(pushMessage.getName())
-                    .setColor(this.getResources().getColor(R.color.purple))
+                    .setColor(context.getResources().getColor(R.color.purple))
                     .setContentText(pushMessage.getMessage())
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setPriority(Notification.PRIORITY_HIGH)
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(pushMessage.getMessage()))
                     .setAutoCancel(true);
 
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-            Intent intent = new Intent(this, ChatActivity.class);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            Intent intent = new Intent(context, ChatActivity.class);
             Bundle bundle = new Bundle();
             bundle.putInt("userId", id);
             intent.putExtras(bundle);
@@ -187,17 +192,6 @@ public class OneSignalBroadCastReceiver extends BaseActivity implements OneSigna
             note.defaults |= Notification.DEFAULT_SOUND;
             mNotificationManager.notify(MY_NOTIFICATION_ID/*(int) (System.currentTimeMillis()/1000)*/, mBuilder.build());
 
-        /*if (isActive) {
-            PushMessage pushMessage = new PushMessage();
-            try {
-                pushMessage.setId(Integer.parseInt(additionalData.getString("fromUserId").split("user")[1].split("@")[0]));
-                pushMessage.setName(additionalData.getString("name"));
-                pushMessage.setMessage(additionalData.getString("message"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            //Snackbar.make(getContentView(),pushMessage.getMessage(),Snackbar.LENGTH_SHORT).show();
-        }*/
         }
     }
 }

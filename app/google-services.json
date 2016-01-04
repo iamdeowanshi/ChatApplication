@@ -16,6 +16,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1031985356592-lt915bs7r0ubi44p5g54i08dhtcqshja.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mtvindia.connect",
+            "certificate_hash": "04739F89DFB2E099D594C71D415141DA22DFC6AC"
+          }
+        },
+        {
           "client_id": "1031985356592-4r8n56e9js9833stg771nc9jb4aque0l.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

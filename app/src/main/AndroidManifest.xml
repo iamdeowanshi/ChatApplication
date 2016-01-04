@@ -95,7 +95,7 @@
             android:name=".ui.custom.gcm.OneSignalBroadCastReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.gamethrive.BackgroundBroadcast.RECEIVE"/>
+                <action android:name="com.onesignal.BackgroundBroadcast.RECEIVE"/>
             </intent-filter>
         </receiver>
 

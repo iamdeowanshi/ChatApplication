@@ -30,7 +30,7 @@ android {
     defaultConfig {
         manifestPlaceholders = [manifestApplicationId: "${applicationId}",
                                 onesignal_app_id: "69b5a50a-e903-4ae5-9360-10a73fb921e0",
-                                onesignal_google_project_number: "762313245040"]
+                                onesignal_google_project_number: "1031985356592"]
 
         multiDexEnabled true
         applicationId "com.mtvindia.connect"
