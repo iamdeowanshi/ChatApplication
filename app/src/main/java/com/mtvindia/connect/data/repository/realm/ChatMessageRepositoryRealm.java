@@ -3,8 +3,11 @@ package com.mtvindia.connect.data.repository.realm;
 import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.repository.ChatMessageRepository;
 import com.mtvindia.connect.data.repository.DataChangeListener;
+import com.mtvindia.connect.util.UserPreference;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.realm.RealmChangeListener;
 
@@ -13,6 +16,7 @@ import io.realm.RealmChangeListener;
  */
 public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage> implements ChatMessageRepository {
 
+    @Inject UserPreference userPreference;
     private RealmChangeListener realmListener;
     private DataChangeListener dataChangeListener;
 
@@ -35,6 +39,14 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
         result.clear();
         realm.commitTransaction();
         realm.addChangeListener(realmListener);
+    }
+
+    @Override
+    public List<ChatMessage> unsentMessages() {
+        return realm.where(modelType)
+                    .equalTo("Status", "Sending")
+                    .equalTo("userId", userPreference.readUser().getId())
+                    .findAll();
     }
 
     @Override

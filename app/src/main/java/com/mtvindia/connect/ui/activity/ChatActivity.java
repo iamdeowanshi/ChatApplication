@@ -229,17 +229,17 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         }
 
         DateTime time = DateTime.now();
-
+/*
         chatMessage.setCreatedTime(time.toString());
         chatMessage.setBody(message);
         chatMessage.setStatus(MessageState.Sending.toString());
         chatMessage.setFrom("webuser" + user.getId());
         chatMessage.setTo("webuser" + userId);
         chatMessage.setUserId(userId);
+        chatMessageRepository.save(chatMessage);*/
 
         edtMessage.setText("");
 
-        chatMessageRepository.save(chatMessage);
         chatListRepository.updateTime(userId, user.getId(), time.toString());
 
         chatMessageAdapter.notifyDataSetChanged();
@@ -257,7 +257,6 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         }
-        this.sendBroadcast(intent);
     }
 
     @Override

@@ -13,5 +13,7 @@ public interface ChatMessageRepository extends BaseRepository<ChatMessage> {
 
     void removeAllMessage(long from, int to);
 
+    List<ChatMessage> unsentMessages();
+
 }
 
