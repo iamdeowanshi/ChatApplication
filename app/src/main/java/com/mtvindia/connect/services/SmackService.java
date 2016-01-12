@@ -84,6 +84,8 @@ public class SmackService extends Service {
 
     public void stop() {
         isActive = false;
+        if (threadHandler == null) return;
+
         threadHandler.post(new Runnable() {
 
             @Override

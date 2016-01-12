@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -13,6 +14,7 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.data.model.LoginRequest;
 import com.mtvindia.connect.data.model.User;
+import com.mtvindia.connect.presenter.ChatListPresenter;
 import com.mtvindia.connect.presenter.LoginPresenter;
 import com.mtvindia.connect.presenter.LoginViewInteractor;
 import com.mtvindia.connect.util.DialogUtil;
@@ -21,6 +23,7 @@ import com.mtvindia.connect.util.UserPreference;
 import com.mtvindia.connect.util.social.AuthResult;
 import com.mtvindia.connect.util.social.SocialAuth;
 import com.mtvindia.connect.util.social.SocialAuthCallback;
+import com.onesignal.OneSignal;
 
 import javax.inject.Inject;
 
@@ -30,6 +33,7 @@ import timber.log.Timber;
 public class LoginActivity extends BaseActivity implements SocialAuthCallback, LoginViewInteractor {
 
     @Inject LoginPresenter presenter;
+    @Inject ChatListPresenter chatListPresenter;
     @Inject Gson gson;
     @Inject UserPreference userPreference;
     @Inject NetworkUtil networkUtil;
@@ -40,6 +44,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     private ProgressDialog progressDialog;
     private SocialAuth socialAuth;
     private String deviceToken;
+    private String playerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +58,21 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         socialAuth = new SocialAuth(this);
         socialAuth.setCallback(this);
 
+        setPlayerId();
+
         presenter.setViewInteractor(this);
+    }
+
+    private void setPlayerId() {
+        OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+            @Override
+            public void idsAvailable(String userId, String registrationId) {
+                playerId = userId;
+                Log.d("debug", "User:" + userId);
+                if (registrationId != null)
+                    Log.d("debug", "registrationId:" + registrationId);
+            }
+        });
     }
 
     @OnClick(R.id.btn_fb)
@@ -124,6 +143,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         loginRequest.setOsType(1);
         loginRequest.setCertificateType(0);
         loginRequest.setDeviceToken(deviceToken);
+        loginRequest.setPlayerId(playerId);
 
         presenter.login(loginRequest);
     }
@@ -161,8 +181,9 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         Timber.d(gson.toJson(response));
 
         userPreference.saveUser(response);
-
         userPreference.saveLoginStatus(isRegister);
+
+        chatListPresenter.getChatUsers(userPreference.readUser().getAuthHeader());
 
         startActivity(NavigationActivity.class, null);
         socialAuth.disconnect();

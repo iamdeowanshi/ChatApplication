@@ -85,6 +85,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
             window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkPurple));
         }
 
+        userPreference.removePushMessage();
         userList.setLayoutManager(layoutManager);
         userList.setHasFixedSize(true);
         chatList = chatListRepository.sortList(userPreference.readUser().getId());
@@ -96,12 +97,12 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
         userList.setAdapter(chatListAdapter);
         emptyView();
 
-        userList.setOnLongClickListener(new View.OnLongClickListener() {
+       /* userList.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 return false;
             }
-        });
+        });*/
 
     }
 

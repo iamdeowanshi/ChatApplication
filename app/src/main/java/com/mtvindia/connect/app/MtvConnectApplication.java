@@ -9,6 +9,8 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.ndk.CrashlyticsNdk;
 import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.app.di.RootModule;
+import com.mtvindia.connect.ui.custom.gcm.OneSignalBroadCastReceiver;
+import com.onesignal.OneSignal;
 
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
@@ -22,6 +24,9 @@ public class MtvConnectApplication extends Application {
     public void onCreate() {
         ActivityLifecycleCallback.register(this);
         super.onCreate();
+        OneSignal.startInit(this).setNotificationOpenedHandler(new OneSignalBroadCastReceiver()).init();
+        //OneSignal.startInit(this).init();
+
         Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
 
         // Create module to make it ready for the injection

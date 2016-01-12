@@ -13,6 +13,8 @@ public interface BaseRepository<T> {
 
     List<T> readAll();
 
+    List<T> findAll(long id, int userId);
+
     void remove(long id, int userId);
 
     void setDataChangeListener(DataChangeListener changeListener);

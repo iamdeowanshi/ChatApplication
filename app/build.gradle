@@ -28,6 +28,10 @@ android {
     }
 
     defaultConfig {
+        manifestPlaceholders = [manifestApplicationId: "${applicationId}",
+                                onesignal_app_id: "69b5a50a-e903-4ae5-9360-10a73fb921e0",
+                                onesignal_google_project_number: "1031985356592"]
+
         multiDexEnabled true
         applicationId "com.mtvindia.connect"
         minSdkVersion 15
@@ -52,7 +56,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // Android support libs
     compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:palette-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.0.1'
     // Networking
     compile 'com.squareup.retrofit:retrofit:1.9.0'
@@ -87,7 +92,7 @@ dependencies {
     //Realm
     compile 'io.realm:realm-android:0.85.1'
     //Crashlytics
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
     compile('com.crashlytics.sdk.android:crashlytics-ndk:1.1.2@aar') {
@@ -97,7 +102,7 @@ dependencies {
     //if transformation error occurs again
 
     //rockerhieu emoji
-    compile 'com.rockerhieu.emojicon:library:1.3.1'
+    //compile 'com.rockerhieu.emojicon:library:1.3.1'
     //joda time
     compile 'net.danlew:android.joda:2.9.0'
     //circular image
@@ -105,13 +110,12 @@ dependencies {
     //smack framework
     compile 'org.igniterealtime.smack:smack-android-extensions:4.1.0-alpha6'
     compile 'org.igniterealtime.smack:smack-tcp:4.1.0-alpha6'
-    //swipe
-    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
-    compile 'com.daimajia.androidanimations:library:1.1.2@aar'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'jp.wasabeef:recyclerview-animators:1.0.3@aar'
+    //cleverTap
     compile files('libs/CleverTapAndroidSDK.jar')
     compile files('libs/CleverTapAndroidSDK-v2.0.3-20151209.jar')
+    //one-signal
+    compile 'com.onesignal:OneSignal:2.+@aar'
+    compile project('emojicon')
 }
 
 crashlytics {

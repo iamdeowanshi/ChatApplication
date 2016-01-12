@@ -39,7 +39,7 @@
             android:paddingBottom="5dp"
             android:paddingRight="5dp">
 
-            <com.rockerhieu.emojicon.EmojiconTextView
+            <github.ankushsachdeva.emojicon.EmojiconTextView
                 android:id="@+id/left_txt_msg"
                 emojicon:emojiconSize="22sp"
                 android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
             android:paddingBottom="5dp"
             android:paddingRight="5dp">
 
-            <com.rockerhieu.emojicon.EmojiconTextView
+            <github.ankushsachdeva.emojicon.EmojiconTextView
                 android:id="@+id/right_txt_msg"
                 emojicon:emojiconSize="22sp"
                 android:layout_width="wrap_content"

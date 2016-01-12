@@ -1,5 +1,6 @@
 package com.mtvindia.connect.ui.fragment;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.mtvindia.connect.R;
+import com.mtvindia.connect.app.Config;
 import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.data.model.AboutUser;
 import com.mtvindia.connect.data.model.ChatList;
@@ -23,10 +25,10 @@ import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.data.repository.ChatMessageRepository;
 import com.mtvindia.connect.presenter.AboutUserPresenter;
 import com.mtvindia.connect.presenter.AboutUserViewInteractor;
+import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.UserPreference;
-import com.rockerhieu.emojicon.EmojiconEditText;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -35,6 +37,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import github.ankushsachdeva.emojicon.EmojiconEditText;
 import timber.log.Timber;
 
 /**
@@ -69,11 +72,13 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
     private int userId;
     private ChatList chatList = new ChatList();
     private ChatMessage chatMessage = new ChatMessage();
+    private String message;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         injectDependencies();
+        getContext().startService(new Intent(getContext(), SmackService.class));
     }
 
     @Override
@@ -108,14 +113,13 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
     }
 
     void sendMessage(AboutUser selectedUser) {
-        if( ! edtMessage.getText().toString().trim().equals("")) {
+        message = edtMessage.getText().toString().trim();
+
+        if (message.equals("")) {
+            edtMessage.setText("");
+            return;
+        }
             DateTime time = DateTime.now();
-            chatList.setUserId(selectedUser.getId());
-            chatList.setImage(selectedUser.getProfilePic());
-            chatList.setName(selectedUser.getFullName());
-            chatList.setLastMessage(edtMessage.getText().toString().trim());
-            chatList.setTime(time.toString());
-            chatList.setLogedinUser(userPreference.readUser().getId());
             Timber.d(time.toString());
             chatMessage.setFrom("webuser" + userPreference.readUser().getId());
             chatMessage.setTo("webuser" + selectedUser.getId());
@@ -125,14 +129,15 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
             chatMessage.setBody(edtMessage.getText().toString());
             chatMessage.setCreatedTime(time.toString());
             chatMessageRepository.save(chatMessage);
+            chatListRepository.updateTime(userId, userPreference.readUser().getId(), time.toString());
 
+            sendToChatServer();
 
-            chatListRepository.save(chatList);
             Bundle bundle = new Bundle();
             bundle.putInt("userId", chatList.getUserId());
             startActivity(ChatActivity.class, bundle);
             getActivity().finish();
-        }
+
 
         edtMessage.setText("");
     }
@@ -168,8 +173,25 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
         hideProgress();
     }
 
+    private void sendToChatServer() {
+        Intent intent = new Intent(SmackService.SEND_MESSAGE);
+        intent.setPackage(getContext().getPackageName());
+        intent.putExtra(SmackService.BUNDLE_MESSAGE_BODY, message);
+        intent.putExtra(SmackService.BUNDLE_TO, chatMessage.getTo() + "@" + Config.CHAT_SERVER);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+        }
+        getContext().sendBroadcast(intent);
+    }
+
     @Override
     public void aboutUser(final AboutUser aboutUser) {
+        chatList.setUserId(aboutUser.getId());
+        chatList.setImage(aboutUser.getProfilePic());
+        chatList.setLogedinUser(userPreference.readUser().getId());
+        chatList.setName(aboutUser.getFullName());
+
         txtName.setText(aboutUser.getFullName());
         txtAbout.setText(aboutUser.getAbout());
         txtCommon.setText("You and " + aboutUser.getFirstName() + " have " + aboutUser.getCommonThingsCount() + " things in common");

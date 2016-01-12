@@ -6,15 +6,16 @@ import com.mtvindia.connect.app.MtvConnectApplication;
 import com.mtvindia.connect.data.repository.realm.BaseRepositoryRealm;
 import com.mtvindia.connect.data.repository.realm.ChatListRepositoryRealm;
 import com.mtvindia.connect.data.repository.realm.ChatMessageRepositoryRealm;
-import com.mtvindia.connect.services.SmackConnection;
-import com.mtvindia.connect.services.XmppReciever;
 import com.mtvindia.connect.presenter.concrete.AboutUserPresenterImpl;
+import com.mtvindia.connect.presenter.concrete.ChatListPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.FindMatchPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.LoginPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.ProfilePicUpdatePresenterImpl;
 import com.mtvindia.connect.presenter.concrete.QuestionRequestPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.ResultPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.UpdatePresenterImpl;
+import com.mtvindia.connect.services.SmackConnection;
+import com.mtvindia.connect.services.XmppReciever;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
 import com.mtvindia.connect.ui.activity.LoginActivity;
@@ -23,9 +24,10 @@ import com.mtvindia.connect.ui.adapter.ChatListAdapter;
 import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
 import com.mtvindia.connect.ui.custom.gcm.GcmIntentService;
-import com.mtvindia.connect.ui.fragment.DisplayUserFragment;
+import com.mtvindia.connect.ui.custom.gcm.OneSignalBroadCastReceiver;
 import com.mtvindia.connect.ui.fragment.ChatListFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
+import com.mtvindia.connect.ui.fragment.DisplayUserFragment;
 import com.mtvindia.connect.ui.fragment.NavigationDrawerFragment;
 import com.mtvindia.connect.ui.fragment.PreferenceFragment;
 import com.mtvindia.connect.ui.fragment.PrimaryQuestionFragment;
@@ -86,11 +88,13 @@ import dagger.Provides;
                 FindMatchPresenterImpl.class,
                 AboutUserPresenterImpl.class,
                 ProfilePicUpdatePresenterImpl.class,
+                ChatListPresenterImpl.class,
                 DisplayUserFragment.class,
                 ChatActivity.class,
                 ChatListFragment.class,
 
                 ChatListAdapter.class,
+                OneSignalBroadCastReceiver.class,
 
                 //Realm
                 BaseRepositoryRealm.class,

@@ -13,6 +13,7 @@ import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.data.repository.ChatMessageRepository;
 import com.mtvindia.connect.presenter.AboutUserPresenter;
 import com.mtvindia.connect.presenter.AboutUserViewInteractor;
+import com.mtvindia.connect.presenter.ChatListPresenter;
 import com.mtvindia.connect.util.UserPreference;
 
 import org.joda.time.DateTime;
@@ -28,14 +29,11 @@ import timber.log.Timber;
  */
 public class XmppReciever extends BroadcastReceiver implements AboutUserViewInteractor {
 
-    @Inject
-    ChatMessageRepository chatMessageRepository;
-    @Inject
-    ChatListRepository chatListRepository;
-    @Inject
-    UserPreference userPreference;
-    @Inject
-    AboutUserPresenter aboutUserPresenter;
+    @Inject ChatMessageRepository chatMessageRepository;
+    @Inject ChatListRepository chatListRepository;
+    @Inject UserPreference userPreference;
+    @Inject AboutUserPresenter aboutUserPresenter;
+    @Inject ChatListPresenter chatListPresenter;
 
     private int userId;
     private String from;
@@ -123,6 +121,8 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
         chatList.setName(aboutUser.getFullName());
         chatList.setLogedinUser(user.getId());
         chatListRepository.save(chatList);
+        chatListPresenter.addUser(userPreference.readUser().getId(), chatList.getUserId(), userPreference.readUser().getAuthHeader());
         chatListRepository.updateTime(userId, user.getId(), time.toString());
+
     }
 }

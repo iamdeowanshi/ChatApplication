@@ -1,42 +1,40 @@
 package com.mtvindia.connect.ui.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.Config;
 import com.mtvindia.connect.app.base.BaseActivity;
+import com.mtvindia.connect.data.model.AboutUser;
 import com.mtvindia.connect.data.model.ChatList;
 import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.data.repository.ChatMessageRepository;
 import com.mtvindia.connect.data.repository.DataChangeListener;
+import com.mtvindia.connect.presenter.AboutUserPresenter;
+import com.mtvindia.connect.presenter.AboutUserViewInteractor;
+import com.mtvindia.connect.presenter.ChatListPresenter;
 import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
 import com.mtvindia.connect.util.UserPreference;
-import com.mtvindia.connect.util.ViewUtil;
-import com.rockerhieu.emojicon.EmojiconEditText;
-import com.rockerhieu.emojicon.EmojiconGridFragment;
-import com.rockerhieu.emojicon.EmojiconsFragment;
-import com.rockerhieu.emojicon.emoji.Emojicon;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -47,20 +45,23 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import github.ankushsachdeva.emojicon.EmojiconEditText;
+import github.ankushsachdeva.emojicon.EmojiconGridView;
+import github.ankushsachdeva.emojicon.EmojiconsPopup;
+import github.ankushsachdeva.emojicon.emoji.Emojicon;
+import timber.log.Timber;
 
 /**
  * Created by Sibi on 27/11/15.
  */
-public class ChatActivity extends BaseActivity implements DataChangeListener, EmojiconGridFragment.OnEmojiconClickedListener, EmojiconsFragment.OnEmojiconBackspaceClickedListener, PopupMenu.OnMenuItemClickListener {
+public class ChatActivity extends BaseActivity implements AboutUserViewInteractor, DataChangeListener, PopupMenu.OnMenuItemClickListener {
 
-    @Inject
-    ChatMessageRepository chatMessageRepository;
-    @Inject
-    ChatListRepository chatListRepository;
-    @Inject
-    UserPreference userPreference;
-    @Inject
-    ViewUtil viewUtil;
+    @Inject ChatMessageRepository chatMessageRepository;
+    @Inject ChatListRepository chatListRepository;
+    @Inject UserPreference userPreference;
+    @Inject AboutUserPresenter presenter;
+    @Inject ChatListPresenter chatListPresenter;
 
     @Bind(R.id.toolbar_actionbar)
     Toolbar toolbarActionbar;
@@ -72,39 +73,21 @@ public class ChatActivity extends BaseActivity implements DataChangeListener, Em
     TextView txtName;
     @Bind(R.id.txt_status)
     TextView txtStatus;
-    @Bind(R.id.img_smiley)
-    ImageButton smiley;
-    @Bind(R.id.icon_send)
-    ImageButton iconSend;
-    @Bind(R.id.back_layout)
-    LinearLayout backClick;
     @Bind(R.id.edt_message)
     EmojiconEditText edtMessage;
-    @Bind(R.id.emojicons)
-    FrameLayout emojicons;
+    @Bind(R.id.img_smiley)
+    ImageView imgSmiley;
+    @Bind(R.id.root_view)
+    LinearLayout rootView;
 
     private ChatList chatList;
     private List<ChatMessage> chatMessagesList;
-    private ChatMessage chatMessage = new ChatMessage();
     private int userId;
     private User user;
     private ChatMessageAdapter chatMessageAdapter;
     private String message;
-
-    @Override
-    public void onEmojiconBackspaceClicked(View v) {
-        EmojiconsFragment.backspace(edtMessage);
-    }
-
-    @Override
-    public void onEmojiconClicked(Emojicon emojicon) {
-        EmojiconsFragment.input(edtMessage, emojicon);
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        return false;
-    }
+    private EmojiconsPopup popup;
+    private ProgressDialog progressDialog;
 
     public static enum MessageState {
         Sending, Sent, Delivered, Read;
@@ -120,101 +103,144 @@ public class ChatActivity extends BaseActivity implements DataChangeListener, Em
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        // layoutManager.setReverseLayout(true);
+        presenter.setViewInteractor(this);
+        setEmojicons();
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, (int) (getHeight() * .4));
-        emojicons.setLayoutParams(lp);
+        chatMessages.setLayoutManager(layoutManager);
+        chatMessages.setHasFixedSize(false);
 
         user = userPreference.readUser();
         userId = getIntent().getIntExtra("userId", 0);
-        chatList = chatListRepository.find(userId, user.getId());
-        chatMessagesList = chatMessageRepository.searchMessage("webuser" + userId, "webuser" + user.getId());
-        chatMessageRepository.setDataChangeListener(this);
-        chatListRepository.setDataChangeListener(this);
-        chatMessages.setLayoutManager(layoutManager);
-        chatMessages.setHasFixedSize(false);
-        chatMessages.scrollToPosition(chatMessagesList.size() - 1);
 
+        loadUser();
+        loadMessages();
 
         chatMessageAdapter = new ChatMessageAdapter(this, chatMessagesList);
         chatMessages.setAdapter(chatMessageAdapter);
+    }
 
-        setSupportActionBar(toolbarActionbar);
-        getSupportActionBar().setTitle(chatList.getName().toString());
-        txtName.setText(chatList.getName());
-        Picasso.with(this).load(chatList.getImage()).fit().into(imgDp);
+    private void setEmojicons() {
+        popup = new EmojiconsPopup(rootView, this);
+        popup.setSizeForSoftKeyboard();
 
-        backClick.setOnClickListener(new View.OnClickListener() {
+        popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
+
             @Override
-            public void onClick(View view) {
-                startActivity(NavigationActivity.class, null);
-                finish();
+            public void onDismiss() {
+                changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_keyboard);
             }
         });
 
-        iconSend.setOnClickListener(new View.OnClickListener() {
+        popup.setOnSoftKeyboardOpenCloseListener(new EmojiconsPopup.OnSoftKeyboardOpenCloseListener() {
+
             @Override
-            public void onClick(View view) {
-                sendMessage();
+            public void onKeyboardOpen(int keyBoardHeight) {
+
+            }
+
+            @Override
+            public void onKeyboardClose() {
+                if (popup.isShowing())
+                    popup.dismiss();
+                changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_smiley);
             }
         });
 
-   /*     smiley.setOnClickListener(new View.OnClickListener() {
+        popup.setOnEmojiconClickedListener(new EmojiconGridView.OnEmojiconClickedListener() {
+
             @Override
-            public void onClick(View view) {
-                if (emojicons.getVisibility() == View.GONE ) {
-                    if(keyopen()) viewUtil.hide(getApplicationContext());
-                    setEmojiconFragment(false);
-                    emojicons.setVisibility(View.VISIBLE);
+            public void onEmojiconClicked(Emojicon emojicon) {
+                if (edtMessage == null || emojicon == null) {
+                    return;
+                }
+
+                int start = edtMessage.getSelectionStart();
+                int end = edtMessage.getSelectionEnd();
+                if (start < 0) {
+                    edtMessage.append(emojicon.getEmoji());
                 } else {
-                    emojicons.setVisibility(View.GONE);
+                    edtMessage.getText().replace(Math.min(start, end),
+                            Math.max(start, end), emojicon.getEmoji(), 0,
+                            emojicon.getEmoji().length());
                 }
             }
         });
-        edtMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (emojicons.getVisibility() == View.VISIBLE) emojicons.setVisibility(View.GONE);
-            }
-        });*/
 
-        edtMessage.setOnClickListener(new View.OnClickListener() {
+        popup.setOnEmojiconBackspaceClickedListener(new EmojiconsPopup.OnEmojiconBackspaceClickedListener() {
+
             @Override
-            public void onClick(View view) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        chatMessages.scrollToPosition(chatMessagesList.size() - 1);
-                    }
-                }, 1000);
+            public void onEmojiconBackspaceClicked(View v) {
+                KeyEvent event = new KeyEvent(
+                        0, 0, 0, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0, KeyEvent.KEYCODE_ENDCALL);
+                edtMessage.dispatchKeyEvent(event);
             }
         });
 
     }
 
-    public boolean keyopen() {
-        Rect rectgle = new Rect();
-        Window window = getWindow();
-        window.getDecorView().getWindowVisibleDisplayFrame(rectgle);
-        int curheight = rectgle.bottom;
+    @OnClick(R.id.icon_send)
+    void onClickSendIcon() {
+        sendMessage();
+    }
 
-        if (curheight != getHeight()) {
-            return true;
-        } else {
-            return false;
+    @OnClick(R.id.img_smiley)
+    void onClickSmiley() {
+
+        if (!popup.isShowing()) {
+
+            //If keyboard is visible, simply show the emoji popup
+            if (popup.isKeyBoardOpen()) {
+                popup.showAtBottom();
+                changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_keyboard);
+            }
+
+            //else, open the text keyboard first and immediately after that show the emoji popup
+            else {
+                edtMessage.setFocusableInTouchMode(true);
+                edtMessage.requestFocus();
+                popup.showAtBottomPending();
+                final InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.showSoftInput(edtMessage, InputMethodManager.SHOW_IMPLICIT);
+                changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_keyboard);
+            }
+        }
+
+        //If popup is showing, simply dismiss it to show the undelying text keyboard
+        else {
+            popup.dismiss();
+            changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_smiley);
         }
     }
 
-    private void setEmojiconFragment(boolean useSystemDefault) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.emojicons, EmojiconsFragment.newInstance(useSystemDefault))
-                .commit();
+    private void changeEmojiKeyboardIcon(ImageView iconToBeChanged, int drawableResourceId) {
+        iconToBeChanged.setImageResource(drawableResourceId);
     }
 
-    private int getHeight() {
-        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
-        return metrics.heightPixels;
+    @OnClick(R.id.back_layout)
+    void onBackClick() {
+        onBackPressed();
+    }
+
+    private void loadMessages() {
+        chatMessagesList = chatMessageRepository.searchMessage("webuser" + userId, "webuser" + user.getId());
+        chatMessageRepository.setDataChangeListener(this);
+        chatListRepository.setDataChangeListener(this);
+        chatMessages.scrollToPosition(chatMessagesList.size() - 1);
+    }
+
+    private void loadUser() {
+        chatList = chatListRepository.find(userId, user.getId());
+
+        if (chatList == null) {
+            presenter.getAboutUser(userId, user.getAuthHeader());
+
+        } else {
+            setSupportActionBar(toolbarActionbar);
+            getSupportActionBar().setTitle(chatList.getName().toString());
+            txtName.setText(chatList.getName());
+            Picasso.with(this).load(chatList.getImage()).fit().into(imgDp);
+        }
+
     }
 
     @Override
@@ -243,25 +269,22 @@ public class ChatActivity extends BaseActivity implements DataChangeListener, Em
         }
 
         DateTime time = DateTime.now();
-        chatMessage.setCreatedTime(time.toString());
-        chatMessage.setBody(message);
-        chatMessage.setStatus(MessageState.Sending.toString());
-        chatMessage.setFrom("webuser" + user.getId());
-        chatMessage.setTo("webuser" + userId);
-        chatMessage.setUserId(userId);
-        chatListRepository.updateTime(userId, user.getId(), time.toString());
         edtMessage.setText("");
-        chatMessageRepository.save(chatMessage);
+
+        chatListRepository.updateTime(userId, user.getId(), time.toString());
+
         chatMessageAdapter.notifyDataSetChanged();
         chatMessages.scrollToPosition(chatMessagesList.size() - 1);
-        sendTOChatServer();
+
+        sendToChatServer();
     }
 
-    private void sendTOChatServer() {
+    private void sendToChatServer() {
         Intent intent = new Intent(SmackService.SEND_MESSAGE);
         intent.setPackage(this.getPackageName());
         intent.putExtra(SmackService.BUNDLE_MESSAGE_BODY, message);
-        intent.putExtra(SmackService.BUNDLE_TO, chatMessage.getTo() + "@" + Config.CHAT_SERVER);
+        intent.putExtra(SmackService.BUNDLE_TO, "webuser" + userId + "@" + Config.CHAT_SERVER);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         }
@@ -279,6 +302,52 @@ public class ChatActivity extends BaseActivity implements DataChangeListener, Em
         txtStatus.setText(chatListRepository.getStatus(userId, user.getId()));
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public void showProgress() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setMessage("Fetching Details about User");
+        progressDialog.show();
+        Timber.d("progress started");
+    }
+
+    @Override
+    public void hideProgress() {
+        progressDialog.dismiss();
+        Timber.d("progress removed");
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        throwable.printStackTrace();
+    }
+
+    @Override
+    public void aboutUser(AboutUser aboutUser) {
+        chatList = new ChatList();
+        DateTime time = DateTime.now();
+        chatList.setUserId(aboutUser.getId());
+        chatList.setImage(aboutUser.getProfilePic());
+        chatList.setName(aboutUser.getFullName());
+        chatList.setLastMessage("");
+        chatList.setTime(time.toString());
+        chatList.setLogedinUser(userPreference.readUser().getId());
+
+        chatListRepository.save(chatList);
+        chatListPresenter.addUser(userPreference.readUser().getId(), chatList.getUserId(), userPreference.readUser().getAuthHeader());
+
+        setSupportActionBar(toolbarActionbar);
+        getSupportActionBar().setTitle(chatList.getName().toString());
+        txtName.setText(chatList.getName());
+        Picasso.with(this).load(chatList.getImage()).fit().into(imgDp);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -286,13 +355,12 @@ public class ChatActivity extends BaseActivity implements DataChangeListener, Em
         return false;
     }
 
+
     @Override
     public void onBackPressed() {
-        if (emojicons.getVisibility() == View.VISIBLE) {
-            emojicons.setVisibility(View.GONE);
-            return;
-        }
+        changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_smiley);
         startActivity(NavigationActivity.class, null);
         finish();
     }
+
 }

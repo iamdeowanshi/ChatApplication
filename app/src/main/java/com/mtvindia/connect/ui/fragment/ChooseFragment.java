@@ -1,5 +1,6 @@
 package com.mtvindia.connect.ui.fragment;
 
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,13 +17,16 @@ import android.widget.ProgressBar;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
+import com.mtvindia.connect.data.model.ChatList;
 import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.data.repository.ChatListRepository;
+import com.mtvindia.connect.presenter.ChatListPresenter;
 import com.mtvindia.connect.presenter.FindMatchPresenter;
 import com.mtvindia.connect.presenter.FindMatchViewInteractor;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
+import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;
@@ -44,22 +48,19 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
     @Inject UserPreference userPreference;
     @Inject QuestionPreference questionPreference;
     @Inject FindMatchPresenter presenter;
+    @Inject ChatListPresenter chatListPresenter;
     @Inject ChatListRepository chatListRepository;
+    @Inject DialogUtil dialogUtil;
 
-    @Bind(R.id.img_1)
-    ImageView img1;
-    @Bind(R.id.img_2)
-    ImageView img2;
-    @Bind(R.id.btn_skip)
-    Button btnSkip;
-    @Bind(R.id.progress)
-    ProgressBar progress;
-    @Bind(R.id.txt_user1_name)
-    UbuntuTextView txtUser1Name;
-    @Bind(R.id.txt_user2_name)
-    UbuntuTextView txtUser2Name;
+    @Bind(R.id.img_1) ImageView img1;
+    @Bind(R.id.img_2) ImageView img2;
+    @Bind(R.id.btn_skip) Button btnSkip;
+    @Bind(R.id.progress) ProgressBar progress;
+    @Bind(R.id.txt_user1_name) UbuntuTextView txtUser1Name;
+    @Bind(R.id.txt_user2_name) UbuntuTextView txtUser2Name;
 
     private List<User> matchedUser;
+    private ChatList chatList = new ChatList();
 
 
     @Override
@@ -118,6 +119,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
             bundle.putInt("UserId", id);
             Fragment fragment = DisplayUserFragment.getInstance(bundle);
             navigationActivity.addFragment(fragment);
+            saveUserToDb(0);
         }
 
         changePreferences();
@@ -139,6 +141,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
             bundle.putInt("UserId", id);
             Fragment fragment = DisplayUserFragment.getInstance(bundle);
             navigationActivity.addFragment(fragment);
+            saveUserToDb(1);
         }
             changePreferences();
     }
@@ -155,6 +158,18 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
         Fragment fragment = PrimaryQuestionFragment.getInstance(null);
         navigationActivity.addFragment(fragment);
         changePreferences();
+    }
+
+    private void saveUserToDb(int position) {
+        chatList.setUserId(matchedUser.get(position).getId());
+        chatList.setImage(matchedUser.get(position).getProfilePic());
+        chatList.setName(matchedUser.get(position).getFullName());
+        chatList.setLastMessage("");
+        chatList.setTime("");
+        chatList.setLogedinUser(userPreference.readUser().getId());
+
+        chatListRepository.save(chatList);
+        chatListPresenter.addUser(userPreference.readUser().getId(), chatList.getUserId(), userPreference.readUser().getAuthHeader());
     }
 
     public static Fragment getInstance(Bundle bundle) {
@@ -194,6 +209,25 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
     @Override
     public void showUsers(List<User> users) {
+        Timber.d(String.valueOf(users.size()));
+        if( users.size() != 2) {
+            final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Sorry", "No compatible matches found", "Try Again", "");
+            alertDialog.show();
+            Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    questionPreference.saveQuestionCount(0);
+                    questionPreference.savePrimaryQuestionId(0);
+                    NavigationActivity navigationActivity = (NavigationActivity) getContext();
+                    Fragment fragment = PrimaryQuestionFragment.getInstance(null);
+                    navigationActivity.addFragment(fragment);
+                    changePreferences();
+                    alertDialog.dismiss();
+                }
+            });
+
+        }
         matchedUser = users;
         userPreference.saveMatchedUser(users);
         loadMatches(matchedUser);

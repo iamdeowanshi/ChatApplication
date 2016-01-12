@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:id="@+id/root_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:theme="@style/BlueTheme"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_purple_blue"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:theme="@style/BlueTheme">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -15,9 +17,10 @@
         android:background="@android:color/transparent"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-            style="@style/ToolBarStyle"
+        <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_actionbar"
+            style="@style/ToolBarStyle"
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_alignParentLeft="true"
@@ -29,7 +32,7 @@
 
             <include
                 android:id="@+id/contact_title"
-                layout="@layout/chat_toolbar" />
+                layout="@layout/chat_toolbar"/>
 
         </android.support.v7.widget.Toolbar>
 
@@ -41,79 +44,89 @@
         android:layout_height="1dp"
         android:layout_below="@+id/appbar"
         android:alpha=".5"
-        android:background="#ffffff" />
+        android:background="#ffffff"/>
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chat_messages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_below="@+id/appbar"
         android:layout_weight="1"
-        android:paddingBottom="10dp"
-        android:layout_below="@+id/appbar"/>
+        android:paddingBottom="10dp"/>
 
     <include
 
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
+        android:id="@+id/layout_chat"
         layout="@layout/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:id="@+id/layout_chat"/>
+        android:layout_marginRight="5dp"/>
 
+    <!--    <include
+
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            layout="@layout/keyboard_without_emojicon"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:id="@+id/layout_chat"/>-->
+<!--
     <FrameLayout
         android:id="@+id/emojicons"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:visibility="gone"/>
+        android:visibility="gone"/>-->
 
-<!--    <RelativeLayout
-        android:id="@+id/layout_chat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:background="@drawable/chat_box"
-        android:gravity="center">
-
-        <ImageButton
-            android:id="@+id/img_smiley"
-            android:layout_width="50dp"
-            android:layout_height="45dp"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent"
-            android:src="@drawable/icon_smiley" />
-
-        <com.mtvindia.connect.ui.custom.UbuntuEditText
-            android:id="@+id/edt_message"
-            android:layout_width="wrap_content"
+    <!--    <RelativeLayout
+            android:id="@+id/layout_chat"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="2dp"
-            android:layout_toLeftOf="@+id/icon_send"
-            android:layout_toRightOf="@+id/img_smiley"
-            android:backgroundTint="@android:color/transparent"
-            android:hint="Type message here..."
-            android:imeOptions="actionSend|flagNoEnterAction"
-            android:maxHeight="90dp"
-            android:scrollbars="vertical"
-            android:textColorHint="#c0c0c0" />
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/chat_box"
+            android:gravity="center">
 
-        <ImageButton
-            android:id="@+id/icon_send"
-            android:layout_width="50dp"
-            android:layout_height="45dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent"
-            android:src="@drawable/icon_send" />
+            <ImageButton
+                android:id="@+id/img_smiley"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:src="@drawable/icon_smiley" />
 
-    </RelativeLayout>-->
+            <com.mtvindia.connect.ui.custom.UbuntuEditText
+                android:id="@+id/edt_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"
+                android:layout_toLeftOf="@+id/icon_send"
+                android:layout_toRightOf="@+id/img_smiley"
+                android:backgroundTint="@android:color/transparent"
+                android:hint="Type message here..."
+                android:imeOptions="actionSend|flagNoEnterAction"
+                android:maxHeight="90dp"
+                android:scrollbars="vertical"
+                android:textColorHint="#c0c0c0" />
+
+            <ImageButton
+                android:id="@+id/icon_send"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:src="@drawable/icon_send" />
+
+        </RelativeLayout>-->
 
 </LinearLayout>

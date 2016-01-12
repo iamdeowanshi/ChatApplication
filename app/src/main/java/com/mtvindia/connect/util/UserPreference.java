@@ -3,6 +3,7 @@ package com.mtvindia.connect.util;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mtvindia.connect.app.di.Injector;
+import com.mtvindia.connect.data.model.PushMessage;
 import com.mtvindia.connect.data.model.User;
 
 import java.lang.reflect.Type;
@@ -22,6 +23,7 @@ public class UserPreference {
     public static final String IS_IN_REGISTRATION = "_IS_REGISTERED";
     public static final String MATCHED_USER = "_MATCHED_USER";
     public static final String DEVICE_TOKEN = "_DEVICE_TOKEN";
+    public static final String PUSH_NOTIFICATION = "_PUSH_NOTIFICATION";
 
     public UserPreference() {
         Injector.instance().inject(this);
@@ -29,33 +31,33 @@ public class UserPreference {
 
     public void saveUser(User user) {
         if (readUser() == null) {
-            preferenceUtil.save(UserPreference.USER, user);
+            preferenceUtil.save(USER, user);
             return;
         }
 
         if (user.getAccessToken() == null || user.getAccessToken().equals("")) {
             user.setAccessToken(readUser().getAccessToken());
             user.setAccessToken(readUser().getAccessToken());
-            preferenceUtil.save(UserPreference.USER, user);
+            preferenceUtil.save(USER, user);
         }
     }
 
     public User readUser() {
-        return (User) preferenceUtil.read(UserPreference.USER, User.class);
+        return (User) preferenceUtil.read(USER, User.class);
     }
 
     public void saveLoginStatus(boolean status) {
-        preferenceUtil.save(UserPreference.IS_IN_REGISTRATION, status);
+        preferenceUtil.save(IS_IN_REGISTRATION, status);
     }
 
     public boolean readLoginStatus() {
-        return preferenceUtil.readBoolean(UserPreference.IS_IN_REGISTRATION, false);
+        return preferenceUtil.readBoolean(IS_IN_REGISTRATION, false);
     }
 
     public void saveMatchedUser(List<User> users) {
         String usersJson = gson.toJson(users);
 
-        preferenceUtil.save(UserPreference.MATCHED_USER, usersJson);
+        preferenceUtil.save(MATCHED_USER, usersJson);
     }
 
     public List<User> readMatchedUser() {
@@ -67,11 +69,25 @@ public class UserPreference {
     }
 
     public void saveDeviceToken(String token) {
-        preferenceUtil.save(UserPreference.DEVICE_TOKEN, token);
+        preferenceUtil.save(DEVICE_TOKEN, token);
     }
 
     public String readDeviceToken() {
-        return preferenceUtil.readString(UserPreference.DEVICE_TOKEN, "");
+        return preferenceUtil.readString(DEVICE_TOKEN, "");
+    }
+
+    public void savePushMessage(List<PushMessage> message) {
+        String pushMessage = gson.toJson(message);
+
+        preferenceUtil.save(PUSH_NOTIFICATION, pushMessage);
+    }
+
+    public List<PushMessage> readPushMessage() {
+        String pushMessage = preferenceUtil.readString(PUSH_NOTIFICATION, "[]");
+
+        Type listType = new TypeToken<List<PushMessage>>() {}.getType();
+
+        return gson.fromJson(pushMessage, listType);
     }
 
     public void removeMatchedUser() {
@@ -81,6 +97,10 @@ public class UserPreference {
     public void removeUser() {
         preferenceUtil.remove(USER);
         preferenceUtil.remove(IS_IN_REGISTRATION);
+    }
+
+    public void removePushMessage() {
+        preferenceUtil.remove(PUSH_NOTIFICATION);
     }
 
 }

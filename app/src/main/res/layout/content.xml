@@ -18,7 +18,7 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:background="@android:color/transparent"
-        android:src="@drawable/icon_smiley" />
+        android:src="@drawable/icon_smiley"/>
 
 <!--    <com.mtvindia.connect.ui.custom.UbuntuEditText
         android:id="@+id/edt_message"
@@ -35,7 +35,7 @@
         android:scrollbars="vertical"
         android:textColorHint="#c0c0c0" />-->
 
-    <com.rockerhieu.emojicon.EmojiconEditText
+    <github.ankushsachdeva.emojicon.EmojiconEditText
         android:id="@+id/edt_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
