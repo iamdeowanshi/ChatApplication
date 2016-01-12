@@ -21,7 +21,6 @@ import com.mtvindia.connect.presenter.ChatListPresenter;
 import com.mtvindia.connect.ui.activity.ChatCallBack;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.UserPreference;
-import com.rockerhieu.emojicon.EmojiconTextView;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -33,6 +32,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import github.ankushsachdeva.emojicon.EmojiconTextView;
 
 /**
  * Created by Sibi on 26/11/15.

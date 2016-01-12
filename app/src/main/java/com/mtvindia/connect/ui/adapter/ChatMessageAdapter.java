@@ -17,7 +17,6 @@ import com.mtvindia.connect.data.model.User;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.UserPreference;
-import com.rockerhieu.emojicon.EmojiconTextView;
 
 import org.joda.time.DateTime;
 
@@ -27,6 +26,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import github.ankushsachdeva.emojicon.EmojiconTextView;
 
 /**
  * Created by Sibi on 01/12/15.

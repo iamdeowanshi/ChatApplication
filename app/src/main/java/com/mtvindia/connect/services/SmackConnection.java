@@ -61,8 +61,8 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
     private final String password;
     private final String username;
     private final String serviceName;
-    private ChatMessage chatMessage;
     private User user;
+    private ChatMessage chatMessage = new ChatMessage();
 
     private XMPPTCPConnection connection;
     private ArrayList<String> userList;
@@ -152,6 +152,21 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         context.sendBroadcast(intent);
     }
 
+    private void resendMessage() {
+        List<ChatMessage> unsentMessages= chatMessageRepository.unsentMessages();
+
+        for (ChatMessage message : unsentMessages) {
+            Chat chat = ChatManager.getInstanceFor(connection).createChat(message.getTo() + "@" + Config.CHAT_SERVER, this);
+            try {
+                chat.sendMessage(message.getBody());
+            } catch (XMPPException e) {
+                e.printStackTrace();
+            } catch (SmackException.NotConnectedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void setupSendMessageReceiver() {
         receiver = new BroadcastReceiver() {
             @Override
@@ -168,44 +183,33 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         context.registerReceiver(receiver, filter);
     }
 
-    private void resendMessages() {
-        List<ChatMessage> chatMessages = chatMessageRepository.unsentMessages();
-        for (ChatMessage chatMessage :chatMessages) {
-            Chat chat = ChatManager.getInstanceFor(connection).createChat(chatMessage.getTo() + "@" + Config.CHAT_SERVER, this);
-            try {
-                chat.sendMessage(chatMessage.getBody());
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private void sendMessage(String body, String toJid) {
+        int userId = Integer.parseInt(toJid.split("@")[0].split("user")[1]);
         Log.i(TAG, "sendMessage()");
         DateTime time = DateTime.now();
         Chat chat = ChatManager.getInstanceFor(connection).createChat(toJid, this);
         chatMessage.setCreatedTime(time.toString());
         chatMessage.setBody(body);
-        chatMessage.setStatus(ChatActivity.MessageState.Sending.toString());
         chatMessage.setFrom("webuser" + user.getId());
-        chatMessage.setTo(toJid.split("/")[0]);
-        chatMessage.setUserId(Integer.parseInt(toJid.split("/")[0].split("user")[0]));
+        chatMessage.setTo("webuser" + userId);
+        chatMessage.setUserId(userId);
+
         try {
             chat.sendMessage(body);
+            chatMessage.setStatus(ChatActivity.MessageState.Sent.toString());
             Presence presence = new Presence(Presence.Type.subscribe);
             presence.setTo(toJid);
             connection.sendPacket(presence);
-            roster.createEntry(toJid.split("/")[0], toJid.split("/")[0], null);
-            chatMessage.setStatus(ChatActivity.MessageState.Sent.toString());
+            roster.createEntry(toJid.split("/")[0],toJid.split("/")[0],null);
         } catch (SmackException.NotConnectedException | XMPPException e) {
             e.printStackTrace();
             chatMessage.setStatus(ChatActivity.MessageState.Sending.toString());
             toast("send failed");
         } catch (SmackException.NotLoggedInException e) {
+            chatMessage.setStatus(ChatActivity.MessageState.Sending.toString());
             e.printStackTrace();
         } catch (SmackException.NoResponseException e) {
+            chatMessage.setStatus(ChatActivity.MessageState.Sending.toString());
             e.printStackTrace();
         }
         chatMessageRepository.save(chatMessage);
@@ -253,7 +257,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
     public void connected(XMPPConnection connection) {
         SmackService.connectionState = ConnectionState.CONNECTED;
         Timber.d("Connected");
-        //resendMessages();
+       // resendMessage();
     }
 
     @Override

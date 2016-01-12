@@ -12,7 +12,7 @@ import android.support.v4.app.TaskStackBuilder;
 
 import com.google.gson.Gson;
 import com.mtvindia.connect.R;
-import com.mtvindia.connect.app.base.BaseActivity;
+import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.data.model.PushMessage;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
@@ -53,18 +53,28 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
 
     @Override
     public void onReceive(Context context, Intent intent1) {
+        Injector.instance().inject(this);
         Bundle dataBundle = intent1.getBundleExtra("data");
+        Boolean isActive = Boolean.valueOf(dataBundle.getString("isActive"));
+        if (dataBundle.getString("isActive") == "true") {
 
-        String msg = null;
-        try {
-            msg = new JSONObject(dataBundle.get("custom").toString()).getString("a");
+            JSONObject jsonObject = null;
+            String msg = null;
+            PushMessage pushMessage = new PushMessage();
+            try {
+                msg = new JSONObject(dataBundle.get("custom").toString()).getString("a");
+                jsonObject = new JSONObject(msg);
+                pushMessage.setId(Integer.parseInt(jsonObject.getString("fromUserId").split("user")[1]));
+                pushMessage.setName(jsonObject.getString("name"));
+                pushMessage.setMessage(jsonObject.getString("message"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        PushMessage pushMessage = gson.fromJson(msg, PushMessage.class);
-        int id = pushMessage.getId();
-        //int id = Integer.parseInt(msg.getString("fromUserId").split("user")[1].split("@")[0]);
+            //PushMessage pushMessage = gson.fromJson(msg, PushMessage.class);
+
+            int id = pushMessage.getId();
+            //int id = Integer.parseInt(msg.getString("fromUserId").split("user")[1].split("@")[0]);
 
 /*
 
@@ -74,69 +84,70 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
 */
 
 
-        pushMessageList = userPreference.readPushMessage();
-        pushMessageList.add(pushMessage);
-        userPreference.savePushMessage(pushMessageList);
+            pushMessageList = userPreference.readPushMessage();
+            pushMessageList.add(pushMessage);
+            userPreference.savePushMessage(pushMessageList);
 
-        mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        pushMessageList = userPreference.readPushMessage();
-        size = pushMessageList.size();
+            pushMessageList = userPreference.readPushMessage();
+            size = pushMessageList.size();
 
-        conversation = getConversationList(pushMessageList);
+            conversation = getConversationList(pushMessageList);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 
-        if (userPreference.readUser() == null) {
-            Intent intent = new Intent(context, LaunchActivity.class);
-            stackBuilder.addParentStack(LaunchActivity.class);
-            stackBuilder.addNextIntent(intent);
-            //contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, LaunchActivity.class), 0);
-        } else if (conversation.size() > 1) {
-            Intent intent = new Intent(context, NavigationActivity.class);
-            stackBuilder.addParentStack(NavigationActivity.class);
-            stackBuilder.addNextIntent(intent);
-        } else {
-            Intent intent = new Intent(context, ChatActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putInt("userId", id);
-            intent.putExtras(bundle);
-            stackBuilder.addParentStack(ChatActivity.class);
-            stackBuilder.addNextIntent(intent);
+            if (userPreference.readUser() == null) {
+                Intent intent = new Intent(context, LaunchActivity.class);
+                stackBuilder.addParentStack(LaunchActivity.class);
+                stackBuilder.addNextIntent(intent);
+                //contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, LaunchActivity.class), 0);
+            } else if (conversation.size() > 1) {
+                Intent intent = new Intent(context, NavigationActivity.class);
+                stackBuilder.addParentStack(NavigationActivity.class);
+                stackBuilder.addNextIntent(intent);
+            } else {
+                Intent intent = new Intent(context, ChatActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("userId", id);
+                intent.putExtras(bundle);
+                stackBuilder.addParentStack(ChatActivity.class);
+                stackBuilder.addNextIntent(intent);
+            }
+
+            contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+
+            if (size > 1) {
+                String content = size + " messages";
+                String title = (conversation.size() > 1) ? conversation.size() + " conversation" : pushMessage.getName();
+
+                mBuilder =
+                        new NotificationCompat.Builder(context)
+                                .setSmallIcon(getNotificationIcon())
+                                .setContentTitle(title)
+                                .setColor(context.getResources().getColor(R.color.purple))
+                                .setContentText(content)
+                                .setDefaults(Notification.DEFAULT_ALL)
+                                .setStyle(new NotificationCompat.BigTextStyle().bigText(content))
+                                .setAutoCancel(true);
+            } else {
+                mBuilder = new NotificationCompat.Builder(context)
+                        .setSmallIcon(getNotificationIcon())
+                        .setContentTitle(pushMessageList.get(0).getName())
+                        .setColor(context.getResources().getColor(R.color.purple))
+                        .setContentText(pushMessageList.get(0).getMessage())
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(pushMessageList.get(0).getMessage()))
+                        .setAutoCancel(true);
+            }
+
+            mBuilder.setContentIntent(contentIntent);
+
+            Notification note = mBuilder.build();
+            note.defaults |= Notification.DEFAULT_VIBRATE;
+            note.defaults |= Notification.DEFAULT_SOUND;
+            mNotificationManager.notify(MY_NOTIFICATION_ID /*(int) (System.currentTimeMillis()/1000)*/, mBuilder.build());
         }
-
-        contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-
-        if (size > 1) {
-            String content = size + " messages";
-            String title = (conversation.size() > 1) ? conversation.size() + " conversation" : pushMessage.getName();
-
-            mBuilder =
-                    new NotificationCompat.Builder(context)
-                            .setSmallIcon(getNotificationIcon())
-                            .setContentTitle(title)
-                            .setColor(context.getResources().getColor(R.color.purple))
-                            .setContentText(content)
-                            .setDefaults(Notification.DEFAULT_ALL)
-                            .setStyle(new NotificationCompat.BigTextStyle().bigText(content))
-                            .setAutoCancel(true);
-        } else {
-            mBuilder = new NotificationCompat.Builder(context)
-                    .setSmallIcon(getNotificationIcon())
-                    .setContentTitle(pushMessageList.get(0).getName())
-                    .setColor(context.getResources().getColor(R.color.purple))
-                    .setContentText(pushMessageList.get(0).getMessage())
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setStyle(new NotificationCompat.BigTextStyle().bigText(pushMessageList.get(0).getMessage()))
-                    .setAutoCancel(true);
-        }
-
-        mBuilder.setContentIntent(contentIntent);
-
-        Notification note = mBuilder.build();
-        note.defaults |= Notification.DEFAULT_VIBRATE;
-        note.defaults |= Notification.DEFAULT_SOUND;
-        mNotificationManager.notify(MY_NOTIFICATION_ID /*(int) (System.currentTimeMillis()/1000)*/, mBuilder.build());
     }
 
     private int getNotificationIcon() {
@@ -156,7 +167,7 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
     @Override
     public void notificationOpened(String message, JSONObject additionalData, boolean isActive) {
         Timber.d(String.valueOf(isActive));
-        if (isActive) {
+    /*    if (isActive) {
             PushMessage pushMessage = new PushMessage();
             try {
                 pushMessage.setId(Integer.parseInt(additionalData.getString("fromUserId").split("user")[1].split("@")[0]));
@@ -190,9 +201,10 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
             Notification note = mBuilder.build();
             note.defaults |= Notification.DEFAULT_VIBRATE;
             note.defaults |= Notification.DEFAULT_SOUND;
-            mNotificationManager.notify(MY_NOTIFICATION_ID/*(int) (System.currentTimeMillis()/1000)*/, mBuilder.build());
+            mNotificationManager.notify(MY_NOTIFICATION_ID*//*(int) (System.currentTimeMillis()/1000)*//*, mBuilder.build());
 
         }
+    */
     }
 }
 

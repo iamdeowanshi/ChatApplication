@@ -1,23 +1,22 @@
 package com.mtvindia.connect.ui.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.FrameLayout;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.mtvindia.connect.R;
@@ -36,11 +35,6 @@ import com.mtvindia.connect.presenter.ChatListPresenter;
 import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
 import com.mtvindia.connect.util.UserPreference;
-import com.mtvindia.connect.util.ViewUtil;
-import com.rockerhieu.emojicon.EmojiconEditText;
-import com.rockerhieu.emojicon.EmojiconGridFragment;
-import com.rockerhieu.emojicon.EmojiconsFragment;
-import com.rockerhieu.emojicon.emoji.Emojicon;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -52,17 +46,20 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import github.ankushsachdeva.emojicon.EmojiconEditText;
+import github.ankushsachdeva.emojicon.EmojiconGridView;
+import github.ankushsachdeva.emojicon.EmojiconsPopup;
+import github.ankushsachdeva.emojicon.emoji.Emojicon;
 import timber.log.Timber;
 
 /**
  * Created by Sibi on 27/11/15.
  */
-public class ChatActivity extends BaseActivity implements AboutUserViewInteractor, DataChangeListener, EmojiconGridFragment.OnEmojiconClickedListener, EmojiconsFragment.OnEmojiconBackspaceClickedListener, PopupMenu.OnMenuItemClickListener {
+public class ChatActivity extends BaseActivity implements AboutUserViewInteractor, DataChangeListener, PopupMenu.OnMenuItemClickListener {
 
     @Inject ChatMessageRepository chatMessageRepository;
     @Inject ChatListRepository chatListRepository;
     @Inject UserPreference userPreference;
-    @Inject ViewUtil viewUtil;
     @Inject AboutUserPresenter presenter;
     @Inject ChatListPresenter chatListPresenter;
 
@@ -78,16 +75,18 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
     TextView txtStatus;
     @Bind(R.id.edt_message)
     EmojiconEditText edtMessage;
-    @Bind(R.id.emojicons)
-    FrameLayout emojicons;
+    @Bind(R.id.img_smiley)
+    ImageView imgSmiley;
+    @Bind(R.id.root_view)
+    LinearLayout rootView;
 
     private ChatList chatList;
     private List<ChatMessage> chatMessagesList;
-    private ChatMessage chatMessage = new ChatMessage();
     private int userId;
     private User user;
     private ChatMessageAdapter chatMessageAdapter;
     private String message;
+    private EmojiconsPopup popup;
     private ProgressDialog progressDialog;
 
     public static enum MessageState {
@@ -104,14 +103,11 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        //layoutManager.setReverseLayout(true);
         presenter.setViewInteractor(this);
+        setEmojicons();
 
         chatMessages.setLayoutManager(layoutManager);
         chatMessages.setHasFixedSize(false);
-
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, (int) (getHeight() * .4));
-        emojicons.setLayoutParams(lp);
 
         user = userPreference.readUser();
         userId = getIntent().getIntExtra("userId", 0);
@@ -123,6 +119,65 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         chatMessages.setAdapter(chatMessageAdapter);
     }
 
+    private void setEmojicons() {
+        popup = new EmojiconsPopup(rootView, this);
+        popup.setSizeForSoftKeyboard();
+
+        popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
+
+            @Override
+            public void onDismiss() {
+                changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_keyboard);
+            }
+        });
+
+        popup.setOnSoftKeyboardOpenCloseListener(new EmojiconsPopup.OnSoftKeyboardOpenCloseListener() {
+
+            @Override
+            public void onKeyboardOpen(int keyBoardHeight) {
+
+            }
+
+            @Override
+            public void onKeyboardClose() {
+                if (popup.isShowing())
+                    popup.dismiss();
+                changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_smiley);
+            }
+        });
+
+        popup.setOnEmojiconClickedListener(new EmojiconGridView.OnEmojiconClickedListener() {
+
+            @Override
+            public void onEmojiconClicked(Emojicon emojicon) {
+                if (edtMessage == null || emojicon == null) {
+                    return;
+                }
+
+                int start = edtMessage.getSelectionStart();
+                int end = edtMessage.getSelectionEnd();
+                if (start < 0) {
+                    edtMessage.append(emojicon.getEmoji());
+                } else {
+                    edtMessage.getText().replace(Math.min(start, end),
+                            Math.max(start, end), emojicon.getEmoji(), 0,
+                            emojicon.getEmoji().length());
+                }
+            }
+        });
+
+        popup.setOnEmojiconBackspaceClickedListener(new EmojiconsPopup.OnEmojiconBackspaceClickedListener() {
+
+            @Override
+            public void onEmojiconBackspaceClicked(View v) {
+                KeyEvent event = new KeyEvent(
+                        0, 0, 0, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0, KeyEvent.KEYCODE_ENDCALL);
+                edtMessage.dispatchKeyEvent(event);
+            }
+        });
+
+    }
+
     @OnClick(R.id.icon_send)
     void onClickSendIcon() {
         sendMessage();
@@ -130,25 +185,35 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
     @OnClick(R.id.img_smiley)
     void onClickSmiley() {
-        if (emojicons.getVisibility() == View.GONE) {
-            if (keyopen()) viewUtil.hide(getApplicationContext());
-            setEmojiconFragment(false);
-            emojicons.setVisibility(View.VISIBLE);
-        } else {
-            emojicons.setVisibility(View.GONE);
+
+        if (!popup.isShowing()) {
+
+            //If keyboard is visible, simply show the emoji popup
+            if (popup.isKeyBoardOpen()) {
+                popup.showAtBottom();
+                changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_keyboard);
+            }
+
+            //else, open the text keyboard first and immediately after that show the emoji popup
+            else {
+                edtMessage.setFocusableInTouchMode(true);
+                edtMessage.requestFocus();
+                popup.showAtBottomPending();
+                final InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.showSoftInput(edtMessage, InputMethodManager.SHOW_IMPLICIT);
+                changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_keyboard);
+            }
+        }
+
+        //If popup is showing, simply dismiss it to show the undelying text keyboard
+        else {
+            popup.dismiss();
+            changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_smiley);
         }
     }
 
-    @OnClick(R.id.edt_message)
-    void onEditTextClick() {
-        if (emojicons.getVisibility() == View.VISIBLE) emojicons.setVisibility(View.GONE);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                chatMessages.scrollToPosition(chatMessagesList.size() - 1);
-            }
-        }, 1000);
+    private void changeEmojiKeyboardIcon(ImageView iconToBeChanged, int drawableResourceId) {
+        iconToBeChanged.setImageResource(drawableResourceId);
     }
 
     @OnClick(R.id.back_layout)
@@ -178,31 +243,6 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
     }
 
-    public boolean keyopen() {
-        Rect rectgle = new Rect();
-        Window window = getWindow();
-        window.getDecorView().getWindowVisibleDisplayFrame(rectgle);
-        int curheight = rectgle.bottom;
-
-        if (curheight != getHeight()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void setEmojiconFragment(boolean useSystemDefault) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.emojicons, EmojiconsFragment.newInstance(useSystemDefault))
-                .commit();
-    }
-
-    private int getHeight() {
-        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
-        return metrics.heightPixels;
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -229,15 +269,6 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         }
 
         DateTime time = DateTime.now();
-/*
-        chatMessage.setCreatedTime(time.toString());
-        chatMessage.setBody(message);
-        chatMessage.setStatus(MessageState.Sending.toString());
-        chatMessage.setFrom("webuser" + user.getId());
-        chatMessage.setTo("webuser" + userId);
-        chatMessage.setUserId(userId);
-        chatMessageRepository.save(chatMessage);*/
-
         edtMessage.setText("");
 
         chatListRepository.updateTime(userId, user.getId(), time.toString());
@@ -252,11 +283,12 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         Intent intent = new Intent(SmackService.SEND_MESSAGE);
         intent.setPackage(this.getPackageName());
         intent.putExtra(SmackService.BUNDLE_MESSAGE_BODY, message);
-        intent.putExtra(SmackService.BUNDLE_TO, chatMessage.getTo() + "@" + Config.CHAT_SERVER);
+        intent.putExtra(SmackService.BUNDLE_TO, "webuser" + userId + "@" + Config.CHAT_SERVER);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         }
+        this.sendBroadcast(intent);
     }
 
     @Override
@@ -268,16 +300,6 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
     @Override
     public void onStatusChanged(String status) {
         txtStatus.setText(chatListRepository.getStatus(userId, user.getId()));
-    }
-
-    @Override
-    public void onEmojiconBackspaceClicked(View v) {
-        EmojiconsFragment.backspace(edtMessage);
-    }
-
-    @Override
-    public void onEmojiconClicked(Emojicon emojicon) {
-        EmojiconsFragment.input(edtMessage, emojicon);
     }
 
     @Override
@@ -333,13 +355,12 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         return false;
     }
 
+
     @Override
     public void onBackPressed() {
-        if (emojicons.getVisibility() == View.VISIBLE) {
-            emojicons.setVisibility(View.GONE);
-            return;
-        }
+        changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_smiley);
         startActivity(NavigationActivity.class, null);
         finish();
     }
+
 }
