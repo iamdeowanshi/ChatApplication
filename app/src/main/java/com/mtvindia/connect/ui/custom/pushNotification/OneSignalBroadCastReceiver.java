@@ -1,4 +1,4 @@
-package com.mtvindia.connect.ui.custom.gcm;
+package com.mtvindia.connect.ui.custom.pushNotification;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -125,6 +125,7 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
                         new NotificationCompat.Builder(context)
                                 .setSmallIcon(getNotificationIcon())
                                 .setContentTitle(title)
+                                .setPriority(Notification.PRIORITY_HIGH)
                                 .setColor(context.getResources().getColor(R.color.purple))
                                 .setContentText(content)
                                 .setDefaults(Notification.DEFAULT_ALL)
@@ -133,6 +134,7 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
             } else {
                 mBuilder = new NotificationCompat.Builder(context)
                         .setSmallIcon(getNotificationIcon())
+                        .setPriority(Notification.PRIORITY_HIGH)
                         .setContentTitle(pushMessageList.get(0).getName())
                         .setColor(context.getResources().getColor(R.color.purple))
                         .setContentText(pushMessageList.get(0).getMessage())
