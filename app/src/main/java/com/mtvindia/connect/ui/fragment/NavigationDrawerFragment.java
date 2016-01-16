@@ -19,7 +19,7 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.data.model.NavigationItem;
 import com.mtvindia.connect.data.model.User;
-import com.mtvindia.connect.ui.activity.NavigationCallBack;
+import com.mtvindia.connect.ui.callbacks.NavigationCallBack;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
 import com.mtvindia.connect.util.UserPreference;

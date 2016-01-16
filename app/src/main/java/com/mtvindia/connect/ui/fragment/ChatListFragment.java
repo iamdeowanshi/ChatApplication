@@ -25,7 +25,7 @@ import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.data.repository.DataChangeListener;
 import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.activity.ChatActivity;
-import com.mtvindia.connect.ui.activity.ChatCallBack;
+import com.mtvindia.connect.ui.callbacks.ChatCallBack;
 import com.mtvindia.connect.ui.adapter.ChatListAdapter;
 import com.mtvindia.connect.util.UserPreference;
 

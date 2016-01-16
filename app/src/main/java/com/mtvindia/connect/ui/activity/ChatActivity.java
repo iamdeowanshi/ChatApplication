@@ -135,7 +135,8 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
             @Override
             public void onKeyboardOpen(int keyBoardHeight) {
-
+                chatMessageAdapter.notifyDataSetChanged();
+                chatMessages.scrollToPosition(chatMessagesList.size() - 1);
             }
 
             @Override

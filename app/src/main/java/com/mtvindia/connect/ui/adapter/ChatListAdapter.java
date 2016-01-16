@@ -18,7 +18,7 @@ import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.data.repository.ChatMessageRepository;
 import com.mtvindia.connect.presenter.ChatListPresenter;
-import com.mtvindia.connect.ui.activity.ChatCallBack;
+import com.mtvindia.connect.ui.callbacks.ChatCallBack;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.UserPreference;
 import com.squareup.picasso.Picasso;

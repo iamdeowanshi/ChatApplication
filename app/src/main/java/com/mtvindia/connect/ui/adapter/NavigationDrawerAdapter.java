@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.data.model.NavigationItem;
-import com.mtvindia.connect.ui.activity.NavigationCallBack;
+import com.mtvindia.connect.ui.callbacks.NavigationCallBack;
 
 import java.util.List;
 
