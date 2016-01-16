@@ -11,6 +11,10 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+/**
+ * Utility class that saves data to shared preferences. It contains different methods to save
+ * object, boolean, int etc values.
+ */
 public class PreferenceUtil {
 
     @Inject Context context;
@@ -104,6 +108,7 @@ public class PreferenceUtil {
         }
     }
 
+    // clear methods.
     public void remove(String key) {
         getEditor().remove(key).apply();
     }

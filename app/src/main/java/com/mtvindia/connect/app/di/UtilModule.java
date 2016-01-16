@@ -2,6 +2,7 @@ package com.mtvindia.connect.app.di;
 
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.NetworkUtil;
+import com.mtvindia.connect.util.PermissionUtil;
 import com.mtvindia.connect.util.PreferenceUtil;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
@@ -54,6 +55,10 @@ public class UtilModule {
     @Provides
     public ViewUtil provideViewUtil() {
         return new ViewUtil();
+    }
+
+    @Provides PermissionUtil providePermissionUtil() {
+        return new PermissionUtil();
     }
 
 }
