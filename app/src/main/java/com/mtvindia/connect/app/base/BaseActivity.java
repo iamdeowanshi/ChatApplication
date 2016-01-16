@@ -92,6 +92,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         return getClass().getName();
     }
 
+    /**
+     * Get the content view of an activity.
+     *
+     * @return
+     */
     protected View getContentView() {
         return findViewById(android.R.id.content);
     }

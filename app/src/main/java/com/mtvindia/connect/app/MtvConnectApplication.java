@@ -9,7 +9,7 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.ndk.CrashlyticsNdk;
 import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.app.di.RootModule;
-import com.mtvindia.connect.ui.custom.gcm.OneSignalBroadCastReceiver;
+import com.mtvindia.connect.ui.custom.pushNotification.OneSignalBroadCastReceiver;
 import com.onesignal.OneSignal;
 
 import io.fabric.sdk.android.Fabric;
