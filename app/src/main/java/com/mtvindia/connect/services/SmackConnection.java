@@ -235,7 +235,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                     intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                 }
-                try {
+                /*try {
                     roster.createEntry(message.getFrom().split("/")[0], message.getFrom().split("/")[0],null);
                 } catch (SmackException.NotLoggedInException e) {
                     e.printStackTrace();
@@ -243,9 +243,9 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
                     e.printStackTrace();
                 } catch (XMPPException.XMPPErrorException e) {
                     e.printStackTrace();
-                } catch (SmackException.NotConnectedException e) {
+                } catch (SmackException.NotConnectedException e) =
                     e.printStackTrace();
-                }
+                }*/
                 context.sendBroadcast(intent);
                 Log.i(TAG, "processMessage() BroadCast send");
             }

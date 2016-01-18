@@ -55,11 +55,7 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
     public void onReceive(Context context, Intent intent1) {
         Injector.instance().inject(this);
         Bundle dataBundle = intent1.getBundleExtra("data");
-        /*try {
-            Boolean isActive = Boolean.valueOf(String.valueOf(new JSONObject(String.valueOf(dataBundle.get("isActive")))));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
+
         boolean isActive = (boolean) dataBundle.get("isActive");
         if ( isActive ) {
 
@@ -76,18 +72,7 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
                 e.printStackTrace();
             }
 
-            //PushMessage pushMessage = gson.fromJson(msg, PushMessage.class);
-
             int id = pushMessage.getId();
-            //int id = Integer.parseInt(msg.getString("fromUserId").split("user")[1].split("@")[0]);
-
-/*
-
-        pushMessage.setId(id);
-        pushMessage.setName(msg.getString("name"));
-        pushMessage.setMessage(msg.getString("message"));
-*/
-
 
             pushMessageList = userPreference.readPushMessage();
             pushMessageList.add(pushMessage);
@@ -142,7 +127,7 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
                         .setPriority(Notification.PRIORITY_HIGH)
                         .setContentTitle(pushMessageList.get(0).getName())
                         .setColor(context.getResources().getColor(R.color.purple))
-                        .setContentText(pushMessageList.get(0).getMessage())
+                        .setContentText(pushMessageList.get(0).getMessage().split(":")[1].trim())
                         .setDefaults(Notification.DEFAULT_ALL)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(pushMessageList.get(0).getMessage()))
                         .setAutoCancel(true);

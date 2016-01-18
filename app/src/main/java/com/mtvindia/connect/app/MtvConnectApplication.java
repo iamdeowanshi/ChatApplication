@@ -24,8 +24,9 @@ public class MtvConnectApplication extends Application {
     public void onCreate() {
         ActivityLifecycleCallback.register(this);
         super.onCreate();
-        OneSignal.startInit(this).setNotificationOpenedHandler(new OneSignalBroadCastReceiver()).init();
-        //OneSignal.startInit(this).init();
+        OneSignal.startInit(this)
+                .setNotificationOpenedHandler(new OneSignalBroadCastReceiver())
+                .init();
 
         Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
 

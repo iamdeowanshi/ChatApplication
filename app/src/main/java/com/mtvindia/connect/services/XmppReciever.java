@@ -1,9 +1,16 @@
 package com.mtvindia.connect.services;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
+import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.data.model.AboutUser;
 import com.mtvindia.connect.data.model.ChatList;
@@ -14,6 +21,7 @@ import com.mtvindia.connect.data.repository.ChatMessageRepository;
 import com.mtvindia.connect.presenter.AboutUserPresenter;
 import com.mtvindia.connect.presenter.AboutUserViewInteractor;
 import com.mtvindia.connect.presenter.ChatListPresenter;
+import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.util.UserPreference;
 
 import org.joda.time.DateTime;
@@ -37,14 +45,24 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
 
     private int userId;
     private String from;
-    DateTime time;
+    private DateTime time;
+    private User user;
+    private String message;
+    private Context context;
     private ChatList chatList = new ChatList();
     private ChatMessage chatMessage = new ChatMessage();
-    private User user;
+
+    private static final int MY_NOTIFICATION_ID = 1;
+
+    private NotificationManager mNotificationManager;
+    private PendingIntent contentIntent;
+    private NotificationCompat.Builder mBuilder;
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Injector.instance().inject(this);
+        this.context = context;
         String action = intent.getAction();
         user = userPreference.readUser();
         aboutUserPresenter.setViewInteractor(this);
@@ -54,8 +72,9 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
         switch (action) {
             case SmackService.NEW_MESSAGE:
                 String from = intent.getStringExtra(SmackService.BUNDLE_FROM_JID);
-                String message = intent.getStringExtra(SmackService.BUNDLE_MESSAGE_BODY);
+                message = intent.getStringExtra(SmackService.BUNDLE_MESSAGE_BODY);
                 saveToDB(from, message);
+                showNotification();
                 break;
             case SmackService.NEW_ROSTER:
                 ArrayList<String> roster = intent.getStringArrayListExtra(SmackService.BUNDLE_ROSTER);
@@ -72,6 +91,47 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
         }
 
     }
+
+    private void showNotification() {
+        if (userId != userPreference.readSelectedUser()) {
+
+            ChatList chatList = chatListRepository.getUser(userId, user.getId());
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+
+            mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            Intent intent = new Intent(context, ChatActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("userId", userId);
+            intent.putExtras(bundle);
+            stackBuilder.addParentStack(ChatActivity.class);
+            stackBuilder.addNextIntent(intent);
+            contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+            mBuilder =
+                    new NotificationCompat.Builder(context)
+                            .setSmallIcon(getNotificationIcon())
+                            .setContentTitle(chatList.getName().split(" ")[0])
+                            .setPriority(Notification.PRIORITY_HIGH)
+                            .setColor(context.getResources().getColor(R.color.purple))
+                            .setContentText(message)
+                            .setDefaults(Notification.DEFAULT_ALL)
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                            .setAutoCancel(true);
+
+            mBuilder.setContentIntent(contentIntent);
+
+            Notification note = mBuilder.build();
+            note.defaults |= Notification.DEFAULT_VIBRATE;
+            note.defaults |= Notification.DEFAULT_SOUND;
+            mNotificationManager.notify(MY_NOTIFICATION_ID, mBuilder.build());
+        }
+    }
+
+    private int getNotificationIcon() {
+        boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
+        return useWhiteIcon ? R.drawable.ic_stat_gamethrive_default : R.drawable.icon_launcher;
+    }
+
 
     private void saveToDB(String from, String message) {
         time = DateTime.now();

@@ -111,6 +111,7 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
         user = userPreference.readUser();
         userId = getIntent().getIntExtra("userId", 0);
+        userPreference.saveSelectedUser(userId);
 
         loadUser();
         loadMessages();
@@ -359,9 +360,14 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
     @Override
     public void onBackPressed() {
+        userPreference.readSelectedUser();
         changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_smiley);
         startActivity(NavigationActivity.class, null);
         finish();
     }
 
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        userPreference.readSelectedUser();
+    }
 }

@@ -29,6 +29,7 @@ public class UserPreference {
     public static final String MATCHED_USER = "_MATCHED_USER";
     public static final String DEVICE_TOKEN = "_DEVICE_TOKEN";
     public static final String PUSH_NOTIFICATION = "_PUSH_NOTIFICATION";
+    public static final String SELECTED_USER = "_SELECTED_USER";
 
     public UserPreference() {
         Injector.instance().inject(this);
@@ -135,6 +136,28 @@ public class UserPreference {
         return gson.fromJson(pushMessage, listType);
     }
 
+    /**
+     * Saves id of selected user from chat list.
+     * @param id
+     */
+    public void saveSelectedUser(int id) {
+        preferenceUtil.save(SELECTED_USER, id);
+    }
+
+    /**
+     * Returns id of selected user with whom user is currently chatting.
+     * @return
+     */
+    public int readSelectedUser() {
+        return preferenceUtil.readInt(SELECTED_USER, 0);
+    }
+
+    /**
+     * Removes selected user from shared preference.
+     */
+    public void removeSelectedUser() {
+        preferenceUtil.remove(SELECTED_USER);
+    }
     /**
      * Clears shared preferences.
      */
