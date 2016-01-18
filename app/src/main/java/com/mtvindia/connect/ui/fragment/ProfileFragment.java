@@ -192,6 +192,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         String birthDay = user.getBirthDate();
         DateTime dateTime = DateTime.parse(birthDay);
         if (birthDay != null) {
+            Timber.d(birthDay);
             year = dateTime.getYear();
             month = dateTime.getMonthOfYear();
             date = dateTime.getDayOfMonth();
@@ -233,12 +234,12 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         }, year, month, date);
         datePicker.setTitle("Select date");
         if (user.getBirthDate().isEmpty() || user.getBirthDate() == null) {
-            calendar.set(calendar.get(Calendar.YEAR) - 18, calendar.get(Calendar.MONTH) -1, calendar.get(Calendar.DATE));
+            datePicker.updateDate(calendar.get(Calendar.YEAR) - 18, calendar.get(Calendar.MONTH) -1, calendar.get(Calendar.DATE));
         } else {
             DateTime birthday = DateTime.parse(user.getBirthDate());
-            calendar.set(birthday.getYear(), birthday.getMonthOfYear() - 1, birthday.getDayOfMonth());
+            datePicker.updateDate(birthday.getYear(), birthday.getMonthOfYear() - 1, birthday.getDayOfMonth());
         }
-        //datePicker.getDatePicker().setMaxDate(DateTime.now().minusYears(18).toDate().getTime());
+        datePicker.getDatePicker().setMaxDate(DateTime.now().minusYears(18).toDate().getTime());
         datePicker.getDatePicker().setSpinnersShown(true);
         datePicker.getDatePicker().getSpinnersShown();
         datePicker.getDatePicker().setCalendarViewShown(false);
