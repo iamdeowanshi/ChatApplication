@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -39,7 +40,7 @@ import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
 import com.mtvindia.connect.services.SmackService;
-import com.mtvindia.connect.services.XmppReciever;
+import com.mtvindia.connect.ui.callbacks.NavigationCallBack;
 import com.mtvindia.connect.ui.fragment.AboutFragment;
 import com.mtvindia.connect.ui.fragment.ChatListFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
@@ -78,7 +79,6 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     private User user;
 
     final static int REQUEST_LOCATION = 1000;
-    private final BroadcastReceiver xmppReciever = new XmppReciever();
 
     private GoogleApiClient googleApiClient;
 
@@ -97,6 +97,8 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
 
         injectDependencies();
         presenter.setViewInteractor(this);
+
+        chatListRepository.reInitialize();
 
         googleApiClient = new GoogleApiClient
                 .Builder(this)
@@ -218,16 +220,15 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
 
     private void loadInitialItem() {
         isInRegistration = userPreference.readLoginStatus();
+                if (isInRegistration) {
+                    setDrawerEnabled(false);
+                    onItemSelected(NavigationItem.PREFERENCE);
+                } else if (chatListRepository.searchChat(user.getId()) != null) {
+                    onItemSelected(NavigationItem.CHAT);
 
-        if (isInRegistration) {
-            setDrawerEnabled(false);
-            onItemSelected(NavigationItem.PREFERENCE);
-        } else if (chatListRepository.searchChat(user.getId()) != null) {
-            onItemSelected(NavigationItem.CHAT);
-
-        } else {
-            onItemSelected(NavigationItem.FIND_PEOPLE);
-        }
+                } else {
+                    onItemSelected(NavigationItem.FIND_PEOPLE);
+                }
     }
 
     private void setDrawerEnabled(boolean isEnable) {
@@ -438,6 +439,10 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         if(chatListRepository.searchChat(user.getId()) != null) return true;
 
         return false;
+    }
+
+    @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

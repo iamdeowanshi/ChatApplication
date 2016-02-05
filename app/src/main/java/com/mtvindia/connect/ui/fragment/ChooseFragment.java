@@ -54,14 +54,16 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
     @Bind(R.id.img_1) ImageView img1;
     @Bind(R.id.img_2) ImageView img2;
-    @Bind(R.id.btn_skip) Button btnSkip;
     @Bind(R.id.progress) ProgressBar progress;
     @Bind(R.id.txt_user1_name) UbuntuTextView txtUser1Name;
     @Bind(R.id.txt_user2_name) UbuntuTextView txtUser2Name;
 
+    private final static int FIRST = 0;
+    private final static int SECOND = 1;
+
     private List<User> matchedUser;
     private ChatList chatList = new ChatList();
-
+    private boolean userPresent;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,29 +107,16 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
     @OnClick(R.id.img_1)
     void clickedFirst() {
-        int id = matchedUser.get(0).getId();
-        questionPreference.saveQuestionCount(0);
-        questionPreference.savePrimaryQuestionId(0);
-        Bundle bundle = new Bundle();
-
-        if (userPresent(id)) {
-            bundle.putInt("userId", id);
-            startActivity(ChatActivity.class, bundle);
-            getActivity().finish();
-        } else {
-            NavigationActivity navigationActivity = (NavigationActivity) getContext();
-            bundle.putInt("UserId", id);
-            Fragment fragment = DisplayUserFragment.getInstance(bundle);
-            navigationActivity.addFragment(fragment);
-            saveUserToDb(0);
-        }
-
-        changePreferences();
+        navigateToAboutUser(FIRST);
     }
 
     @OnClick(R.id.img_2)
     void clickedSecond() {
-        int id = matchedUser.get(1).getId();
+        navigateToAboutUser(SECOND);
+    }
+
+    private void navigateToAboutUser(int position) {
+        int id = matchedUser.get(position).getId();
         questionPreference.saveQuestionCount(0);
         questionPreference.savePrimaryQuestionId(0);
         Bundle bundle = new Bundle();
@@ -141,13 +130,15 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
             bundle.putInt("UserId", id);
             Fragment fragment = DisplayUserFragment.getInstance(bundle);
             navigationActivity.addFragment(fragment);
-            saveUserToDb(1);
+            saveUserToDb(position);
         }
-            changePreferences();
+        changePreferences();
     }
 
-    private boolean userPresent(int id) {
-        return chatListRepository.searchUser(id, userPreference.readUser().getId());
+    private boolean userPresent(final int id) {
+        userPresent = chatListRepository.searchUser(id, userPreference.readUser().getId());
+
+        return userPresent;
     }
 
     @OnClick(R.id.btn_skip)
@@ -167,7 +158,6 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
         chatList.setLastMessage("");
         chatList.setTime("");
         chatList.setLogedinUser(userPreference.readUser().getId());
-
         chatListRepository.save(chatList);
         chatListPresenter.addUser(userPreference.readUser().getId(), chatList.getUserId(), userPreference.readUser().getAuthHeader());
     }
@@ -250,7 +240,6 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
     @Override
     public void onError(Throwable e) {
         Timber.e(e, "Error");
-        toastShort("Error: " + e);
         hideProgress();
     }
 }

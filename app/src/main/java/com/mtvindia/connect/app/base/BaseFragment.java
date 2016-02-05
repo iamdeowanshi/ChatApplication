@@ -93,4 +93,13 @@ public abstract class BaseFragment extends Fragment {
         return getClass().getName();
     }
 
+    /**
+     * Get the content view of an activity.
+     *
+     * @return
+     */
+    protected View getContentView() {
+        return getView();
+    }
+
 }

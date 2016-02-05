@@ -1,4 +1,4 @@
-package com.mtvindia.connect.ui.custom.gcm;
+package com.mtvindia.connect.ui.custom.pushNotification;
 
 
 import android.app.Activity;

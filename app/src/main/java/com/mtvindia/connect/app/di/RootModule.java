@@ -1,7 +1,9 @@
 package com.mtvindia.connect.app.di;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 
+import com.mtvindia.connect.ui.activity.WalkThroughActivity;
 import com.mtvindia.connect.app.MtvConnectApplication;
 import com.mtvindia.connect.data.repository.realm.BaseRepositoryRealm;
 import com.mtvindia.connect.data.repository.realm.ChatListRepositoryRealm;
@@ -23,8 +25,9 @@ import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.adapter.ChatListAdapter;
 import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
-import com.mtvindia.connect.ui.custom.gcm.GcmIntentService;
-import com.mtvindia.connect.ui.custom.gcm.OneSignalBroadCastReceiver;
+import com.mtvindia.connect.ui.adapter.WalkThroughAdapter;
+import com.mtvindia.connect.ui.custom.pushNotification.GcmIntentService;
+import com.mtvindia.connect.ui.custom.pushNotification.OneSignalBroadCastReceiver;
 import com.mtvindia.connect.ui.fragment.ChatListFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
 import com.mtvindia.connect.ui.fragment.DisplayUserFragment;
@@ -34,8 +37,10 @@ import com.mtvindia.connect.ui.fragment.PrimaryQuestionFragment;
 import com.mtvindia.connect.ui.fragment.ProfileFragment;
 import com.mtvindia.connect.ui.fragment.ResultFragment;
 import com.mtvindia.connect.ui.fragment.SecondaryQuestionFragment;
+import com.mtvindia.connect.util.Bakery;
 import com.mtvindia.connect.util.DialogUtil;
 import com.mtvindia.connect.util.NetworkUtil;
+import com.mtvindia.connect.util.PermissionUtil;
 import com.mtvindia.connect.util.PreferenceUtil;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
@@ -60,27 +65,40 @@ import dagger.Provides;
         },
         injects = {
                 MtvConnectApplication.class,
-                BaseRepositoryRealm.class,
-                SmackConnection.class,
-                GcmIntentService.class,
-                // View specific classes - activities, fragments, adapters etc
 
+                //Xmpp
+                SmackConnection.class,
+                XmppReciever.class,
+
+                //Gcm
+                GcmIntentService.class,
+                OneSignalBroadCastReceiver.class,
+
+                //Activities
                 LaunchActivity.class,
                 LoginActivity.class,
-                NavigationDrawerFragment.class,
-                NavigationDrawerAdapter.class,
+                ChatActivity.class,
+                WalkThroughActivity.class,
                 NavigationActivity.class,
+
+                //Fragments
+                NavigationDrawerFragment.class,
                 PreferenceFragment.class,
                 ProfileFragment.class,
                 PrimaryQuestionFragment.class,
                 SecondaryQuestionFragment.class,
                 ChatListFragment.class,
-                ChatActivity.class,
                 ChooseFragment.class,
                 ResultFragment.class,
                 DisplayUserFragment.class,
-                ChatMessageAdapter.class,
 
+                //Adapters
+                ChatMessageAdapter.class,
+                ChatListAdapter.class,
+                WalkThroughAdapter.class,
+                NavigationDrawerAdapter.class,
+
+                //Api presenters
                 LoginPresenterImpl.class,
                 UpdatePresenterImpl.class,
                 QuestionRequestPresenterImpl.class,
@@ -89,26 +107,20 @@ import dagger.Provides;
                 AboutUserPresenterImpl.class,
                 ProfilePicUpdatePresenterImpl.class,
                 ChatListPresenterImpl.class,
-                DisplayUserFragment.class,
-                ChatActivity.class,
-                ChatListFragment.class,
-
-                ChatListAdapter.class,
-                OneSignalBroadCastReceiver.class,
 
                 //Realm
                 BaseRepositoryRealm.class,
                 ChatListRepositoryRealm.class,
                 ChatMessageRepositoryRealm.class,
 
-                XmppReciever.class,
-
                 // Util classes
+                Bakery.class,
                 NetworkUtil.class,
                 DialogUtil.class,
                 UserPreference.class,
                 QuestionPreference.class,
-                PreferenceUtil.class
+                PreferenceUtil.class,
+                PermissionUtil.class
 
         }
 )
@@ -124,6 +136,12 @@ public class RootModule {
     @Singleton
     public Context provideApplicationContext() {
         return context;
+    }
+
+    @Provides
+    @Singleton
+    public LayoutInflater provideLayoutInflater() {
+        return LayoutInflater.from(context);
     }
 
 

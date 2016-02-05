@@ -88,6 +88,7 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
     private String message;
     private EmojiconsPopup popup;
     private ProgressDialog progressDialog;
+    private String userStatus;
 
     public static enum MessageState {
         Sending, Sent, Delivered, Read;
@@ -101,6 +102,9 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
         injectDependencies();
 
+        chatMessageRepository.reInitialize();
+        chatListRepository.reInitialize();
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         presenter.setViewInteractor(this);
@@ -111,6 +115,7 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
         user = userPreference.readUser();
         userId = getIntent().getIntExtra("userId", 0);
+        userPreference.saveSelectedUser(userId);
 
         loadUser();
         loadMessages();
@@ -135,7 +140,8 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
             @Override
             public void onKeyboardOpen(int keyBoardHeight) {
-
+                chatMessageAdapter.notifyDataSetChanged();
+                chatMessages.scrollToPosition(chatMessagesList.size() - 1);
             }
 
             @Override
@@ -223,8 +229,8 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
     private void loadMessages() {
         chatMessagesList = chatMessageRepository.searchMessage("webuser" + userId, "webuser" + user.getId());
-        chatMessageRepository.setDataChangeListener(this);
-        chatListRepository.setDataChangeListener(this);
+        chatMessageRepository.setDataChangeListener(ChatActivity.this);
+        chatListRepository.setDataChangeListener(ChatActivity.this);
         chatMessages.scrollToPosition(chatMessagesList.size() - 1);
     }
 
@@ -271,12 +277,17 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         DateTime time = DateTime.now();
         edtMessage.setText("");
 
-        chatListRepository.updateTime(userId, user.getId(), time.toString());
-
+        updateTime();
+        //chatListRepository.updateTime(userId, user.getId(), DateTime.now().toString());
         chatMessageAdapter.notifyDataSetChanged();
         chatMessages.scrollToPosition(chatMessagesList.size() - 1);
 
         sendToChatServer();
+    }
+
+    private void updateTime() {
+        chatListRepository.updateTime(userId, user.getId(), DateTime.now().toString());
+
     }
 
     private void sendToChatServer() {
@@ -299,7 +310,13 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
     @Override
     public void onStatusChanged(String status) {
-        txtStatus.setText(chatListRepository.getStatus(userId, user.getId()));
+        txtStatus.setText(onlineStatus());
+    }
+
+    private String onlineStatus() {
+        userStatus = chatListRepository.getStatus(userId, user.getId());
+
+        return userStatus;
     }
 
     @Override
@@ -338,7 +355,6 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         chatList.setLastMessage("");
         chatList.setTime(time.toString());
         chatList.setLogedinUser(userPreference.readUser().getId());
-
         chatListRepository.save(chatList);
         chatListPresenter.addUser(userPreference.readUser().getId(), chatList.getUserId(), userPreference.readUser().getAuthHeader());
 
@@ -358,9 +374,14 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
     @Override
     public void onBackPressed() {
+        userPreference.readSelectedUser();
         changeEmojiKeyboardIcon(imgSmiley, R.drawable.icon_smiley);
         startActivity(NavigationActivity.class, null);
         finish();
     }
 
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        userPreference.readSelectedUser();
+    }
 }

@@ -5,42 +5,25 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 
-import com.mtvindia.connect.app.base.BaseActivity;
-
 /**
  * Created by Sibi on 05/11/15.
  */
-public class DialogUtil extends BaseActivity {
-/*    @Inject
-    NetworkUtil networkUtil;
 
-    public DialogUtil() {
-        Injector.instance().inject(this);
-    }
+/**
+ * Utility class that provides Alert Dialog box to display pop up and set actions for each
+ * buttons.
+ */
+public class DialogUtil {
 
-    public void displayInternetAlert(final Activity activity) {
-        final AlertDialog dialog = new AlertDialog.Builder(activity)
-                .setTitle("Connection Failed")
-                .setMessage("Please Check Your Internet Connection")
-                .setCancelable(false)
-                .setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(!networkUtil.isOnline()) {
-                            displayInternetAlert(activity);
-                        }
-                    }
-                })
-                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                }).create();
-
-        dialog.show();
-    }*/
-
+    /**
+     * Returns alert dialog.
+     * @param activity
+     * @param title
+     * @param message
+     * @param positiveMessage
+     * @param negativeMessage
+     * @return
+     */
     public Dialog createAlertDialog(final Activity activity, String title, String message,String positiveMessage, String negativeMessage) {
         final AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle(title)

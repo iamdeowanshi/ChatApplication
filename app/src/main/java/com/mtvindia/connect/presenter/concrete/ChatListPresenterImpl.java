@@ -80,7 +80,6 @@ public class ChatListPresenterImpl extends BaseNetworkPresenter implements ChatL
         }
     };
 
-
     @Override
     public void addUser(int id, int chatUserId, String header) {
         Observable<Response> responseObservable = mtvConnectApi.addUser(id, chatUserId, header);

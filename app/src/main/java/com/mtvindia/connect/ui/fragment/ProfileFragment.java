@@ -1,16 +1,21 @@
 package com.mtvindia.connect.ui.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,14 +42,19 @@ import com.mtvindia.connect.presenter.UpdatePresenter;
 import com.mtvindia.connect.presenter.UpdateViewInteractor;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.custom.UbuntuTextView;
+import com.mtvindia.connect.util.Bakery;
 import com.mtvindia.connect.util.DialogUtil;
+import com.mtvindia.connect.util.PermissionUtil;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
 import com.mtvindia.connect.util.ViewUtil;
 import com.squareup.picasso.Picasso;
 
+import org.joda.time.DateTime;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.StringTokenizer;
 
@@ -59,20 +69,16 @@ import timber.log.Timber;
 /**
  * Created by Sibi on 16/10/15.
  */
-public class ProfileFragment extends BaseFragment implements UpdateViewInteractor, PictureUpdateViewInteractor{
+public class ProfileFragment extends BaseFragment implements UpdateViewInteractor, PictureUpdateViewInteractor, ActivityCompat.OnRequestPermissionsResultCallback {
 
-    @Inject
-    UserPreference userPreference;
-    @Inject
-    QuestionPreference questionPreference;
-    @Inject
-    UpdatePresenter presenter;
-    @Inject
-    ProfilePicUpdatePresenter picUpdatePresenter;
-    @Inject
-    DialogUtil dialogUtil;
-    @Inject
-    ViewUtil viewUtil;
+    @Inject UserPreference userPreference;
+    @Inject QuestionPreference questionPreference;
+    @Inject UpdatePresenter presenter;
+    @Inject ProfilePicUpdatePresenter picUpdatePresenter;
+    @Inject DialogUtil dialogUtil;
+    @Inject ViewUtil viewUtil;
+    @Inject Bakery bakery;
+    @Inject PermissionUtil permissionUtil;
 
     @Bind(R.id.img_dp)
     ImageView imgDp;
@@ -88,13 +94,16 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
     UbuntuTextView txtYear;
     @Bind(R.id.progress)
     ProgressBar progress;
-
-    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    public static final int MEDIA_TYPE_IMAGE = 1;
     @Bind(R.id.txt_gender)
     UbuntuTextView txtGender;
     @Bind(R.id.layout_dialog_gender)
     RelativeLayout layoutDialogGender;
+
+    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
+    private static final int MEDIA_TYPE_IMAGE = 1;
+    private static final int CAMERA_REQUEST_CODE = 2;
+
+    private static String[] PERMISSION = { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA };
 
     private int date;
     private int month;
@@ -151,20 +160,46 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         loadData();
     }
 
+    private void checkPermissions() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), PERMISSION[0]) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(getActivity(), PERMISSION[1]) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(getActivity(), PERMISSION[2]) != PackageManager.PERMISSION_GRANTED) {
+            // Display a SnackBar with an explanation and a button to trigger the request.
+            requestPermission();
+        } else {
+            showPictureDialog();
+        }
+    }
+
+    private void requestPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), PERMISSION[0])
+                || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), PERMISSION[1])
+                || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), PERMISSION[2])) {
+            bakery.snack(getContentView(), "Camera and storage permission are required to change image", Snackbar.LENGTH_INDEFINITE,  "Try Again", new View.OnClickListener() {
+                @Override public void onClick(View view) {
+                    ActivityCompat.requestPermissions(getActivity(), PERMISSION, CAMERA_REQUEST_CODE);
+                }
+            });
+        } else {
+            requestPermissions(PERMISSION, CAMERA_REQUEST_CODE);
+        }
+    }
+
+
     void loadData() {
         user = userPreference.readUser();
 
         String birthDay = user.getBirthDate();
         if (birthDay != null) {
-            String[] string = birthDay.split("-");
-            year = Integer.parseInt(string[0]);
-            month = Integer.parseInt(string[1]);
+            DateTime dateTime = DateTime.parse(birthDay);
+            Timber.d(birthDay);
+            year = dateTime.getYear();
+            month = dateTime.getMonthOfYear();
+            date = dateTime.getDayOfMonth();
 
-            String[] stringDay = string[2].split("T");
-            date = Integer.parseInt(stringDay[0]);
-            txtYear.setText(string[0]);
-            txtDay.setText(stringDay[0]);
-            txtMonth.setText(getMonthName(month));
+            txtYear.setText(String.valueOf(year));
+            txtDay.setText(String.valueOf(date));
+            txtMonth.setText(new DateFormatSymbols().getMonths()[month - 1].substring(0,3));
         }
 
         if( ! userPreference.readLoginStatus()) {
@@ -178,18 +213,19 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
 
     @OnClick(R.id.txt_date_picker)
     void selectDate() {
-        Calendar currentDate = Calendar.getInstance();
+        DateTime dateTime = DateTime.now();
+        Calendar calendar = Calendar.getInstance();
         if (year == 0) {
-            year = currentDate.get(Calendar.YEAR);
-            month = currentDate.get(Calendar.MONTH) + 1;
-            date = currentDate.get(Calendar.DAY_OF_MONTH);
+            year = dateTime.getYear();
+            month = dateTime.getMonthOfYear();
+            date = dateTime.getDayOfMonth();
         }
 
 
         DatePickerDialog datePicker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                 txtDay.setText(String.valueOf(selectedday));
-                txtMonth.setText(getMonthName(selectedmonth + 1));
+                txtMonth.setText(new DateFormatSymbols().getMonths()[selectedmonth].substring(0,3));
                 txtYear.setText(String.valueOf(selectedyear));
                 year = selectedyear;
                 month = selectedmonth + 1;
@@ -197,9 +233,13 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
             }
         }, year, month, date);
         datePicker.setTitle("Select date");
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(calendar.get(Calendar.YEAR) - 18, calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
-        datePicker.getDatePicker().setMaxDate(calendar.getTime().getTime());
+        if (user.getBirthDate() == null || user.getBirthDate().isEmpty()) {
+            datePicker.updateDate(calendar.get(Calendar.YEAR) - 18, calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+        } else {
+            DateTime birthday = DateTime.parse(user.getBirthDate());
+            datePicker.updateDate(birthday.getYear(), birthday.getMonthOfYear() - 1, birthday.getDayOfMonth());
+        }
+        datePicker.getDatePicker().setMaxDate(DateTime.now().minusYears(18).toDate().getTime());
         datePicker.getDatePicker().setSpinnersShown(true);
         datePicker.getDatePicker().getSpinnersShown();
         datePicker.getDatePicker().setCalendarViewShown(false);
@@ -308,6 +348,10 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
 
     @OnClick(R.id.img_dp)
     void selectImage() {
+        checkPermissions();
+    }
+
+    private void showPictureDialog() {
         final CharSequence[] items = {"Take Photo", "Choose from Gallery"};
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -317,58 +361,24 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Take Photo")) {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+                    openCamera();
                 } else if (items[item].equals("Choose from Gallery")) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    intent.setType("image/*");
-                    startActivityForResult(Intent.createChooser(intent, "Select File"), MEDIA_TYPE_IMAGE);
+                    openGallery();
                 }
             }
         });
         builder.show();
     }
 
-    public static String getMonthName(int month) {
-        switch (month) {
-            case 1:
-                return "Jan";
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+    }
 
-            case 2:
-                return "Feb";
-
-            case 3:
-                return "Mar";
-
-            case 4:
-                return "Apr";
-
-            case 5:
-                return "May";
-
-            case 6:
-                return "Jun";
-
-            case 7:
-                return "Jul";
-
-            case 8:
-                return "Aug";
-
-            case 9:
-                return "Sep";
-
-            case 10:
-                return "Oct";
-
-            case 11:
-                return "Nov";
-
-            case 12:
-                return "Dec";
-        }
-
-        return "";
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select File"), MEDIA_TYPE_IMAGE);
     }
 
     @Override
@@ -416,6 +426,7 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        bakery.dismiss();
         ButterKnife.unbind(this);
     }
 
@@ -476,6 +487,26 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         Picasso.with(getContext()).load(user.getProfilePic()).fit().into(imgDp);
         userPreference.saveUser(user);
         toastShort("Picture Updated");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if (permissionUtil.verifyPermissions(grantResults)) {
+                Timber.d("come here");
+                bakery.snackShort(getContentView(),"Permissions have been granted");
+                showPictureDialog();
+            } else {
+                /*bakery.snack(getContentView(), "Camera and storage permission are required to change image", Snackbar.LENGTH_INDEFINITE, "Try Again", new View.OnClickListener() {
+                    @Override public void onClick(View view) {
+                        ActivityCompat.requestPermissions(getActivity(), PERMISSION, REQUEST_CODE);
+                    }
+                });*/
+                bakery.snackShort(getContentView(), "Permissions were not granted");
+            }
+        }
     }
 
 }

@@ -18,7 +18,6 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
@@ -28,7 +27,6 @@
     <permission
         android:name="com.mtvindia.connect.permission.C2D_MESSAGE"
         android:protectionLevel="signature"/>
-
 
     <application
         android:name=".app.MtvConnectApplication"
@@ -43,7 +41,7 @@
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider1670274839923097"
+            android:authorities="com.facebook.app.FacebookContentProvider1480373608933513"
             android:exported="true"/>
 
         <activity
@@ -61,6 +59,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activity.WalkThroughActivity"
+                  android:theme="@style/RedTheme"/>
         <activity
             android:name=".ui.activity.LoginActivity"
             android:label="@string/title_activity_login"
@@ -79,7 +79,7 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="f958711af2adab120a830dc232e2b390687662cc" />
+            android:value="f958711af2adab120a830dc232e2b390687662cc"/>
         <meta-data
             android:name="CLEVERTAP_ACCOUNT_ID"
             android:value="@string/cleverId"/>
@@ -92,7 +92,7 @@
             android:value="@integer/google_play_services_version"/>
 
         <receiver
-            android:name=".ui.custom.gcm.OneSignalBroadCastReceiver"
+            android:name=".ui.custom.pushNotification.OneSignalBroadCastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.onesignal.BackgroundBroadcast.RECEIVE"/>
@@ -100,8 +100,8 @@
         </receiver>
 
         <!--
-        <receiver
-            android:name=".ui.custom.gcm.GcmBroadcastReceiver"
+            <receiver
+            android:name=".ui.custom.pushNotification.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -118,7 +118,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".ui.custom.gcm.GcmIntentService"/>
+        <service android:name=".ui.custom.pushNotification.GcmIntentService"/>
         <service
             android:name=".services.SmackService"
             android:enabled="true"

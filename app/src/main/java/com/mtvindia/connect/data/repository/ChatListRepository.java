@@ -20,6 +20,8 @@ public interface ChatListRepository extends BaseRepository<ChatList> {
 
     ChatList searchChat(long id);
 
+    ChatList getUser(int id, int userId);
+
     boolean searchUser(long userId, long id);
 
     String getStatus(int id, int userId);

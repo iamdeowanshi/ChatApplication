@@ -1,4 +1,4 @@
-package com.mtvindia.connect.ui.activity;
+package com.mtvindia.connect.ui.callbacks;
 
 import com.mtvindia.connect.data.model.ChatList;
 

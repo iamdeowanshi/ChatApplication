@@ -1,4 +1,4 @@
-package com.mtvindia.connect.ui.custom.gcm;
+package com.mtvindia.connect.ui.custom.pushNotification;
 
 
 import android.app.IntentService;
@@ -20,9 +20,6 @@ import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
 import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.util.UserPreference;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.List;
@@ -75,22 +72,21 @@ public class GcmIntentService extends IntentService {
     }
 
     private void receivedNotification(Bundle message) {
-        String msg = null;
+        /*String msg = null;
         try {
             msg = new JSONObject(message.get("custom").toString()).getString("a");
 
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-        PushMessage pushMessage = gson.fromJson(msg, PushMessage.class);
-        int id = pushMessage.getId();
-        //int id = Integer.parseInt(msg.getString("fromUserId").split("user")[1].split("@")[0]);
-/*
+        }*/
+        //PushMessage pushMessage = gson.fromJson(msg, PushMessage.class);
+        //int id = pushMessage.getId();
+        PushMessage pushMessage = new PushMessage();
+        int id = Integer.parseInt(message.getString("fromUserId").split("user")[1]);
 
         pushMessage.setId(id);
-        pushMessage.setName(msg.getString("name"));
-        pushMessage.setMessage(msg.getString("message"));
-*/
+        pushMessage.setName(message.getString("name"));
+        pushMessage.setMessage(message.getString("message"));
 
         pushMessageList = userPreference.readPushMessage();
         pushMessageList.add(pushMessage);

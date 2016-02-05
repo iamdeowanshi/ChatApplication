@@ -43,7 +43,6 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
 
     @Override
     public List<ChatMessage> unsentMessages() {
-        //Realm realm = Realm.getDefaultInstance();
         return realm.where(modelType)
                     .equalTo("status", "Sending")
                     .equalTo("userId", userPreference.readUser().getId())

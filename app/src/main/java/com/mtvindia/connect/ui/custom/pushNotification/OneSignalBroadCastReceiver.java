@@ -1,4 +1,4 @@
-package com.mtvindia.connect.ui.custom.gcm;
+package com.mtvindia.connect.ui.custom.pushNotification;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -55,8 +55,9 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
     public void onReceive(Context context, Intent intent1) {
         Injector.instance().inject(this);
         Bundle dataBundle = intent1.getBundleExtra("data");
-        Boolean isActive = Boolean.valueOf(dataBundle.getString("isActive"));
-        if (dataBundle.getString("isActive") == "true") {
+
+        boolean isActive = (boolean) dataBundle.get("isActive");
+        if ( isActive ) {
 
             JSONObject jsonObject = null;
             String msg = null;
@@ -71,18 +72,7 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
                 e.printStackTrace();
             }
 
-            //PushMessage pushMessage = gson.fromJson(msg, PushMessage.class);
-
             int id = pushMessage.getId();
-            //int id = Integer.parseInt(msg.getString("fromUserId").split("user")[1].split("@")[0]);
-
-/*
-
-        pushMessage.setId(id);
-        pushMessage.setName(msg.getString("name"));
-        pushMessage.setMessage(msg.getString("message"));
-*/
-
 
             pushMessageList = userPreference.readPushMessage();
             pushMessageList.add(pushMessage);
@@ -125,6 +115,7 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
                         new NotificationCompat.Builder(context)
                                 .setSmallIcon(getNotificationIcon())
                                 .setContentTitle(title)
+                                .setPriority(Notification.PRIORITY_HIGH)
                                 .setColor(context.getResources().getColor(R.color.purple))
                                 .setContentText(content)
                                 .setDefaults(Notification.DEFAULT_ALL)
@@ -133,9 +124,10 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
             } else {
                 mBuilder = new NotificationCompat.Builder(context)
                         .setSmallIcon(getNotificationIcon())
+                        .setPriority(Notification.PRIORITY_HIGH)
                         .setContentTitle(pushMessageList.get(0).getName())
                         .setColor(context.getResources().getColor(R.color.purple))
-                        .setContentText(pushMessageList.get(0).getMessage())
+                        .setContentText(pushMessageList.get(0).getMessage().split(":")[1].trim())
                         .setDefaults(Notification.DEFAULT_ALL)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(pushMessageList.get(0).getMessage()))
                         .setAutoCancel(true);
@@ -167,44 +159,6 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
     @Override
     public void notificationOpened(String message, JSONObject additionalData, boolean isActive) {
         Timber.d(String.valueOf(isActive));
-    /*    if (isActive) {
-            PushMessage pushMessage = new PushMessage();
-            try {
-                pushMessage.setId(Integer.parseInt(additionalData.getString("fromUserId").split("user")[1].split("@")[0]));
-                pushMessage.setName(additionalData.getString("name"));
-                pushMessage.setMessage(additionalData.getString("message"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            int id = pushMessage.getId();
-            mBuilder = new NotificationCompat.Builder(context)
-                    .setSmallIcon(getNotificationIcon())
-                    .setContentTitle(pushMessage.getName())
-                    .setColor(context.getResources().getColor(R.color.purple))
-                    .setContentText(pushMessage.getMessage())
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setPriority(Notification.PRIORITY_HIGH)
-                    .setStyle(new NotificationCompat.BigTextStyle().bigText(pushMessage.getMessage()))
-                    .setAutoCancel(true);
-
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-            Intent intent = new Intent(context, ChatActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putInt("userId", id);
-            intent.putExtras(bundle);
-            stackBuilder.addParentStack(ChatActivity.class);
-            stackBuilder.addNextIntent(intent);
-            contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-            mBuilder.setContentIntent(contentIntent);
-
-            Notification note = mBuilder.build();
-            note.defaults |= Notification.DEFAULT_VIBRATE;
-            note.defaults |= Notification.DEFAULT_SOUND;
-            mNotificationManager.notify(MY_NOTIFICATION_ID*//*(int) (System.currentTimeMillis()/1000)*//*, mBuilder.build());
-
-        }
-    */
     }
 }
 
