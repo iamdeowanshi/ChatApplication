@@ -206,7 +206,7 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
     }
 
     private void setView(int size) {
-        if (size == 2) {
+        if (size >= 2 || size < 4) {
             layer2.setVisibility(View.GONE);
             blankView.setVisibility(View.GONE);
             linearLayout.setGravity(Gravity.CENTER);
@@ -221,7 +221,7 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
             Picasso.with(getContext()).load(options.get(1).getOptionUrl()).fit().into(picOption2);
             picOption2.setVisibility(View.VISIBLE);
         }
-        else {
+        else if (size == 4){
             view.setVisibility(View.VISIBLE);
             view2.setVisibility(View.VISIBLE);
 

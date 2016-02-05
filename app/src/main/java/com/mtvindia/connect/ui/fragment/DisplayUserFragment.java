@@ -136,29 +136,15 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
             edtMessage.setText("");
             return;
         }
-            DateTime time = DateTime.now();
-            Timber.d(time.toString());
-            chatMessage.setFrom("webuser" + userPreference.readUser().getId());
-            chatMessage.setTo("webuser" + selectedUser.getId());
-            chatMessage.setStatus("sent");
-            chatMessage.setUserId(selectedUser.getId());
-            chatMessage.setCreatedTime(time.toString());
-            chatMessage.setBody(edtMessage.getText().toString());
-            chatMessage.setCreatedTime(time.toString());
-            chatMessageRepository.save(chatMessage);
-            chatListRepository.updateTime(userId, userPreference.readUser().getId(), time.toString());
-
             sendToChatServer();
 
             Bundle bundle = new Bundle();
-            bundle.putInt("userId", chatList.getUserId());
+            bundle.putInt("userId", userId);
             startActivity(ChatActivity.class, bundle);
             getActivity().finish();
-
-
+        chatListRepository.updateTime(userId, userPreference.readUser().getId(), DateTime.now().toString());
         edtMessage.setText("");
     }
-
 
     public static Fragment getInstance(Bundle bundle) {
         DisplayUserFragment displayUserFragment = new DisplayUserFragment();
@@ -194,7 +180,7 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
         Intent intent = new Intent(SmackService.SEND_MESSAGE);
         intent.setPackage(getContext().getPackageName());
         intent.putExtra(SmackService.BUNDLE_MESSAGE_BODY, message);
-        intent.putExtra(SmackService.BUNDLE_TO, chatMessage.getTo() + "@" + Config.CHAT_SERVER);
+        intent.putExtra(SmackService.BUNDLE_TO, "webuser" + userId + "@" + Config.CHAT_SERVER);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);

@@ -56,6 +56,22 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
+     * Start an activity by clearing all previous activities.
+     *
+     * @param activityClass Class<? extends Activity>
+     * @param bundle Bundle
+     */
+    protected void startActivityClearTop(Class<? extends Activity> activityClass, Bundle bundle) {
+        Intent intent = new Intent(this, activityClass);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        if (bundle != null) intent.putExtras(bundle);
+
+        startActivity(intent);
+        //finish();
+    }
+
+    /**
      * Shows a LENGTH_SHORT toast message.
      *
      * @param message

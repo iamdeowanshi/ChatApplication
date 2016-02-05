@@ -190,8 +190,8 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         user = userPreference.readUser();
 
         String birthDay = user.getBirthDate();
-        DateTime dateTime = DateTime.parse(birthDay);
         if (birthDay != null) {
+            DateTime dateTime = DateTime.parse(birthDay);
             Timber.d(birthDay);
             year = dateTime.getYear();
             month = dateTime.getMonthOfYear();
@@ -233,8 +233,8 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
             }
         }, year, month, date);
         datePicker.setTitle("Select date");
-        if (user.getBirthDate().isEmpty() || user.getBirthDate() == null) {
-            datePicker.updateDate(calendar.get(Calendar.YEAR) - 18, calendar.get(Calendar.MONTH) -1, calendar.get(Calendar.DATE));
+        if (user.getBirthDate() == null || user.getBirthDate().isEmpty()) {
+            datePicker.updateDate(calendar.get(Calendar.YEAR) - 18, calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         } else {
             DateTime birthday = DateTime.parse(user.getBirthDate());
             datePicker.updateDate(birthday.getYear(), birthday.getMonthOfYear() - 1, birthday.getDayOfMonth());

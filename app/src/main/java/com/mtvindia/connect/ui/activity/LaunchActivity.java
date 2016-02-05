@@ -18,6 +18,7 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
 import com.mtvindia.connect.util.Bakery;
 import com.mtvindia.connect.util.PermissionUtil;
+import com.mtvindia.connect.util.PreferenceUtil;
 import com.mtvindia.connect.util.QuestionPreference;
 import com.mtvindia.connect.util.UserPreference;
 
@@ -33,6 +34,7 @@ public class LaunchActivity extends BaseActivity implements ActivityCompat.OnReq
     @Inject QuestionPreference questionPreference;
     @Inject Bakery bakery;
     @Inject PermissionUtil permissionUtil;
+    @Inject PreferenceUtil preference;
 
     private static int timeOut = 2000;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -47,12 +49,19 @@ public class LaunchActivity extends BaseActivity implements ActivityCompat.OnReq
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launch);
-
         injectDependencies();
 
         userPreference.removeMatchedUser();
         questionPreference.clearPreference();
+
+        if (! preference.readBoolean(PreferenceUtil.FIRST_LAUNCH_DONE, false)) {
+            preference.save(PreferenceUtil.FIRST_LAUNCH_DONE, true);
+            startActivity(WalkThroughActivity.class, null);
+            finish();
+            return;
+        }
+
+        setContentView(R.layout.activity_launch);
 
         if (checkPlayServices()) {
             getRegId();

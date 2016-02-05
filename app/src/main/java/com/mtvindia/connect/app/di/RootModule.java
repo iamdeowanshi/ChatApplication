@@ -1,7 +1,9 @@
 package com.mtvindia.connect.app.di;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 
+import com.mtvindia.connect.ui.activity.WalkThroughActivity;
 import com.mtvindia.connect.app.MtvConnectApplication;
 import com.mtvindia.connect.data.repository.realm.BaseRepositoryRealm;
 import com.mtvindia.connect.data.repository.realm.ChatListRepositoryRealm;
@@ -23,6 +25,7 @@ import com.mtvindia.connect.ui.activity.NavigationActivity;
 import com.mtvindia.connect.ui.adapter.ChatListAdapter;
 import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
+import com.mtvindia.connect.ui.adapter.WalkThroughAdapter;
 import com.mtvindia.connect.ui.custom.pushNotification.GcmIntentService;
 import com.mtvindia.connect.ui.custom.pushNotification.OneSignalBroadCastReceiver;
 import com.mtvindia.connect.ui.fragment.ChatListFragment;
@@ -75,6 +78,7 @@ import dagger.Provides;
                 LaunchActivity.class,
                 LoginActivity.class,
                 ChatActivity.class,
+                WalkThroughActivity.class,
                 NavigationActivity.class,
 
                 //Fragments
@@ -91,6 +95,7 @@ import dagger.Provides;
                 //Adapters
                 ChatMessageAdapter.class,
                 ChatListAdapter.class,
+                WalkThroughAdapter.class,
                 NavigationDrawerAdapter.class,
 
                 //Api presenters
@@ -131,6 +136,12 @@ public class RootModule {
     @Singleton
     public Context provideApplicationContext() {
         return context;
+    }
+
+    @Provides
+    @Singleton
+    public LayoutInflater provideLayoutInflater() {
+        return LayoutInflater.from(context);
     }
 
 

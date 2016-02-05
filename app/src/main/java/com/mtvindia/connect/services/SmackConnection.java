@@ -212,6 +212,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
             chatMessage.setStatus(ChatActivity.MessageState.Sending.toString());
             e.printStackTrace();
         }
+        chatMessageRepository.reInitialize();
         chatMessageRepository.save(chatMessage);
     }
 

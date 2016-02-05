@@ -25,8 +25,8 @@ import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.data.repository.DataChangeListener;
 import com.mtvindia.connect.services.SmackService;
 import com.mtvindia.connect.ui.activity.ChatActivity;
-import com.mtvindia.connect.ui.callbacks.ChatCallBack;
 import com.mtvindia.connect.ui.adapter.ChatListAdapter;
+import com.mtvindia.connect.ui.callbacks.ChatCallBack;
 import com.mtvindia.connect.util.UserPreference;
 
 import java.util.ArrayList;
@@ -64,9 +64,6 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-     /*   final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.BlueTheme);
-        LayoutInflater layoutInflater = inflater.cloneInContext(contextThemeWrapper);*/
-
         View view = inflater.inflate(R.layout.chat_list_fragment, container, false);
         ButterKnife.bind(this, view);
 
@@ -81,6 +78,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
         Window window = getActivity().getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkPurple));
         }
@@ -88,21 +86,16 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
         userPreference.removePushMessage();
         userList.setLayoutManager(layoutManager);
         userList.setHasFixedSize(true);
+
         chatList = chatListRepository.sortList(userPreference.readUser().getId());
+        chatListRepository.setDataChangeListener(ChatListFragment.this);
 
-        chatListRepository.setDataChangeListener(this);
 
-        chatListAdapter = new ChatListAdapter(this.getContext(), chatList);
+        chatListAdapter = new ChatListAdapter(getContext(), chatList);
         chatListAdapter.setChatCallBack(this);
         userList.setAdapter(chatListAdapter);
-        emptyView();
 
-       /* userList.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                return false;
-            }
-        });*/
+        emptyView();
 
     }
 

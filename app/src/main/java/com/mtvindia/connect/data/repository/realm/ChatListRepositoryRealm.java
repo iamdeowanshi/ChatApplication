@@ -15,6 +15,7 @@ import io.realm.RealmResults;
  */
 public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> implements ChatListRepository {
 
+
     private DataChangeListener dataChangeListener;
     private RealmChangeListener realmListener;
     private String status = "Offline";
@@ -67,6 +68,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
             chatMessage = result.get(result.size() - 1);
         }
 
+
         return chatMessage;
     }
 
@@ -77,13 +79,17 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
                 .findAll();
         result.sort("time", RealmResults.SORT_ORDER_DESCENDING);
 
+
         return result;
     }
 
     @Override
     public long size() {
-        return realm.where(modelType)
-                .count();
+        long size =  realm.where(modelType)
+                          .count();
+
+
+        return size;
     }
 
     @Override
@@ -92,19 +98,28 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
         ChatList item = find(id, userId);
         item.setTime(time);
         realm.commitTransaction();
+
     }
 
     @Override
     public ChatList searchChat(long id) {
-        return realm.where(modelType).equalTo("logedinUser", id).findFirst();
+        /*try {
+            return realm.where(modelType).equalTo("logedinUser", id).findFirst();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }*/
+        ChatList chatList = realm.where(modelType).equalTo("logedinUser", id).findFirst();
+
+        return chatList;
     }
 
     @Override
     public ChatList getUser(int id, int userId) {
         return realm.where(modelType)
-                .equalTo("userId", id)
-                .equalTo("logedinUser", userId)
-                .findFirst();
+                            .equalTo("userId", id)
+                            .equalTo("logedinUser", userId)
+                            .findFirst();
     }
 
     @Override
@@ -118,6 +133,14 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     @Override
     public boolean searchUser(long userId, long logedinUser) {
+       /*try {
+           return (realm.where(modelType)
+                   .equalTo("userId", userId)
+                   .equalTo("logedinUser", logedinUser).count() != 0);
+       } catch (Exception e) {
+           e.printStackTrace();
+           return false;
+       }*/
         return (realm.where(modelType)
                 .equalTo("userId", userId)
                 .equalTo("logedinUser", logedinUser).count() != 0);
@@ -134,7 +157,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     @Override
     public void updateStatus(int id, int userId, String status) {
-        realm.beginTransaction();
+      realm.beginTransaction();
         ChatList item = find(id, userId);
         if (item != null) {
             item.setStatus(status);

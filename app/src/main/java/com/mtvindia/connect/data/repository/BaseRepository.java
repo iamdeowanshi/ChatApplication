@@ -21,4 +21,6 @@ public interface BaseRepository<T> {
 
     void removeDataChangeListener();
 
+    void reInitialize();
+
 }

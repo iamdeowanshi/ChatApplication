@@ -83,9 +83,14 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
                 }
                 for (String s : roster) {
                     Timber.d(s);
-                    int id = Integer.parseInt(s.split("user")[1].split("@")[0]);
-                    String status = s.split(":")[1];
-                    chatListRepository.updateStatus(id, user.getId(), status);
+                    try {
+                        int id = Integer.parseInt(s.split("user")[1].split("@")[0]);
+                        String status = s.split(":")[1];
+                        chatListRepository.reInitialize();
+                        chatListRepository.updateStatus(id, user.getId(), status);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
         }
@@ -94,37 +99,48 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
 
     private void showNotification() {
         if (userId != userPreference.readSelectedUser()) {
+            chatList = chatListRepository.getUser(userId, user.getId());
 
-            ChatList chatList = chatListRepository.getUser(userId, user.getId());
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            String title = (chatList == null) ? "New message" : chatList.getName().split(" ")[0];
 
-            mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-            Intent intent = new Intent(context, ChatActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putInt("userId", userId);
-            intent.putExtras(bundle);
-            stackBuilder.addParentStack(ChatActivity.class);
-            stackBuilder.addNextIntent(intent);
-            contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-            mBuilder =
-                    new NotificationCompat.Builder(context)
-                            .setSmallIcon(getNotificationIcon())
-                            .setContentTitle(chatList.getName().split(" ")[0])
-                            .setPriority(Notification.PRIORITY_HIGH)
-                            .setColor(context.getResources().getColor(R.color.purple))
-                            .setContentText(message)
-                            .setDefaults(Notification.DEFAULT_ALL)
-                            .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
-                            .setAutoCancel(true);
-
-            mBuilder.setContentIntent(contentIntent);
-
-            Notification note = mBuilder.build();
-            note.defaults |= Notification.DEFAULT_VIBRATE;
-            note.defaults |= Notification.DEFAULT_SOUND;
-            mNotificationManager.notify(MY_NOTIFICATION_ID, mBuilder.build());
+            if (chatList != null) {
+                createNotification();
+            } else {
+                aboutUserPresenter.getAboutUser(userId, user.getAuthHeader());
+            }
         }
+    }
+
+    private void createNotification() {
+        String title = chatList.getName().split(" ")[0];
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+
+        mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent intent = new Intent(context, ChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("userId", userId);
+        intent.putExtras(bundle);
+        stackBuilder.addParentStack(ChatActivity.class);
+        stackBuilder.addNextIntent(intent);
+        contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+        mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(getNotificationIcon())
+                        .setContentTitle(title)
+                        .setPriority(Notification.PRIORITY_HIGH)
+                        .setColor(context.getResources().getColor(R.color.purple))
+                        .setContentText(message)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                        .setAutoCancel(true);
+
+        mBuilder.setContentIntent(contentIntent);
+
+        Notification note = mBuilder.build();
+        note.defaults |= Notification.DEFAULT_VIBRATE;
+        note.defaults |= Notification.DEFAULT_SOUND;
+        mNotificationManager.notify(MY_NOTIFICATION_ID, mBuilder.build());
     }
 
     private int getNotificationIcon() {
@@ -143,11 +159,12 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
         chatMessage.setTo("webuser" + user.getId());
         chatMessage.setFrom(from.split("@")[0]);
         chatMessage.setUserId(userId);
+        chatMessageRepository.reInitialize();
         chatMessageRepository.save(chatMessage);
         if(userPresent(userId)) {
-            chatListRepository.updateTime(userId, user.getId(),  time.toString());
+            chatListRepository.reInitialize();
+            chatListRepository.updateTime(userId, userPreference.readUser().getId(), DateTime.now().toString());
         }
-
     }
 
     private boolean userPresent(int userId) {
@@ -180,9 +197,11 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
         chatList.setImage(aboutUser.getProfilePic());
         chatList.setName(aboutUser.getFullName());
         chatList.setLogedinUser(user.getId());
+        chatListRepository.reInitialize();
         chatListRepository.save(chatList);
         chatListPresenter.addUser(userPreference.readUser().getId(), chatList.getUserId(), userPreference.readUser().getAuthHeader());
-        chatListRepository.updateTime(userId, user.getId(), time.toString());
-
+        chatListRepository.updateTime(userId, userPreference.readUser().getId(), DateTime.now().toString());
+        createNotification();
     }
+
 }

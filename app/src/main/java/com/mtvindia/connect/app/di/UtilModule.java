@@ -57,8 +57,10 @@ public class UtilModule {
         return new ViewUtil();
     }
 
-    @Provides PermissionUtil providePermissionUtil() {
+    @Provides
+    PermissionUtil providePermissionUtil() {
         return new PermissionUtil();
     }
+
 
 }

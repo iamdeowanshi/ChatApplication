@@ -29,7 +29,7 @@ android {
 
     defaultConfig {
         manifestPlaceholders = [manifestApplicationId: "${applicationId}",
-                                onesignal_app_id: "69b5a50a-e903-4ae5-9360-10a73fb921e0",
+                                onesignal_app_id: "8fe73625-3e3a-4b7f-a5ff-7b1e98094c7a",
                                 onesignal_google_project_number: "1031985356592"]
 
         multiDexEnabled true
@@ -116,6 +116,9 @@ dependencies {
     //one-signal
     compile 'com.onesignal:OneSignal:2.+@aar'
     compile project('emojicon')
+    //view page indicator
+    compile 'com.viewpagerindicator:library:2.4.1@aar'
+
 }
 
 crashlytics {

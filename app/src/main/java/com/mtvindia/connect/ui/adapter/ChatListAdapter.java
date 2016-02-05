@@ -51,8 +51,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     private ChatCallBack chatCallBack;
     private int count = 0;
 
-   // protected SwipeItemRecyclerMangerImpl mItemManger = new SwipeItemRecyclerMangerImpl(this);
-
     public ChatListAdapter(Context context, List<ChatList> chatList) {
         this.context = context;
         this.chatList = chatList;
@@ -62,6 +60,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     public ChatListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_list_recycler_view_item, parent, false);
         Injector.instance().inject(this);
+        chatMessageRepository.reInitialize();
+        chatListRepository.reInitialize();
 
         return new ViewHolder(view);
     }
@@ -71,7 +71,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         count++;
         Picasso.with(context).load(chatList.get(position).getImage()).fit().into(holder.imageDp);
         holder.txtName.setText(chatList.get(position).getName());
+
         chatMessage = lastMessage(chatList.get(position).getUserId());
+
         holder.txtChat.setText(getText(chatMessage));
 
         holder.txtTime.setText(getTime(chatMessage.getCreatedTime()));
@@ -83,10 +85,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
 
             }
         });
-
-        /*if (count == getItemCount()) {
-            holder.view.setVisibility(View.INVISIBLE);
-        }*/
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -102,6 +100,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                         chatListPresenter.removeUser(chatList.get(position).getUserId(), userPreference.readUser().getAuthHeader());
                         chatMessageRepository.removeAllMessage(chatList.get(position).getUserId(), userPreference.readUser().getId());
                         chatListRepository.remove(chatList.get(position).getUserId(), userPreference.readUser().getId());
+
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, chatList.size());
                         alertDialog.dismiss();

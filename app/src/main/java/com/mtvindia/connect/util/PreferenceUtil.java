@@ -20,6 +20,8 @@ public class PreferenceUtil {
     @Inject Context context;
     @Inject Gson gson;
 
+    public static final String FIRST_LAUNCH_DONE = "_first_launch_done";
+
     private SharedPreferences preferences;
 
     public PreferenceUtil() {
