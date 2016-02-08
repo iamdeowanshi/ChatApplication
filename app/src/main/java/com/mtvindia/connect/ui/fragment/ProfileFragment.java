@@ -3,6 +3,7 @@ package com.mtvindia.connect.ui.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -54,6 +55,7 @@ import org.joda.time.DateTime;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URI;
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.StringTokenizer;
@@ -410,12 +412,15 @@ public class ProfileFragment extends BaseFragment implements UpdateViewInteracto
         return Uri.parse(path);
     }
 
-    private String getRealPathFromUri(Uri uri) {
-        Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+    private String getRealPathFromUri(Uri contentUri) {
+        String[] projections = { MediaStore.Images.Media.DATA };
+        CursorLoader loader = new CursorLoader(getActivity(), contentUri, projections, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-
-        return cursor.getString(idx);
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
     }
 
     void uploadFile(File file) {
