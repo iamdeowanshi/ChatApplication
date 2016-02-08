@@ -23,4 +23,6 @@ public interface BaseRepository<T> {
 
     void reInitialize();
 
+    long getNextKey();
+
 }

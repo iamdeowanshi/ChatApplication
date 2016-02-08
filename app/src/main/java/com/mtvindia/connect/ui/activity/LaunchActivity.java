@@ -28,6 +28,12 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
+/**
+ * @author Aaditya Deowanshi
+ *
+ *         First screen when application is launched.
+ */
+
 public class LaunchActivity extends BaseActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     @Inject UserPreference userPreference;
@@ -43,18 +49,19 @@ public class LaunchActivity extends BaseActivity implements ActivityCompat.OnReq
     private GoogleCloudMessaging gcm;
     private String regId;
 
-    private static String[] LOCATION_PERMISSION = { Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
-
+    private static String[] LOCATION_PERMISSION = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         injectDependencies();
 
+        //Clear question preferences.
         userPreference.removeMatchedUser();
         questionPreference.clearPreference();
 
-        if (! preference.readBoolean(PreferenceUtil.FIRST_LAUNCH_DONE, false)) {
+        //if registration, navigate to walk through screen.
+        if (!preference.readBoolean(PreferenceUtil.FIRST_LAUNCH_DONE, false)) {
             preference.save(PreferenceUtil.FIRST_LAUNCH_DONE, true);
             startActivity(WalkThroughActivity.class, null);
             finish();
@@ -74,49 +81,50 @@ public class LaunchActivity extends BaseActivity implements ActivityCompat.OnReq
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == LOCATION_REQUEST_CODE) {
-            if (permissionUtil.verifyPermissions(grantResults)) {
-                start();
-            } else {
-                bakery.snackShort(getContentView(), "Location permission were not granted");
-                new Handler().postDelayed(new Runnable() {
-                    @Override public void run() {
-                        finish();
-                    }
-                },200);
-
-            }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (permissionUtil.verifyPermissions(grantResults)) {
+            proceedToLogin();
+        } else {
+            bakery.snackShort(getContentView(), "Location permission were not granted");
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            }, 200);
         }
     }
 
+    /**
+     * Displays google play service error.
+     */
     private void googleServicesError() {
         bakery.snackShort(getContentView(), "Google services are required for location and Google plus login");
     }
 
     /**
-     * Checking for runtime permissions of location and accounts.
+     * Checking for runtime permissions of location, applicable from Android 6 and above.
      */
-
     private void checkLocation() {
         if (ActivityCompat.checkSelfPermission(this, LOCATION_PERMISSION[0]) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, LOCATION_PERMISSION[1]) != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermissions();
         } else {
             //If permission granted
-            start();
+            proceedToLogin();
         }
     }
 
-
-
+    /**
+     * Requesting for runtime permission, required for Android 6 and above.
+     */
     private void requestLocationPermissions() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, LOCATION_PERMISSION[0]) || ActivityCompat.shouldShowRequestPermissionRationale(this, LOCATION_PERMISSION[1])) {
             Timber.d("request");
             // Display a SnackBar with an explanation and a button to trigger the request.
-            bakery.snack(getContentView(), "Location permission are required to find Matches", Snackbar.LENGTH_INDEFINITE,  "Try Again", new View.OnClickListener() {
-                @Override public void onClick(View view) {
+            bakery.snack(getContentView(), "Location permission are required to find Matches", Snackbar.LENGTH_INDEFINITE, "Try Again", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     ActivityCompat.requestPermissions(LaunchActivity.this, LOCATION_PERMISSION, LOCATION_REQUEST_CODE);
                 }
             });
@@ -134,15 +142,18 @@ public class LaunchActivity extends BaseActivity implements ActivityCompat.OnReq
      */
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Timber.i("Google Services", "This device is not supported.");
-            }
-            return false;
+
+        if (resultCode == ConnectionResult.SUCCESS) {
+            return true;
         }
-        return true;
+
+        if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+            GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_RESOLUTION_REQUEST).show();
+        } else {
+            bakery.snackLong(getContentView(), "This device is not supported.");
+        }
+
+        return false;
     }
 
     /**
@@ -163,6 +174,7 @@ public class LaunchActivity extends BaseActivity implements ActivityCompat.OnReq
                 } catch (IOException ex) {
                     msg = "Error : " + ex.getMessage();
                 }
+
                 return msg;
             }
 
@@ -171,7 +183,7 @@ public class LaunchActivity extends BaseActivity implements ActivityCompat.OnReq
                 if (regId.startsWith("Error")) {
                     getRegId();
                 } else {
-                    //gcm reg id is getting here.
+                    // gcm registration id is received here.
                     Timber.d(regId);
                     userPreference.saveDeviceToken(regId);
                 }
@@ -180,10 +192,10 @@ public class LaunchActivity extends BaseActivity implements ActivityCompat.OnReq
     }
 
     /**
-     * If user details present login screen will be skipped
+     * If user details are present login screen will be skipped
      * else login screen will be loaded
      */
-    public void start() {
+    public void proceedToLogin() {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {

@@ -12,8 +12,9 @@ import javax.inject.Inject;
 import io.realm.RealmChangeListener;
 
 /**
- * Created by Sibi on 02/12/15.
+ * @author Aaditya Deowanshi
  */
+
 public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage> implements ChatMessageRepository {
 
     @Inject UserPreference userPreference;
@@ -32,6 +33,11 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
         };
     }
 
+    /**
+     * Removes all messages from database for particular user.
+     * @param from
+     * @param to
+     */
     @Override
     public void removeAllMessage(long from, int to) {
         realm.beginTransaction();
@@ -41,6 +47,10 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
         realm.addChangeListener(realmListener);
     }
 
+    /**
+     * Returns all unsent messages.
+     * @return
+     */
     @Override
     public List<ChatMessage> unsentMessages() {
         return realm.where(modelType)
@@ -49,6 +59,10 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
                     .findAll();
     }
 
+    /**
+     * Saves messages to the database.
+     * @param obj
+     */
     @Override
     public void save(ChatMessage obj) {
         realm.beginTransaction();
@@ -60,10 +74,12 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
         realm.addChangeListener(realmListener);
     }
 
-    private long getNextKey() {
-        return realm.where(ChatMessage.class).maximumInt("id");
-    }
-
+    /**
+     * Returns all messages for a particular user.
+     * @param from
+     * @param to
+     * @return
+     */
     @Override
     public List<ChatMessage> searchMessage(String from, String to) {
         return realm.where(modelType)

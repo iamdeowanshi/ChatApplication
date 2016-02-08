@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.mtvindia.connect.app.di.Injector;
 import com.mtvindia.connect.app.di.OrmModule;
+import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.repository.BaseRepository;
 import com.mtvindia.connect.data.repository.DataChangeListener;
 
@@ -39,8 +40,17 @@ public abstract class BaseRepositoryRealm<T extends RealmObject> implements Base
     }
 
     @Override
-    public T find(long id, int userId) {
-        return realm.where(modelType).equalTo("userId", id).equalTo("logedinUser", userId).findFirst();
+    public T find(long userId, int id) {
+        return realm.where(modelType).equalTo("userId", userId).equalTo("logedinUser", id).findFirst();
+    }
+
+    /**
+     * Returns the last key value in database.
+     * @return
+     */
+    @Override
+    public long getNextKey() {
+        return realm.where(ChatMessage.class).maximumInt("id");
     }
 
     @Override

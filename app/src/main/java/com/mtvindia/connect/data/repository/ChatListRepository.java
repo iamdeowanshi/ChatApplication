@@ -18,7 +18,7 @@ public interface ChatListRepository extends BaseRepository<ChatList> {
 
     void updateTime(long id,int userId, String time);
 
-    ChatList searchChat(long id);
+    ChatList searchUser(long id);
 
     ChatList getUser(int id, int userId);
 

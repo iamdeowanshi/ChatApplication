@@ -15,6 +15,11 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * @author Aaditya Deowanshi
+ *
+ *         On first launch of application, walk through screen displays how to use application.
+ */
 public class WalkThroughActivity extends BaseActivity implements WalkThroughAdapter.OnBoardClickListener {
 
     @Bind(R.id.view_pager) ViewPager viewPager;
@@ -22,6 +27,9 @@ public class WalkThroughActivity extends BaseActivity implements WalkThroughAdap
 
     private WalkThroughAdapter onBoardPagerAdapter;
 
+    /**
+     * Adding walk through images.
+     */
     private List<Integer> slideResources = new ArrayList<Integer>() {{
         add(R.drawable.img_walkthrough_1);
         add(R.drawable.img_walkthrough_2);
@@ -46,12 +54,14 @@ public class WalkThroughActivity extends BaseActivity implements WalkThroughAdap
 
     @Override
     public void onNextClicked(int position) {
-        // final slide
+        // if Last image
         if (position == slideResources.size() - 1) {
             startActivityClearTop(LaunchActivity.class, null);
+
             return;
         }
 
         viewPager.setCurrentItem(position + 1);
     }
+
 }
