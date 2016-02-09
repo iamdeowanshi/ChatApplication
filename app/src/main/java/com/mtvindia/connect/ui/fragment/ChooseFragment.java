@@ -41,8 +41,11 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
- * Created by Sibi on 22/10/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Choose fragmwnt screen, where user gets two options to choose from to chat with.
  */
+
 public class ChooseFragment extends BaseFragment implements FindMatchViewInteractor {
 
     @Inject UserPreference userPreference;
@@ -61,9 +64,9 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
     private final static int FIRST = 0;
     private final static int SECOND = 1;
 
+    private boolean userPresent;
     private List<User> matchedUser;
     private ChatList chatList = new ChatList();
-    private boolean userPresent;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,81 +95,15 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
         }
 
         presenter.setViewInteractor(this);
-
-        User user = userPreference.readUser();
-
         matchedUser = userPreference.readMatchedUser();
 
-        if(matchedUser.size() == 0) {
-            presenter.findMatches(user.getAuthHeader());
-        } else {
-            loadMatches(matchedUser);
+        if (matchedUser.size() == 0) {
+            presenter.findMatches(userPreference.readUser().getAuthHeader());
+
+            return;
         }
 
-    }
-
-    @OnClick(R.id.img_1)
-    void clickedFirst() {
-        navigateToAboutUser(FIRST);
-    }
-
-    @OnClick(R.id.img_2)
-    void clickedSecond() {
-        navigateToAboutUser(SECOND);
-    }
-
-    private void navigateToAboutUser(int position) {
-        int id = matchedUser.get(position).getId();
-        questionPreference.saveQuestionCount(0);
-        questionPreference.savePrimaryQuestionId(0);
-        Bundle bundle = new Bundle();
-
-        if (userPresent(id)) {
-            bundle.putInt("userId", id);
-            startActivity(ChatActivity.class, bundle);
-            getActivity().finish();
-        } else {
-            NavigationActivity navigationActivity = (NavigationActivity) getContext();
-            bundle.putInt("UserId", id);
-            Fragment fragment = DisplayUserFragment.getInstance(bundle);
-            navigationActivity.addFragment(fragment);
-            saveUserToDb(position);
-        }
-        changePreferences();
-    }
-
-    private boolean userPresent(final int id) {
-        userPresent = chatListRepository.searchUser(id, userPreference.readUser().getId());
-
-        return userPresent;
-    }
-
-    @OnClick(R.id.btn_skip)
-    void clickedSkip() {
-        questionPreference.saveQuestionCount(0);
-        questionPreference.savePrimaryQuestionId(0);
-        NavigationActivity navigationActivity = (NavigationActivity) getContext();
-        Fragment fragment = PrimaryQuestionFragment.getInstance(null);
-        navigationActivity.addFragment(fragment);
-        changePreferences();
-    }
-
-    private void saveUserToDb(int position) {
-        chatList.setUserId(matchedUser.get(position).getId());
-        chatList.setImage(matchedUser.get(position).getProfilePic());
-        chatList.setName(matchedUser.get(position).getFullName());
-        chatList.setLastMessage("");
-        chatList.setTime("");
-        chatList.setLogedinUser(userPreference.readUser().getId());
-        chatListRepository.save(chatList);
-        chatListPresenter.addUser(userPreference.readUser().getId(), chatList.getUserId(), userPreference.readUser().getAuthHeader());
-    }
-
-    public static Fragment getInstance(Bundle bundle) {
-        ChooseFragment chooseFragment = new ChooseFragment();
-        chooseFragment.setArguments(bundle);
-
-        return chooseFragment;
+        loadMatches(matchedUser);
     }
 
     @Override
@@ -199,8 +136,7 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
 
     @Override
     public void showUsers(List<User> users) {
-        Timber.d(String.valueOf(users.size()));
-        if( users.size() != 2) {
+        if (users.size() != 2) {
             final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Sorry", "No compatible matches found", "Try Again", "");
             alertDialog.show();
             Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -212,22 +148,110 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
                     NavigationActivity navigationActivity = (NavigationActivity) getContext();
                     Fragment fragment = PrimaryQuestionFragment.getInstance(null);
                     navigationActivity.addFragment(fragment);
-                    changePreferences();
+                    clearPreferences();
                     alertDialog.dismiss();
                 }
             });
 
         }
+
         matchedUser = users;
         userPreference.saveMatchedUser(users);
         loadMatches(matchedUser);
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        Timber.e(e, "Error");
+        hideProgress();
+    }
+
+    @OnClick(R.id.img_1)
+    void clickedFirst() {
+        setNextScreen(FIRST);
+    }
+
+    @OnClick(R.id.img_2)
+    void clickedSecond() {
+        setNextScreen(SECOND);
+    }
+
+    @OnClick(R.id.btn_skip)
+    void clickedSkip() {
+        questionPreference.saveQuestionCount(0);
+        questionPreference.savePrimaryQuestionId(0);
+        NavigationActivity navigationActivity = (NavigationActivity) getContext();
+        Fragment fragment = PrimaryQuestionFragment.getInstance(null);
+        navigationActivity.addFragment(fragment);
+        clearPreferences();
+    }
+
+    /**
+     * If user is present in database, load chat activity
+     * else display about user screen.
+     * @param position
+     */
+    private void setNextScreen(int position) {
+        int id = matchedUser.get(position).getId();
+        questionPreference.saveQuestionCount(0);
+        questionPreference.savePrimaryQuestionId(0);
+        Bundle bundle = new Bundle();
+
+        if (userPresent(id)) {
+            bundle.putInt("userId", id);
+            startActivity(ChatActivity.class, bundle);
+            getActivity().finish();
+
+            return;
+        }
+
+        NavigationActivity navigationActivity = (NavigationActivity) getContext();
+        bundle.putInt("UserId", id);
+        Fragment fragment = DisplayUserFragment.getInstance(bundle);
+        navigationActivity.addFragment(fragment);
+        saveUserToDb(position);
+
+        clearPreferences();
 
     }
 
-    void changePreferences() {
+    /**
+     * Checking whether user is present in database or not.
+     * @param id
+     * @return
+     */
+    private boolean userPresent(final int id) {
+        userPresent = chatListRepository.searchUser(id, userPreference.readUser().getId());
+
+        return userPresent;
+    }
+
+    /**
+     * Saving user to database.
+     * @param position
+     */
+    private void saveUserToDb(int position) {
+        chatList.setUserId(matchedUser.get(position).getId());
+        chatList.setImage(matchedUser.get(position).getProfilePic());
+        chatList.setName(matchedUser.get(position).getFullName());
+        chatList.setLastMessage("");
+        chatList.setTime("");
+        chatList.setLogedinUser(userPreference.readUser().getId());
+        chatListRepository.save(chatList);
+        chatListPresenter.addUser(userPreference.readUser().getId(), chatList.getUserId(), userPreference.readUser().getAuthHeader());
+    }
+
+    /**
+     * Clearing preferences for matched user.
+     */
+    void clearPreferences() {
         userPreference.removeMatchedUser();
     }
 
+    /**
+     * Display Mtached users.
+     * @param users
+     */
     void loadMatches(List<User> users) {
         if (users.size() <= 0) return;
 
@@ -237,9 +261,11 @@ public class ChooseFragment extends BaseFragment implements FindMatchViewInterac
         Picasso.with(getContext()).load(users.get(1).getProfilePic()).fit().into(img2);
     }
 
-    @Override
-    public void onError(Throwable e) {
-        Timber.e(e, "Error");
-        hideProgress();
+    public static Fragment getInstance(Bundle bundle) {
+        ChooseFragment chooseFragment = new ChooseFragment();
+        chooseFragment.setArguments(bundle);
+
+        return chooseFragment;
     }
+
 }

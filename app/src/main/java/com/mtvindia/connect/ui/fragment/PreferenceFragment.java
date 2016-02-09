@@ -35,27 +35,20 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
- * Created by Sibi on 14/10/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Preference screen, where user can set his/her prefernce i.e. whom they would like to meet.
  */
+
 public class PreferenceFragment extends BaseFragment implements UpdateViewInteractor {
 
-    @Inject
-    UpdatePresenter presenter;
-    @Inject
-    UserPreference userPreference;
-    @Inject
-    DialogUtil dialogUtil;
+    @Inject UpdatePresenter presenter;
+    @Inject UserPreference userPreference;
+    @Inject DialogUtil dialogUtil;
 
-    @Bind(R.id.layout_dialog_interested)
-    RelativeLayout layoutDialogInterested;
-    @Bind(R.id.layout_dialog_meet)
-    RelativeLayout layoutDialogMeet;
-    @Bind(R.id.txt_interested)
-    TextView textInterested;
-    @Bind(R.id.txt_meet)
-    TextView textMeet;
-    @Bind(R.id.progress)
-    ProgressBar progress;
+    @Bind(R.id.txt_interested) TextView textInterested;
+    @Bind(R.id.txt_meet) TextView textMeet;
+    @Bind(R.id.progress) ProgressBar progress;
 
     private User user;
 
@@ -69,7 +62,6 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.preference_fragment, container, false);
 
-        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -82,115 +74,15 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
         Window window = getActivity().getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkRed));
         }
 
         presenter.setViewInteractor(this);
         user = userPreference.readUser();
-
-        if( ! userPreference.readLoginStatus() ) {
-            textMeet.setText(user.getLikeToMeet());
-            textInterested.setText(user.getInterestedIn());
-        }
-
-
-        layoutDialogInterested.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(" Pick interested in:");
-                builder.setIcon(R.drawable.icon_interested);
-                builder.setItems(R.array.interested_array, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String[] interested = getResources().getStringArray(R.array.interested_array);
-                        textInterested.setText(interested[which]);
-                    }
-                });
-                builder.show();
-            }
-        });
-
-        layoutDialogMeet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(" Meet :");
-                builder.setIcon(R.drawable.icon_meet);
-                builder.setItems(R.array.meet_array, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String[] meet = getResources().getStringArray(R.array.meet_array);
-                        textMeet.setText(meet[which]);
-                    }
-                });
-                builder.show();
-            }
-        });
-
+        loadPreferences();
     }
-
-    public static Fragment getInstance(Bundle bundle) {
-        PreferenceFragment preferenceFragment = new PreferenceFragment();
-        preferenceFragment.setArguments(bundle);
-
-        return preferenceFragment;
-    }
-
-    @OnClick(R.id.btn_save)
-    void onSave() {
-        user.setInterestedIn((String) textInterested.getText());
-        user.setLikeToMeet((String) textMeet.getText());
-        if(validation()) {
-            presenter.update(user);
-        }
-    }
-
-    boolean validation() {
-        if (textInterested == null || textInterested.getText().equals("")) {
-            return validationDialogInterested();
-        } else if (textMeet == null || textMeet.getText().equals("") ) {
-            return validationDialogMeet();
-        }
-
-        return true;
-    }
-
-    boolean validationDialogMeet() {
-        final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Select Like to Meet", "No Value Selected", "Ok", "");
-        alertDialog.show();
-        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
-
-       return false;
-    }
-
-    boolean validationDialogInterested() {
-        final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Select Interested In", "No Value Selected", "Ok", "");
-        alertDialog.show();
-        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
-
-        return false;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
 
     @Override
     public void showProgress() {
@@ -207,7 +99,7 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
         userPreference.saveUser(user);
         toastShort("Saved");
 
-        if(userPreference.readLoginStatus()) {
+        if (userPreference.readLoginStatus()) {
             NavigationActivity navigationActivity = (NavigationActivity) getContext();
             Fragment fragment = ProfileFragment.getInstance(null);
             navigationActivity.addFragment(fragment);
@@ -223,4 +115,114 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
         toastShort("Error: " + throwable);
         hideProgress();
     }
+
+    @OnClick(R.id.btn_save)
+    void onSave() {
+        user.setInterestedIn((String) textInterested.getText());
+        user.setLikeToMeet((String) textMeet.getText());
+        if (isDataValid()) {
+            presenter.update(user);
+        }
+    }
+
+    @OnClick(R.id.layout_dialog_interested)
+    void onLayoutInterestedClick() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(" Pick interested in:");
+        builder.setIcon(R.drawable.icon_interested);
+        builder.setItems(R.array.interested_array, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String[] interested = getResources().getStringArray(R.array.interested_array);
+                textInterested.setText(interested[which]);
+            }
+        });
+        builder.show();
+    }
+
+    @OnClick(R.id.layout_dialog_meet)
+    void onLayoutMeetClick() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(" Meet :");
+        builder.setIcon(R.drawable.icon_meet);
+        builder.setItems(R.array.meet_array, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String[] meet = getResources().getStringArray(R.array.meet_array);
+                textMeet.setText(meet[which]);
+            }
+        });
+        builder.show();
+    }
+
+    /**
+     * Validating preferences.
+     *
+     * @return
+     */
+    boolean isDataValid() {
+        if (textInterested == null || textInterested.getText().equals("")) {
+            return validateDialogInterested();
+        } else if (textMeet == null || textMeet.getText().equals("")) {
+            return validateDialogMeet();
+        }
+
+        return true;
+    }
+
+    /**
+     * Validation for user like to meet dialog.
+     *
+     * @return
+     */
+    boolean validateDialogMeet() {
+        final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Select Like to Meet", "No Value Selected", "Ok", "");
+        alertDialog.show();
+        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        return false;
+    }
+
+    /**
+     * Validation for user interested dialog.
+     *
+     * @return
+     */
+    boolean validateDialogInterested() {
+        final android.app.AlertDialog alertDialog = (android.app.AlertDialog) dialogUtil.createAlertDialog(getActivity(), "Select Interested In", "No Value Selected", "Ok", "");
+        alertDialog.show();
+        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        return false;
+    }
+
+    /**
+     * Method to set user preferences.
+     */
+    private void loadPreferences() {
+        if (!userPreference.readLoginStatus()) {
+            textMeet.setText(user.getLikeToMeet());
+            textInterested.setText(user.getInterestedIn());
+        }
+    }
+
+    public static Fragment getInstance(Bundle bundle) {
+        PreferenceFragment preferenceFragment = new PreferenceFragment();
+        preferenceFragment.setArguments(bundle);
+
+        return preferenceFragment;
+    }
+
 }

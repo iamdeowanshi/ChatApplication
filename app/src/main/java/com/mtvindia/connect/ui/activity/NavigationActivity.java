@@ -118,7 +118,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         getSupportActionBar().setTitle(null);
 
         navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
-        navigationDrawerFragment.initDrawer(R.id.fragment_drawer, drawerLayout, toolbar);
+        navigationDrawerFragment.initializeDrawer(R.id.fragment_drawer, drawerLayout, toolbar);
 
         user = userPreference.readUser();
 

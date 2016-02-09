@@ -14,8 +14,11 @@ import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
 
 /**
- * Created by Sibi on 16/10/15.
+ * @author Aaditya Deowanshi
+ *
+ *         About Fragment screen, where about application data is displayed.
  */
+
 public class AboutFragment extends BaseFragment {
 
     @Override
@@ -32,10 +35,10 @@ public class AboutFragment extends BaseFragment {
         Window window = getActivity().getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkRed));
         }
-
     }
 
     public static Fragment getInstance(Bundle bundle) {

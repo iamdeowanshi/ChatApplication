@@ -277,8 +277,8 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
             @Override
             public void onKeyboardClose() {
-                if (popup.isShowing())
-                    popup.dismiss();
+                if (popup.isShowing()) popup.dismiss();
+
                 toggleEmojiKeyboardIcon(imgSmiley, R.drawable.icon_smiley);
             }
         });
