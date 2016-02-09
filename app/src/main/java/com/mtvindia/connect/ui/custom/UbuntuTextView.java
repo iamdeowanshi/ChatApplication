@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 /**
- * Created by Sibi on 23/10/15.
+ * @author Aaditya Deowanshi
  */
 public class UbuntuTextView extends TextView {
 

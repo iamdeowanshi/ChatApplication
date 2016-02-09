@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 /**
- * Created by Sibi on 26/11/15.
+ * @author Aaditya Deowanshi
  */
 public class UbuntuBoldTextView extends TextView {
 

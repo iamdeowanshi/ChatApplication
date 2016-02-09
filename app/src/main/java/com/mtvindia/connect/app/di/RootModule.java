@@ -26,7 +26,6 @@ import com.mtvindia.connect.ui.adapter.ChatListAdapter;
 import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
 import com.mtvindia.connect.ui.adapter.WalkThroughAdapter;
-import com.mtvindia.connect.ui.custom.pushNotification.GcmIntentService;
 import com.mtvindia.connect.ui.custom.pushNotification.OneSignalBroadCastReceiver;
 import com.mtvindia.connect.ui.fragment.ChatListFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
@@ -70,8 +69,7 @@ import dagger.Provides;
                 SmackConnection.class,
                 XmppReciever.class,
 
-                //Gcm
-                GcmIntentService.class,
+                //Push Message
                 OneSignalBroadCastReceiver.class,
 
                 //Activities
