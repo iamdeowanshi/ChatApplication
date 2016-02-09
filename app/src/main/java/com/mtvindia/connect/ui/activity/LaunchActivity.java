@@ -1,6 +1,7 @@
 package com.mtvindia.connect.ui.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -65,6 +66,7 @@ public class LaunchActivity extends BaseActivity implements ActivityCompat.OnReq
             preference.save(PreferenceUtil.FIRST_LAUNCH_DONE, true);
             startActivity(WalkThroughActivity.class, null);
             finish();
+
             return;
         }
 
@@ -73,11 +75,10 @@ public class LaunchActivity extends BaseActivity implements ActivityCompat.OnReq
         if (checkPlayServices()) {
             getRegId();
             checkLocation();
-        } else {
-            googleServicesError();
-            finish();
         }
 
+        googleServicesError();
+        finish();
     }
 
     @Override
@@ -199,11 +200,11 @@ public class LaunchActivity extends BaseActivity implements ActivityCompat.OnReq
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (userPreference.readUser() == null) {
-                    startActivity(LoginActivity.class, null);
-                } else {
-                    startActivity(NavigationActivity.class, null);
-                }
+                Class<? extends Activity> activityToLaunch = userPreference.readUser() == null
+                        ? LoginActivity.class
+                        : NavigationActivity.class;
+
+                startActivity(activityToLaunch, null);
                 finish();
             }
         }, timeOut);

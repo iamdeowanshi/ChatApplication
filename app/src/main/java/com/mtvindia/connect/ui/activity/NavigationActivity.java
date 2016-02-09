@@ -126,12 +126,6 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        googleApiClient.connect();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         googleApiClient.connect();
@@ -146,14 +140,6 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        if (googleApiClient.isConnected()) {
-            googleApiClient.disconnect();
-        }
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -162,6 +148,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 return true;
             }
         });
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -209,9 +196,9 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (googleApiClient.isConnected()) {
-            googleApiClient.disconnect();
-        }
+
+        if (googleApiClient.isConnected()) googleApiClient.disconnect();
+
         unregisterReceiver(internetReciever);
         questionPreference.clearPreference();
         userPreference.removeMatchedUser();
@@ -222,7 +209,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         switch (item) {
             case FIND_PEOPLE:
                 setDrawerEnabled(true);
-                viewForFindMorePeople();
+                addFragment(getFindMorePeopleFragment());
                 break;
             case PROFILE:
                 fragment = ProfileFragment.getInstance(null);
@@ -254,10 +241,9 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (resultCode) {
-            case Activity.RESULT_CANCELED: {
+            case Activity.RESULT_CANCELED:
                 requestLocation();
                 break;
-            }
             case Activity.RESULT_OK:
                 requestLocation();
                 break;
@@ -363,7 +349,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 final Status status = result.getStatus();
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
-                        getlastKnownLocation();
+                        getLastKnownLocation();
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         try {
@@ -380,46 +366,32 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     /**
      * Depending upon number of question answered, toggle between question, answer or choose match view on click of find more people.
      */
-    private void viewForFindMorePeople() {
+    private Fragment getFindMorePeopleFragment() {
         int count = questionPreference.readQuestionCount();
         Question question = questionPreference.readQuestionResponse();
         List<User> matchedUser = userPreference.readMatchedUser();
-        Fragment fragment;
 
         if (question == null) {
-            fragment = PrimaryQuestionFragment.getInstance(null);
-            addFragment(fragment);
-
-            return;
+            return PrimaryQuestionFragment.getInstance(null);
         }
 
         if (count == 0) {
-            fragment = PrimaryQuestionFragment.getInstance(null);
-            addFragment(fragment);
-
-            return;
+            return PrimaryQuestionFragment.getInstance(null);
         }
 
         if (!question.isAnswered()) {
-            fragment = SecondaryQuestionFragment.getInstance(null);
-            addFragment(fragment);
-
-            return;
+            return SecondaryQuestionFragment.getInstance(null);
         }
 
         if (matchedUser.size() != 0) {
-            fragment = ChooseFragment.getInstance(null);
-            addFragment(fragment);
-
-            return;
+            return ChooseFragment.getInstance(null);
         }
 
         if (count > 0) {
-            fragment = ResultFragment.getInstance(null);
-            addFragment(fragment);
-
-            return;
+            return ResultFragment.getInstance(null);
         }
+
+        return null;
     }
 
     /**
@@ -474,30 +446,30 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     /**
      * Returns last known location.
      */
-    private void getlastKnownLocation() {
+    private void getLastKnownLocation() {
         LocationRequest locationRequest = new LocationRequest();
         com.google.android.gms.location.LocationListener locationListener = new com.google.android.gms.location.LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                if (location != null) {
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
+                if (location == null) return;
 
-                    Location userLocation = new Location("point A");
-                    userLocation.setLatitude(user.getLatitude());
-                    userLocation.setLongitude(user.getLongitude());
-                    Location currentLocation = new Location("point B");
-                    currentLocation.setLatitude(latitude);
-                    currentLocation.setLongitude(longitude);
-                    double distance = userLocation.distanceTo(currentLocation);
-                    if (distance > 50000) {
-                        user.setLatitude(location.getLatitude());
-                        user.setLongitude(location.getLongitude());
-                        userPreference.saveUser(user);
-                        presenter.updateLocation(user);
-                    }
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+
+                Location userLocation = new Location("point A");
+                userLocation.setLatitude(user.getLatitude());
+                userLocation.setLongitude(user.getLongitude());
+                Location currentLocation = new Location("point B");
+                currentLocation.setLatitude(latitude);
+                currentLocation.setLongitude(longitude);
+                double distance = userLocation.distanceTo(currentLocation);
+
+                if (distance > 50000) {
+                    user.setLatitude(location.getLatitude());
+                    user.setLongitude(location.getLongitude());
+                    userPreference.saveUser(user);
+                    presenter.updateLocation(user);
                 }
-
             }
         };
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, locationListener);

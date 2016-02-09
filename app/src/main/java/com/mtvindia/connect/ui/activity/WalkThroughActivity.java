@@ -5,7 +5,6 @@ import android.support.v4.view.ViewPager;
 
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseActivity;
-import com.mtvindia.connect.ui.activity.LaunchActivity;
 import com.mtvindia.connect.ui.adapter.WalkThroughAdapter;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -20,12 +19,13 @@ import butterknife.ButterKnife;
  *
  *         On first launch of application, walk through screen displays how to use application.
  */
-public class WalkThroughActivity extends BaseActivity implements WalkThroughAdapter.OnBoardClickListener {
+
+public class WalkThroughActivity extends BaseActivity implements WalkThroughAdapter.WalkThroughClickListener {
 
     @Bind(R.id.view_pager) ViewPager viewPager;
     @Bind(R.id.indicator) CirclePageIndicator indicator;
 
-    private WalkThroughAdapter onBoardPagerAdapter;
+    private WalkThroughAdapter walkThroughAdapter;
 
     /**
      * Adding walk through images.
@@ -41,27 +41,15 @@ public class WalkThroughActivity extends BaseActivity implements WalkThroughAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_walk_through);
         ButterKnife.bind(this);
-        onBoardPagerAdapter = new WalkThroughAdapter(slideResources);
-        onBoardPagerAdapter.setOnBoardClickListener(this);
-        viewPager.setAdapter(onBoardPagerAdapter);
+        walkThroughAdapter = new WalkThroughAdapter(slideResources);
+        walkThroughAdapter.setWalkThroughClickListener(this);
+        viewPager.setAdapter(walkThroughAdapter);
         indicator.setViewPager(viewPager);
     }
 
     @Override
     public void onCloseClicked(int position) {
         startActivityClearTop(LaunchActivity.class, null);
-    }
-
-    @Override
-    public void onNextClicked(int position) {
-        // if Last image
-        if (position == slideResources.size() - 1) {
-            startActivityClearTop(LaunchActivity.class, null);
-
-            return;
-        }
-
-        viewPager.setCurrentItem(position + 1);
     }
 
 }

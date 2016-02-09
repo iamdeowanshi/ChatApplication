@@ -55,7 +55,7 @@ import timber.log.Timber;
 /**
  * @author Aaditya Deowanshi
  *
- * ChatActivity where user can send and recieve messages.
+ *         ChatActivity where user can send and recieve messages.
  */
 
 public class ChatActivity extends BaseActivity implements AboutUserViewInteractor, DataChangeListener, PopupMenu.OnMenuItemClickListener {
@@ -75,7 +75,6 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
     @Bind(R.id.img_smiley) ImageView imgSmiley;
     @Bind(R.id.root_view) LinearLayout rootView;
 
-    private String message;
     private ChatList chatList;
     private List<ChatMessage> chatMessagesList;
     private ChatMessageAdapter chatMessageAdapter;
@@ -142,6 +141,7 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_chat, menu);
+
         return false;
     }
 
@@ -160,13 +160,13 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
     }
 
     @Override
-    public void onChange(List updatedData) {
+    public void onRealmDataChange(List updatedData) {
         chatMessageAdapter.notifyDataSetChanged();
         chatMessages.scrollToPosition(chatMessagesList.size() - 1);
     }
 
     @Override
-    public void onStatusChanged(String status) {
+    public void onStatusChange(String status) {
         txtStatus.setText(getAvailabilityStatus());
     }
 
@@ -209,18 +209,17 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
     @OnClick(R.id.icon_send)
     void onClickSendIcon() {
-        message = edtMessage.getText().toString().trim();
+        String message = edtMessage.getText().toString().trim();
 
         if (message.equals("")) {
             edtMessage.setText("");
+
             return;
         }
 
         edtMessage.setText("");
-        chatMessageAdapter.notifyDataSetChanged();
-        chatMessages.scrollToPosition(chatMessagesList.size() - 1);
 
-        sendToChatServer();
+        sendToChatServer(message);
         updateLastMessageTime();
     }
 
@@ -229,6 +228,7 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         if (popup.isShowing()) {
             popup.dismiss();
             toggleEmojiKeyboardIcon(imgSmiley, R.drawable.icon_smiley);
+
             return;
         }
 
@@ -262,7 +262,6 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         popup.setSizeForSoftKeyboard();
 
         popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
-
             @Override
             public void onDismiss() {
                 toggleEmojiKeyboardIcon(imgSmiley, R.drawable.icon_keyboard);
@@ -287,9 +286,7 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         popup.setOnEmojiconClickedListener(new EmojiconGridView.OnEmojiconClickedListener() {
             @Override
             public void onEmojiconClicked(Emojicon emojicon) {
-                if (edtMessage == null || emojicon == null) {
-                    return;
-                }
+                if (edtMessage == null || emojicon == null) return;
 
                 int start = edtMessage.getSelectionStart();
                 int end = edtMessage.getSelectionEnd();
@@ -304,7 +301,6 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
         });
 
         popup.setOnEmojiconBackspaceClickedListener(new EmojiconsPopup.OnEmojiconBackspaceClickedListener() {
-
             @Override
             public void onEmojiconBackspaceClicked(View v) {
                 KeyEvent event = new KeyEvent(
@@ -312,7 +308,6 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
                 edtMessage.dispatchKeyEvent(event);
             }
         });
-
     }
 
     /**
@@ -324,6 +319,7 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
     /**
      * Returns user availability status.
+     *
      * @return
      */
     private String getAvailabilityStatus() {
@@ -335,7 +331,7 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
     /**
      * Sends message to chat server.
      */
-    private void sendToChatServer() {
+    private void sendToChatServer(String message) {
         Intent intent = new Intent(SmackService.SEND_MESSAGE);
         intent.setPackage(this.getPackageName());
         intent.putExtra(SmackService.BUNDLE_MESSAGE_BODY, message);
@@ -376,6 +372,7 @@ public class ChatActivity extends BaseActivity implements AboutUserViewInteracto
 
     /**
      * Toggling between emojicon and keyboard icon.
+     *
      * @param iconToBeChanged
      * @param drawableResourceId
      */

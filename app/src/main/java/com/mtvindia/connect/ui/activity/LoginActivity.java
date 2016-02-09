@@ -42,6 +42,7 @@ import timber.log.Timber;
  *
  *         Login screen, where user can proceedToLogin to their MtvConnect account using facebook or google plus accounts.
  */
+
 public class LoginActivity extends BaseActivity implements SocialAuthCallback, LoginViewInteractor, ActivityCompat.OnRequestPermissionsResultCallback {
 
     @Inject LoginPresenter presenter;
@@ -55,7 +56,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
 
     private final static int ACCOUNT_REQUEST_CODE = 0;
 
-    private static String[] ACCOUNT_PERMISSION = { Manifest.permission.GET_ACCOUNTS};
+    private static String[] ACCOUNT_PERMISSION = {Manifest.permission.GET_ACCOUNTS};
 
     private ProgressDialog progressDialog;
     private SocialAuth socialAuth;
@@ -78,16 +79,6 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         setPlayerId();
 
         presenter.setViewInteractor(this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 
     @Override
@@ -114,11 +105,6 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         socialAuth.onActivityResult(requestCode, resultCode, data);
@@ -126,6 +112,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
 
     /**
      * After successful proceedToLogin on facebook or google.
+     *
      * @param authResult
      */
     @Override
@@ -138,7 +125,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         loginRequest.setDeviceToken(deviceToken);
         loginRequest.setPlayerId(playerId);
 
-        // making api call to server for proceedToLogin.
+        // making api call to server for Login.
         presenter.login(loginRequest);
     }
 
@@ -174,7 +161,8 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     /**
      * Checking for registration and
      * saving user details to shared preferences.
-     * @param response contains the user details.
+     *
+     * @param response   contains the user details.
      * @param isRegister will be false if user is present otherwise true for new User registration.
      */
     @Override
@@ -195,18 +183,13 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode == ACCOUNT_REQUEST_CODE) {
-            if (permissionUtil.verifyPermissions(grantResults)) {
-                proceedToLogin();
-            } else {
-                /*bakery.snack(getContentView(), "Contact permission are required for Login", Snackbar.LENGTH_INDEFINITE, "Try Again", new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        ActivityCompat.requestPermissions(LoginActivity.this, ACCOUNT_PERMISSION, ACCOUNT_REQUEST_CODE);
-                    }
-                });*/
-                bakery.snackShort(getContentView(), "Permissions were not granted");
-            }
+        if (permissionUtil.verifyPermissions(grantResults)) {
+            proceedToLogin();
+
+            return;
         }
+
+        bakery.snackShort(getContentView(), "Permissions were not granted");
     }
 
     /**
@@ -214,7 +197,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
      */
     @OnClick(R.id.btn_fb)
     void facebookLogin() {
-        if( ! networkUtil.isOnline()) {
+        if (!networkUtil.isOnline()) {
             displayInternetAlert();
         } else {
             button = R.id.btn_fb;
@@ -227,12 +210,14 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
      */
     @OnClick(R.id.btn_gPlus)
     void gPlusLogin() {
-        if( ! networkUtil.isOnline()) {
+        if (!networkUtil.isOnline()) {
             displayInternetAlert();
-        } else {
-            button = R.id.btn_gPlus;
-            checkAccount();
+
+            return;
         }
+
+        button = R.id.btn_gPlus;
+        checkAccount();
     }
 
     /**
@@ -241,9 +226,11 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     private void checkAccount() {
         if (ActivityCompat.checkSelfPermission(this, ACCOUNT_PERMISSION[0]) != PackageManager.PERMISSION_GRANTED) {
             requestAccountPermission();
-        } else {
-            proceedToLogin();
+
+            return;
         }
+
+        proceedToLogin();
     }
 
     /**
@@ -251,27 +238,27 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
      */
     private void requestAccountPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, ACCOUNT_PERMISSION[0])) {
-            bakery.snack(getContentView(), "Contact permission are required for Login", Snackbar.LENGTH_INDEFINITE,  "Try Again", new View.OnClickListener() {
-                @Override public void onClick(View view) {
+            bakery.snack(getContentView(), "Contact permission are required for Login", Snackbar.LENGTH_INDEFINITE, "Try Again", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     ActivityCompat.requestPermissions(LoginActivity.this, ACCOUNT_PERMISSION, ACCOUNT_REQUEST_CODE);
                 }
             });
-        } else {
-            ActivityCompat.requestPermissions(this, ACCOUNT_PERMISSION, ACCOUNT_REQUEST_CODE);
+
+            return;
         }
+
+        ActivityCompat.requestPermissions(this, ACCOUNT_PERMISSION, ACCOUNT_REQUEST_CODE);
     }
 
     /**
-     * Fetching playersId from OneSignal Server.
+     * Fetching playerId from OneSignal Server.
      */
     private void setPlayerId() {
         OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
             @Override
             public void idsAvailable(String userId, String registrationId) {
                 playerId = userId;
-                Log.d("debug", "User:" + userId);
-                if (registrationId != null)
-                    Log.d("debug", "registrationId:" + registrationId);
             }
         });
     }
@@ -296,11 +283,13 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         negativeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!networkUtil.isOnline()) {
+                if (!networkUtil.isOnline()) {
                     dialogUtil.createAlertDialog(LoginActivity.this, "No Internet", "Seems like device is not connected to internet. Try again with active internet connection", "Exit", "Try Again");
-                } else {
-                    alertDialog.dismiss();
+
+                    return;
                 }
+
+                alertDialog.dismiss();
             }
         });
     }
@@ -312,11 +301,11 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         showProgress();
 
         switch (button) {
-            case R.id.btn_fb :
-                socialAuth.login(SocialAuth.SocialType.FACEBOOK );
+            case R.id.btn_fb:
+                socialAuth.login(SocialAuth.SocialType.FACEBOOK);
                 break;
-            case R.id.btn_gPlus :
-                socialAuth.login(SocialAuth.SocialType.GOOGLE );
+            case R.id.btn_gPlus:
+                socialAuth.login(SocialAuth.SocialType.GOOGLE);
                 break;
         }
     }
