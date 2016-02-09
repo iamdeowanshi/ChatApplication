@@ -20,7 +20,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by Sibi on 29/01/16.
+ * @author Aaditya Deowanshi
+ *
+ *         Adapter class to hold and display walk through screen.
  */
 public class WalkThroughAdapter extends PagerAdapter {
 
@@ -28,15 +30,11 @@ public class WalkThroughAdapter extends PagerAdapter {
     @Inject LayoutInflater inflater;
 
     private List<Integer> slideResources;
-    private OnBoardClickListener onBoardClickListener;
+    private WalkThroughClickListener walkThroughClickListener;
 
     public WalkThroughAdapter(List<Integer> slideResources) {
         Injector.instance().inject(this);
         this.slideResources = slideResources;
-    }
-
-    public void setOnBoardClickListener(OnBoardClickListener onBoardClickListener) {
-        this.onBoardClickListener = onBoardClickListener;
     }
 
     @Override
@@ -66,6 +64,10 @@ public class WalkThroughAdapter extends PagerAdapter {
         return view.equals(object);
     }
 
+    public void setWalkThroughClickListener(WalkThroughClickListener walkThroughClickListener) {
+        this.walkThroughClickListener = walkThroughClickListener;
+    }
+
     public class ViewHolder {
         @Bind(R.id.image_view) ImageView imageView;
 
@@ -82,18 +84,18 @@ public class WalkThroughAdapter extends PagerAdapter {
         }
 
         @OnClick(R.id.button_close) void onCloseClick() {
-            if (onBoardClickListener != null) {
-                onBoardClickListener.onCloseClicked(position);
+            if (walkThroughClickListener != null) {
+                walkThroughClickListener.onCloseClicked(position);
             }
         }
 
     }
 
-    public static interface OnBoardClickListener {
+    /**
+     * Interface class for walk through click listener.
+     */
+    public interface WalkThroughClickListener {
 
         void onCloseClicked(int position);
-
-        void onNextClicked(int position);
-
     }
 }
