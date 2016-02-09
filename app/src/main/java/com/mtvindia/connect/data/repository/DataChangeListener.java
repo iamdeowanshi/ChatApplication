@@ -7,7 +7,7 @@ import java.util.List;
  */
 public interface DataChangeListener<T> {
 
-    void onChange(List<T> updatedData);
+    void onRealmDataChange(List<T> updatedData);
 
-    void onStatusChanged(String status);
+    void onStatusChange(String status);
 }

@@ -27,8 +27,8 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
             @Override
             public void onChange() {
                 if (dataChangeListener != null) {
-                    dataChangeListener.onStatusChanged(status);
-                    dataChangeListener.onChange(null);
+                    dataChangeListener.onStatusChange(status);
+                    dataChangeListener.onRealmDataChange(null);
                 }
             }
         };

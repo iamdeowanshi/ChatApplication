@@ -27,7 +27,7 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
             @Override
             public void onChange() {
                 if (dataChangeListener != null) {
-                    dataChangeListener.onChange(null);
+                    dataChangeListener.onRealmDataChange(null);
                 }
             }
         };
