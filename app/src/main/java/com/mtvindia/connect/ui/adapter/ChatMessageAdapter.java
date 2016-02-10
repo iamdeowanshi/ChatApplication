@@ -29,20 +29,21 @@ import butterknife.ButterKnife;
 import github.ankushsachdeva.emojicon.EmojiconTextView;
 
 /**
- * Created by Sibi on 01/12/15.
+ * @author Aaditya Deowanshi.
+ *
+ *         Adapter class to hold and display all messages for
  */
+
 public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    @Inject
-    UserPreference userPreference;
-
-    private Context context;
-    private List<ChatMessage> chatMessages;
-    private User user;
+    @Inject UserPreference userPreference;
 
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_HEADER = 1;
 
+    private User user;
+    private Context context;
+    private List<ChatMessage> chatMessages;
 
     public ChatMessageAdapter(Context context, List<ChatMessage> chatMessages) {
         this.context = context;
@@ -51,10 +52,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0) {
-            return TYPE_HEADER;
-        }
-        DateTime currentDateTime = DateTime.parse(chatMessages.get(position -1).getCreatedTime());
+        if (position == 0) return TYPE_HEADER;
+
+        DateTime currentDateTime = DateTime.parse(chatMessages.get(position - 1).getCreatedTime());
         DateTime messageDateTime = DateTime.parse(chatMessages.get(position).getCreatedTime());
 
         int value = messageDateTime.getDayOfYear() - currentDateTime.getDayOfYear();
@@ -66,16 +66,16 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Injector.instance().inject(this);
         user = userPreference.readUser();
-        switch (viewType) {
-            case TYPE_HEADER: return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message_header, parent, false));
-            case TYPE_ITEM: return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message_layout, parent, false));
-        }
-        return null;
-    }
 
-    private int getWidth() {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return metrics.widthPixels;
+        //Setting type of message view.
+        switch (viewType) {
+            case TYPE_HEADER:
+                return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message_header, parent, false));
+            case TYPE_ITEM:
+                return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message_layout, parent, false));
+        }
+
+        return null;
     }
 
     @Override
@@ -92,53 +92,93 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    private void configureHeaderViewHolder (HeaderViewHolder holder, int position) {
+    /**
+     * Header view holder, to display the date and message.
+     *
+     * @param holder
+     * @param position
+     */
+    private void configureHeaderViewHolder(HeaderViewHolder holder, int position) {
         DateTime currentDateTime = DateTime.now();
         DateTime messageDateTime = DateTime.parse(chatMessages.get(position).getCreatedTime());
 
-        int value = currentDateTime.getDayOfYear() - messageDateTime.getDayOfYear();
+        int differenceInDays = currentDateTime.getDayOfYear() - messageDateTime.getDayOfYear();
 
-        if( value == 0) {
+        if (differenceInDays == 0) {
             holder.txtHeader.setText("TODAY");
-        } else if( value == 1) {
+
+            return;
+        }
+
+        if (differenceInDays == 1) {
             holder.txtHeader.setText("YESTERDAY");
-        } else {
-            holder.txtHeader.setText(DateTime.parse(chatMessages.get(position).getCreatedTime()).toString("MMMM dd, YYYY"));
+
+            return;
         }
 
+        holder.txtHeader.setText(DateTime.parse(chatMessages.get(position).getCreatedTime()).toString("MMMM dd, YYYY"));
+
+        /**
+         * if messages are sent it will be displayed right side of the screen
+         * else if messages are received it will be displayed left side of the screen.
+         */
         if (chatMessages.get(position).getFrom().equals("webuser" + user.getId())) {
-            holder.rightTxtMsg.setMaxWidth((int)(getWidth()* .6));
+            holder.rightTxtMsg.setMaxWidth((int) (getWidth() * .6));
             holder.rightTxtLayout.setVisibility(View.VISIBLE);
             holder.leftTxtLayout.setVisibility(View.GONE);
             holder.rightTxtMsg.setText(chatMessages.get(position).getBody());
-            //setStatus(holder, position);
-            holder.rightTxtTime.setText(getTime(chatMessages.get(position).getCreatedTime()));
+            holder.rightTxtTime.setText(getMessageTime(chatMessages.get(position).getCreatedTime()));
         } else {
-            holder.leftTxtMsg.setMaxWidth((int)(getWidth()*.6));
+            holder.leftTxtMsg.setMaxWidth((int) (getWidth() * .6));
             holder.rightTxtLayout.setVisibility(View.GONE);
             holder.leftTxtLayout.setVisibility(View.VISIBLE);
             holder.leftTxtMsg.setText(chatMessages.get(position).getBody());
-            holder.leftTxtTime.setText(getTime(chatMessages.get(position).getCreatedTime()));
+            holder.leftTxtTime.setText(getMessageTime(chatMessages.get(position).getCreatedTime()));
         }
     }
 
-    private void configureItemViewHolder (ItemViewHolder holder, int position) {
+    /**
+     * View holder for normal messages.
+     *
+     * @param holder
+     * @param position
+     */
+    private void configureItemViewHolder(ItemViewHolder holder, int position) {
+        /**
+         * if messages are sent it will be displayed right side of the screen
+         * else if messages are received it will be displayed left side of the screen.
+         */
         if (chatMessages.get(position).getFrom().equals("webuser" + user.getId())) {
-            holder.rightTxtMsg.setMaxWidth((int)(getWidth()* .6));
+            holder.rightTxtMsg.setMaxWidth((int) (getWidth() * .6));
             holder.rightTxtLayout.setVisibility(View.VISIBLE);
             holder.leftTxtLayout.setVisibility(View.GONE);
             holder.rightTxtMsg.setText(chatMessages.get(position).getBody());
-            //setStatus(holder, position);
-            holder.rightTxtTime.setText(getTime(chatMessages.get(position).getCreatedTime()));
+            holder.rightTxtTime.setText(getMessageTime(chatMessages.get(position).getCreatedTime()));
         } else {
-            holder.leftTxtMsg.setMaxWidth((int)(getWidth()*.6));
+            holder.leftTxtMsg.setMaxWidth((int) (getWidth() * .6));
             holder.rightTxtLayout.setVisibility(View.GONE);
             holder.leftTxtLayout.setVisibility(View.VISIBLE);
             holder.leftTxtMsg.setText(chatMessages.get(position).getBody());
-            holder.leftTxtTime.setText(getTime(chatMessages.get(position).getCreatedTime()));
+            holder.leftTxtTime.setText(getMessageTime(chatMessages.get(position).getCreatedTime()));
         }
     }
 
+    /**
+     * Returns the width of screen.
+     *
+     * @return
+     */
+    private int getWidth() {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return metrics.widthPixels;
+    }
+
+    /**
+     * To set the delivery status of the messages, if required.
+     *
+     * @param holder
+     * @param position
+     */
     private void setStatus(ItemViewHolder holder, int position) {
         if (chatMessages.get(position).getStatus().equals(ChatActivity.MessageState.Sending.toString())) {
             holder.rightTick.setImageResource(R.drawable.img_double_tick_grey);
@@ -151,10 +191,16 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    private String getTime(String time) {
+    /**
+     * Return time for message as string.
+     *
+     * @param time
+     * @return
+     */
+    private String getMessageTime(String time) {
         DateTime dateTime = DateTime.parse(time);
-        return dateTime.toString("hh:mm a");
 
+        return dateTime.toString("hh:mm a");
     }
 
     @Override
@@ -162,49 +208,44 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return chatMessages.size();
     }
 
+    /**
+     * Holder class for normal message.
+     */
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.left_txt_msg)
-        EmojiconTextView leftTxtMsg;
-        @Bind(R.id.left_txt_time)
-        UbuntuTextView leftTxtTime;
-        @Bind(R.id.left_txt_layout)
-        RelativeLayout leftTxtLayout;
-        @Bind(R.id.right_txt_msg)
-        EmojiconTextView rightTxtMsg;
-        @Bind(R.id.right_txt_time)
-        UbuntuTextView rightTxtTime;
-        @Bind(R.id.right_tick)
-        ImageView rightTick;
-        @Bind(R.id.right_txt_layout)
-        RelativeLayout rightTxtLayout;
+        @Bind(R.id.left_txt_msg) EmojiconTextView leftTxtMsg;
+        @Bind(R.id.left_txt_time) UbuntuTextView leftTxtTime;
+        @Bind(R.id.left_txt_layout) RelativeLayout leftTxtLayout;
+        @Bind(R.id.right_txt_msg) EmojiconTextView rightTxtMsg;
+        @Bind(R.id.right_txt_time) UbuntuTextView rightTxtTime;
+        @Bind(R.id.right_tick) ImageView rightTick;
+        @Bind(R.id.right_txt_layout) RelativeLayout rightTxtLayout;
+
         public ItemViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
 
+    /**
+     * Holder class for, message with header.
+     */
     class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.txt_header)
-        TextView txtHeader;
-        @Bind(R.id.left_txt_msg)
-        EmojiconTextView leftTxtMsg;
-        @Bind(R.id.left_txt_time)
-        UbuntuTextView leftTxtTime;
-        @Bind(R.id.left_txt_layout)
-        RelativeLayout leftTxtLayout;
-        @Bind(R.id.right_txt_msg)
-        EmojiconTextView rightTxtMsg;
-        @Bind(R.id.right_txt_time)
-        UbuntuTextView rightTxtTime;
-        @Bind(R.id.right_tick)
-        ImageView rightTick;
-        @Bind(R.id.right_txt_layout)
-        RelativeLayout rightTxtLayout;
+        @Bind(R.id.txt_header) TextView txtHeader;
+        @Bind(R.id.left_txt_msg) EmojiconTextView leftTxtMsg;
+        @Bind(R.id.left_txt_time) UbuntuTextView leftTxtTime;
+        @Bind(R.id.left_txt_layout) RelativeLayout leftTxtLayout;
+        @Bind(R.id.right_txt_msg) EmojiconTextView rightTxtMsg;
+        @Bind(R.id.right_txt_time) UbuntuTextView rightTxtTime;
+        @Bind(R.id.right_tick) ImageView rightTick;
+        @Bind(R.id.right_txt_layout) RelativeLayout rightTxtLayout;
+
         public HeaderViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
     }
+
 }

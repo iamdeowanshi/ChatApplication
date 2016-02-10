@@ -32,24 +32,25 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 /**
- * Created by Sibi on 28/12/15.
+ * @author Aaditya Deowanshi
+ *
+ *         OneSignal Broadcast receiver to display push messages.
  */
+
 public class OneSignalBroadCastReceiver extends BroadcastReceiver implements OneSignal.NotificationOpenedHandler {
 
     @Inject UserPreference userPreference;
-    @Inject Gson gson;
-    @Inject Context context;
 
     private static final int MY_NOTIFICATION_ID = 1;
 
-    private NotificationManager mNotificationManager;
     private PendingIntent contentIntent;
     private NotificationCompat.Builder mBuilder;
+    private NotificationManager mNotificationManager;
 
     private List<PushMessage> pushMessageList;
 
-    private Set<Integer> conversation;
     private int size;
+    private Set<Integer> conversation;
 
     @Override
     public void onReceive(Context context, Intent intent1) {
@@ -91,7 +92,6 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
                 Intent intent = new Intent(context, LaunchActivity.class);
                 stackBuilder.addParentStack(LaunchActivity.class);
                 stackBuilder.addNextIntent(intent);
-                //contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, LaunchActivity.class), 0);
             } else if (conversation.size() > 1) {
                 Intent intent = new Intent(context, NavigationActivity.class);
                 stackBuilder.addParentStack(NavigationActivity.class);

@@ -3,8 +3,9 @@ package com.mtvindia.connect.data.model;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Sibi on 25/12/15.
+ * @author Aaditya Deowanshi
  */
+
 public class PushMessage {
 
     @SerializedName("fromUserId")
@@ -35,4 +36,5 @@ public class PushMessage {
     public void setMessage(String message) {
         this.message = message;
     }
+
 }

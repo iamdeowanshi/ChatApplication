@@ -1,7 +1,5 @@
 package com.mtvindia.connect.ui.fragment;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,7 +18,6 @@ import android.widget.ImageView;
 import com.mtvindia.connect.R;
 import com.mtvindia.connect.app.base.BaseFragment;
 import com.mtvindia.connect.data.model.ChatList;
-import com.mtvindia.connect.data.model.ChatMessage;
 import com.mtvindia.connect.data.repository.ChatListRepository;
 import com.mtvindia.connect.data.repository.DataChangeListener;
 import com.mtvindia.connect.services.SmackService;
@@ -38,21 +35,19 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by Sibi on 16/10/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Chat list screen, where user can see all active chats.
  */
+
 public class ChatListFragment extends BaseFragment implements ChatCallBack, DataChangeListener {
 
-    @Inject
-    ChatListRepository chatListRepository;
-    @Inject
-    UserPreference userPreference;
+    @Inject ChatListRepository chatListRepository;
+    @Inject UserPreference userPreference;
 
-    @Bind(R.id.chat_list)
-    RecyclerView userList;
-    @Bind(R.id.empty_view)
-    ImageView emptyView;
-    private List<ChatList> chatList = new ArrayList<>();
-    private ChatMessage chatMessage;
+    @Bind(R.id.chat_list) RecyclerView userList;
+    @Bind(R.id.empty_view) ImageView emptyView;
+
     private ChatListAdapter chatListAdapter;
 
     @Override
@@ -64,10 +59,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.chat_list_fragment, container, false);
-        ButterKnife.bind(this, view);
-
-        return view;
+        return inflater.inflate(R.layout.chat_list_fragment, container, false);
     }
 
     @Override
@@ -87,7 +79,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
         userList.setLayoutManager(layoutManager);
         userList.setHasFixedSize(true);
 
-        chatList = chatListRepository.sortList(userPreference.readUser().getId());
+        List<ChatList> chatList = chatListRepository.sortList(userPreference.readUser().getId());
         chatListRepository.setDataChangeListener(ChatListFragment.this);
 
 
@@ -95,19 +87,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
         chatListAdapter.setChatCallBack(this);
         userList.setAdapter(chatListAdapter);
 
-        emptyView();
-
-    }
-
-    private void emptyView() {
-        if (chatList.isEmpty()) {
-            userList.setVisibility(View.GONE);
-            emptyView.setVisibility(View.VISIBLE);
-        }
-        else {
-            userList.setVisibility(View.VISIBLE);
-            emptyView.setVisibility(View.GONE);
-        }
+        toggleEmptyView(chatList);
     }
 
     @Override
@@ -115,32 +95,12 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
         super.onResume();
         chatListAdapter.notifyDataSetChanged();
         getContext().startService(new Intent(getContext(), SmackService.class));
-        String ns = Context.NOTIFICATION_SERVICE;
-        NotificationManager nMgr = (NotificationManager) getContext().getSystemService(ns);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         disconnectChatServer();
-    }
-
-    private void disconnectChatServer() {
-        Intent intent = new Intent(getContext(), SmackService.class);
-        getContext().stopService(intent);
-    }
-
-    public static Fragment getInstance(Bundle bundle) {
-        ChatListFragment chatListFragment = new ChatListFragment();
-        chatListFragment.setArguments(bundle);
-
-        return chatListFragment;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-       // ButterKnife.unbind(this);
     }
 
     @Override
@@ -159,13 +119,43 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
     }
 
     @Override
-    public void onChange(List updatedData) {
+    public void onRealmDataChange(List updatedData) {
         chatListAdapter.notifyDataSetChanged();
-        emptyView();
+        toggleEmptyView(chatListRepository.sortList(userPreference.readUser().getId()));
     }
 
     @Override
-    public void onStatusChanged(String status) {
+    public void onStatusChange(String status) {}
 
+    /**
+     * Disconnect to chat server.
+     */
+    private void disconnectChatServer() {
+        Intent intent = new Intent(getContext(), SmackService.class);
+        getContext().stopService(intent);
     }
+
+    /**
+     * Toggle between empty view and chat list.
+     * If no active chat is present, empty view will be shown.
+     */
+    private void toggleEmptyView(List<ChatList> chatList) {
+        if (chatList.isEmpty()) {
+            userList.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+
+            return;
+        }
+
+        userList.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
+    }
+
+    public static Fragment getInstance(Bundle bundle) {
+        ChatListFragment chatListFragment = new ChatListFragment();
+        chatListFragment.setArguments(bundle);
+
+        return chatListFragment;
+    }
+
 }

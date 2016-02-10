@@ -3,9 +3,11 @@ package com.mtvindia.connect.data.model;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Sibi on 02/11/15.
+ * @author Aaditya Deowanshi
  */
+
 public class Option {
+
     @SerializedName("optionId")
     private int optionId;
     @SerializedName("option")
@@ -36,4 +38,5 @@ public class Option {
     public void setOptionUrl(String optionUrl) {
         this.optionUrl = optionUrl;
     }
+
 }

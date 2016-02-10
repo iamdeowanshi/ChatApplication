@@ -20,8 +20,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by Sibi on 13/10/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Adapter class to hold and display navigation drawer items.
  */
+
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDrawerAdapter.ViewHolder> {
 
     private NavigationCallBack navigationCallbacks;
@@ -38,6 +41,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     public NavigationDrawerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_layout_recycler_view_item, parent, false);
         Injector.instance().inject(this);
+
         return new ViewHolder(view);
     }
 
@@ -46,11 +50,14 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         holder.textView.setText(navigationItems.get(position).getText());
         holder.imageView.setImageResource(navigationItems.get(position).getIcon());
         handleRowEvents(holder.itemView, position);
-        if ( touchedPosition == position) {
+
+        if (touchedPosition == position) {
             holder.itemView.setBackgroundResource(R.color.selected_color);
-        } else {
-            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+
+            return;
         }
+
+        holder.itemView.setBackgroundColor(Color.TRANSPARENT);
     }
 
     @Override
@@ -62,6 +69,11 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         this.navigationCallbacks = navigationCallbacks;
     }
 
+    /**
+     * Method to determine selection of an item.
+     * @param itemView
+     * @param position
+     */
     private void handleRowEvents(View itemView, final int position) {
         itemView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -73,6 +85,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
                         touchPosition(-1);
+
                         return false;
                     case MotionEvent.ACTION_MOVE:
                         return false;
@@ -91,6 +104,10 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         });
     }
 
+    /**
+     * Determines the item which is clicked.
+     * @param position
+     */
     private void touchPosition(int position) {
         int lastPosition = touchedPosition;
         touchedPosition = position;
@@ -104,25 +121,32 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         }
     }
 
+    /**
+     * Method set selected position.
+     * @param item
+     */
     public void setSelectedItem(NavigationItem item) {
         int position = navigationItems.indexOf(item);
         int lastPosition = selectedPosition;
+
         selectedPosition = position;
         notifyItemChanged(lastPosition);
         notifyItemChanged(position);
     }
 
+    /**
+     * Holder class for navigation drawer items.
+     */
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.txt_item_name)
-        TextView textView;
-        @Bind(R.id.img_item_icon)
-        ImageView imageView;
+        @Bind(R.id.txt_item_name) TextView textView;
+        @Bind(R.id.img_item_icon) ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
     }
 
 }

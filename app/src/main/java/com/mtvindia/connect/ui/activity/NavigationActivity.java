@@ -10,7 +10,6 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -61,6 +60,12 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 
+/**
+ * @author Aaditya Deowanshi
+ *
+ *         Navigation activity used to load different screen using navigation drawer.
+ */
+
 public class NavigationActivity extends BaseActivity implements NavigationCallBack, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, UpdateViewInteractor {
 
     @Inject UserPreference userPreference;
@@ -73,16 +78,15 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
     @Bind(R.id.toolbar_actionbar) Toolbar toolbar;
     @Bind(R.id.drawer) DrawerLayout drawerLayout;
 
-    private NavigationDrawerFragment navigationDrawerFragment;
-    private boolean isInRegistration;
-    private Fragment fragment;
-    private User user;
+    private final static int REQUEST_LOCATION = 1000;
+    private static final String ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
 
-    final static int REQUEST_LOCATION = 1000;
+    private User user;
+    private Fragment fragment;
+    private boolean isInRegistration;
+    private NavigationDrawerFragment navigationDrawerFragment;
 
     private GoogleApiClient googleApiClient;
-
-    static final String ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,37 +118,90 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         getSupportActionBar().setTitle(null);
 
         navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
-        navigationDrawerFragment.initDrawer(R.id.fragment_drawer, drawerLayout, toolbar);
+        navigationDrawerFragment.initializeDrawer(R.id.fragment_drawer, drawerLayout, toolbar);
 
         user = userPreference.readUser();
 
-        loadInitialItem();
+        loadInitialDrawerItem();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        googleApiClient.connect();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                onItemSelected(NavigationItem.CHAT);
+                return true;
+            }
+        });
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_navigation, menu);
+
+        if (isInRegistration) return false;
+
+        if (chatListRepository.searchUser(user.getId()) != null) return true;
+
+        return false;
     }
 
     @Override
     public void onBackPressed() {
         if (navigationDrawerFragment.isDrawerOpen()) {
             navigationDrawerFragment.closeDrawer();
-        } else {
-            final AlertDialog alertDialog = (AlertDialog) dialogUtil.createAlertDialog(NavigationActivity.this, "Exit", "Do you want to exit", "Yes", "No");
-            alertDialog.show();
-            alertDialog.setCancelable(true);
-            Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-            Button negativeButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-            positiveButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    finish();
-                }
-            });
 
-            negativeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    alertDialog.dismiss();
-                }
-            });
+            return;
         }
+
+        // Display popup, to confirm exit.
+        final AlertDialog alertDialog = (AlertDialog) dialogUtil.createAlertDialog(NavigationActivity.this, "Exit", "Do you want to exit", "Yes", "No");
+        alertDialog.show();
+        alertDialog.setCancelable(true);
+        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        Button negativeButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        negativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (googleApiClient.isConnected()) googleApiClient.disconnect();
+
+        unregisterReceiver(internetReciever);
+        questionPreference.clearPreference();
+        userPreference.removeMatchedUser();
     }
 
     @Override
@@ -152,7 +209,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         switch (item) {
             case FIND_PEOPLE:
                 setDrawerEnabled(true);
-                showFindMorePeople();
+                addFragment(getFindMorePeopleFragment());
                 break;
             case PROFILE:
                 fragment = ProfileFragment.getInstance(null);
@@ -179,68 +236,63 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         }
     }
 
-    private void disconnectChatServer() {
-        Intent intent = new Intent(this, SmackService.class);
-        this.stopService(intent);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (resultCode) {
+            case Activity.RESULT_CANCELED:
+                requestLocation();
+                break;
+            case Activity.RESULT_OK:
+                requestLocation();
+                break;
+        }
     }
 
-    private void showFindMorePeople() {
-        int count = questionPreference.readQuestionCount();
-        Question question = questionPreference.readQuestionResponse();
-        List<User> matchedUser = userPreference.readMatchedUser();
-        Fragment fragment;
-        if (question == null) {
-            fragment = PrimaryQuestionFragment.getInstance(null);
-            addFragment(fragment);
-        } else {
-            if (count == 0) {
-                fragment = PrimaryQuestionFragment.getInstance(null);
-                addFragment(fragment);
-            } else if (!question.isAnswered()) {
-                fragment = SecondaryQuestionFragment.getInstance(null);
-                addFragment(fragment);
-            } else if (matchedUser.size() != 0) {
-                fragment = ChooseFragment.getInstance(null);
-                addFragment(fragment);
-            } else if (count > 0) {
-                fragment = ResultFragment.getInstance(null);
-                addFragment(fragment);
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        if (connectionResult.hasResolution()) {
+            try {
+                connectionResult.startResolutionForResult(this, REQUEST_LOCATION);
+            } catch (IntentSender.SendIntentException e) {
+                e.printStackTrace();
             }
         }
+        toastShort(connectionResult.toString());
+        finish();
     }
 
-    public void addFragment(Fragment fragment) {
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction ft = fragmentManager.beginTransaction();
-            ft.replace(R.id.container, fragment);
-            ft.commit();
-        }
+    @Override
+    public void onConnected(Bundle bundle) {
+        requestLocation();
     }
 
-    private void loadInitialItem() {
-        isInRegistration = userPreference.readLoginStatus();
-                if (isInRegistration) {
-                    setDrawerEnabled(false);
-                    onItemSelected(NavigationItem.PREFERENCE);
-                } else if (chatListRepository.searchChat(user.getId()) != null) {
-                    onItemSelected(NavigationItem.CHAT);
-
-                } else {
-                    onItemSelected(NavigationItem.FIND_PEOPLE);
-                }
+    @Override
+    public void onConnectionSuspended(int i) {
     }
 
-    private void setDrawerEnabled(boolean isEnable) {
-        navigationDrawerFragment.setActionBarDrawerToggleEnabled(isEnable);
-
-        int drawerLockMode = isEnable ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
-
-        drawerLayout.setDrawerLockMode(drawerLockMode);
+    @Override
+    public void showProgress() {
     }
 
+    @Override
+    public void hideProgress() {
+    }
+
+    @Override
+    public void updateDone(User user) {
+        userPreference.saveUser(user);
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+    }
+
+    /**
+     * Receiver to check for internet connectivity.
+     */
     private final BroadcastReceiver internetReciever = new BroadcastReceiver() {
-
         @Override
         public void onReceive(final Context context, final Intent intent) {
             Boolean isOnline = networkUtil.isOnline();
@@ -271,60 +323,17 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         }
     };
 
-    private void getlastKnownLocation() {
-        LocationRequest locationRequest = new LocationRequest();
-        com.google.android.gms.location.LocationListener locationListener = new com.google.android.gms.location.LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                if (location != null) {
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-
-                    Location userLocation = new Location("point A");
-                    userLocation.setLatitude(user.getLatitude());
-                    userLocation.setLongitude(user.getLongitude());
-                    Location currentLocation = new Location("point B");
-                    currentLocation.setLatitude(latitude);
-                    currentLocation.setLongitude(longitude);
-                    double distance = userLocation.distanceTo(currentLocation);
-                    if (distance > 50000) {
-                        user.setLatitude(location.getLatitude());
-                        user.setLongitude(location.getLongitude());
-                        userPreference.saveUser(user);
-                        presenter.updateLocation(user);
-                    }
-                }
-
-            }
-        };
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, locationListener);
+    /**
+     * Disconnect to chat server.
+     */
+    private void disconnectChatServer() {
+        Intent intent = new Intent(this, SmackService.class);
+        this.stopService(intent);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case REQUEST_LOCATION:
-                switch (resultCode) {
-                    case Activity.RESULT_CANCELED: {
-                        requestLocation();
-                        break;
-                    }
-                    case Activity.RESULT_OK:
-                        requestLocation();
-                        break;
-                }
-                break;
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        googleApiClient.connect();
-    }
-
+    /**
+     * Requesting for location access.
+     */
     public void requestLocation() {
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -340,7 +349,7 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
                 final Status status = result.getStatus();
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
-                        getlastKnownLocation();
+                        getLastKnownLocation();
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         try {
@@ -354,106 +363,116 @@ public class NavigationActivity extends BaseActivity implements NavigationCallBa
         });
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        if (connectionResult.hasResolution()) {
-            try {
-                connectionResult.startResolutionForResult(this, REQUEST_LOCATION);
-            } catch (IntentSender.SendIntentException e) {
-                e.printStackTrace();
-            }
+    /**
+     * Depending upon number of question answered, toggle between question, answer or choose match view on click of find more people.
+     */
+    private Fragment getFindMorePeopleFragment() {
+        int count = questionPreference.readQuestionCount();
+        Question question = questionPreference.readQuestionResponse();
+        List<User> matchedUser = userPreference.readMatchedUser();
+
+        if (question == null) {
+            return PrimaryQuestionFragment.getInstance(null);
         }
-        toastShort(connectionResult.toString());
-        finish();
+
+        if (count == 0) {
+            return PrimaryQuestionFragment.getInstance(null);
+        }
+
+        if (!question.isAnswered()) {
+            return SecondaryQuestionFragment.getInstance(null);
+        }
+
+        if (matchedUser.size() != 0) {
+            return ChooseFragment.getInstance(null);
+        }
+
+        if (count > 0) {
+            return ResultFragment.getInstance(null);
+        }
+
+        return null;
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
-        requestLocation();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        googleApiClient.connect();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (googleApiClient.isConnected()) {
-            googleApiClient.disconnect();
+    /**
+     * Method to add fragment to container.
+     *
+     * @param fragment
+     */
+    public void addFragment(Fragment fragment) {
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+            ft.replace(R.id.container, fragment);
+            ft.commit();
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (googleApiClient.isConnected()) {
-            googleApiClient.disconnect();
+    /**
+     * Loads initial tab from navigation drawer.
+     */
+    private void loadInitialDrawerItem() {
+        isInRegistration = userPreference.readLoginStatus();
+
+        if (isInRegistration) {
+            setDrawerEnabled(false);
+            onItemSelected(NavigationItem.PREFERENCE);
+
+            return;
         }
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (googleApiClient.isConnected()) {
-            googleApiClient.disconnect();
+        if (chatListRepository.searchUser(user.getId()) != null) {
+            onItemSelected(NavigationItem.CHAT);
+
+            return;
         }
-        unregisterReceiver(internetReciever);
-        questionPreference.clearPreference();
-        userPreference.removeMatchedUser();
+
+        onItemSelected(NavigationItem.FIND_PEOPLE);
     }
 
-    @Override
-    public void showProgress() {
+    /**
+     * If registration process, disable navigation drawer so that user completes registration.
+     *
+     * @param isEnable
+     */
+    private void setDrawerEnabled(boolean isEnable) {
+        navigationDrawerFragment.setActionBarDrawerToggleEnabled(isEnable);
 
+        int drawerLockMode = isEnable ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
+
+        drawerLayout.setDrawerLockMode(drawerLockMode);
     }
 
-    @Override
-    public void hideProgress() {
-
-    }
-
-    @Override
-    public void updateDone(User user) {
-        userPreference.saveUser(user);
-    }
-
-    @Override
-    public void onError(Throwable throwable) {
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_navigation, menu);
-
-        if(isInRegistration) return false;
-
-        if(chatListRepository.searchChat(user.getId()) != null) return true;
-
-        return false;
-    }
-
-    @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+    /**
+     * Returns last known location.
+     */
+    private void getLastKnownLocation() {
+        LocationRequest locationRequest = new LocationRequest();
+        com.google.android.gms.location.LocationListener locationListener = new com.google.android.gms.location.LocationListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                onItemSelected(NavigationItem.CHAT);
-                return true;
+            public void onLocationChanged(Location location) {
+                if (location == null) return;
+
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+
+                Location userLocation = new Location("point A");
+                userLocation.setLatitude(user.getLatitude());
+                userLocation.setLongitude(user.getLongitude());
+                Location currentLocation = new Location("point B");
+                currentLocation.setLatitude(latitude);
+                currentLocation.setLongitude(longitude);
+                double distance = userLocation.distanceTo(currentLocation);
+
+                if (distance > 50000) {
+                    user.setLatitude(location.getLatitude());
+                    user.setLongitude(location.getLongitude());
+                    userPreference.saveUser(user);
+                    presenter.updateLocation(user);
+                }
             }
-        });
-        return super.onOptionsItemSelected(item);
+        };
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, locationListener);
     }
+
 }

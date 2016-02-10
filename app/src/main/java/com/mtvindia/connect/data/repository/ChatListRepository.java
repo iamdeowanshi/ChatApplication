@@ -6,8 +6,9 @@ import com.mtvindia.connect.data.model.ChatMessage;
 import java.util.List;
 
 /**
- * Created by Sibi on 02/12/15.
+ * @author Aaditya Deowanshi
  */
+
 public interface ChatListRepository extends BaseRepository<ChatList> {
 
     ChatMessage lastMessage(int id, int userId);
@@ -16,15 +17,16 @@ public interface ChatListRepository extends BaseRepository<ChatList> {
 
     long size();
 
-    void updateTime(long id,int userId, String time);
+    void updateTime(long id, int userId, String time);
 
-    ChatList searchChat(long id);
+    ChatList searchUser(long id);
 
     ChatList getUser(int id, int userId);
 
     boolean searchUser(long userId, long id);
 
     String getStatus(int id, int userId);
+
     void updateStatus(int id, int userId, String status);
 
 }

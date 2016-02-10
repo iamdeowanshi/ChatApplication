@@ -12,11 +12,15 @@ import javax.inject.Inject;
 import io.realm.RealmChangeListener;
 
 /**
- * Created by Sibi on 02/12/15.
+ * @author Aaditya Deowanshi
+ *
+ *         ChatMessageRepository to save all sent and received messages.
  */
+
 public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage> implements ChatMessageRepository {
 
     @Inject UserPreference userPreference;
+
     private RealmChangeListener realmListener;
     private DataChangeListener dataChangeListener;
 
@@ -26,12 +30,18 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
             @Override
             public void onChange() {
                 if (dataChangeListener != null) {
-                    dataChangeListener.onChange(null);
+                    dataChangeListener.onRealmDataChange(null);
                 }
             }
         };
     }
 
+    /**
+     * Removes all messages from database for particular user.
+     *
+     * @param from
+     * @param to
+     */
     @Override
     public void removeAllMessage(long from, int to) {
         realm.beginTransaction();
@@ -41,29 +51,44 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
         realm.addChangeListener(realmListener);
     }
 
+    /**
+     * Returns all unsent messages.
+     *
+     * @return
+     */
     @Override
     public List<ChatMessage> unsentMessages() {
         return realm.where(modelType)
-                    .equalTo("status", "Sending")
-                    .equalTo("userId", userPreference.readUser().getId())
-                    .findAll();
+                .equalTo("status", "Sending")
+                .equalTo("userId", userPreference.readUser().getId())
+                .findAll();
     }
 
+    /**
+     * Saves messages to the database.
+     *
+     * @param obj
+     */
     @Override
     public void save(ChatMessage obj) {
         realm.beginTransaction();
+
         if (realm.where(modelType).count() != 0) {
             obj.setId((int) (getNextKey() + 1));
         }
+
         realm.copyToRealmOrUpdate(obj);
         realm.commitTransaction();
         realm.addChangeListener(realmListener);
     }
 
-    private long getNextKey() {
-        return realm.where(ChatMessage.class).maximumInt("id");
-    }
-
+    /**
+     * Returns all messages for a particular user.
+     *
+     * @param from
+     * @param to
+     * @return
+     */
     @Override
     public List<ChatMessage> searchMessage(String from, String to) {
         return realm.where(modelType)
@@ -82,7 +107,7 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
 
     @Override
     public void removeDataChangeListener() {
-        super.removeDataChangeListener();
         realm.removeChangeListener(realmListener);
     }
+
 }

@@ -7,13 +7,10 @@ import com.mtvindia.connect.data.model.ResultResponse;
 import javax.inject.Inject;
 
 /**
- * Created by Sibi on 06/11/15.
+ * @author Aaditya Deowanshi
+ *         Utility class that which is used to save question related data and makes use of Preference util class.
  */
 
-/**
- * Utility class that which is used to save question related data and makes use of Preference util
- * class.
- */
 public class QuestionPreference {
 
     @Inject PreferenceUtil preferenceUtil;
@@ -22,7 +19,7 @@ public class QuestionPreference {
     public static final String PRIMARY_QUESTION_ID = "_PRIMARY_QUESTION_ID";
     public static final String RESULT_RESPONSE = "_RESULT_RESPONSE";
     public static final String QUESTION_RESPONSE = "_QUESTION_RESPONSE";
-    public static final String OPTION_SELECTED =  "_OPTION_SELECTED";
+    public static final String OPTION_SELECTED = "_OPTION_SELECTED";
 
     public QuestionPreference() {
         Injector.instance().inject(this);
@@ -30,6 +27,7 @@ public class QuestionPreference {
 
     /**
      * Saves number of questions answered.
+     *
      * @param count
      */
     public void saveQuestionCount(int count) {
@@ -38,6 +36,7 @@ public class QuestionPreference {
 
     /**
      * Returns number of questions answered.
+     *
      * @return
      */
     public int readQuestionCount() {
@@ -46,6 +45,7 @@ public class QuestionPreference {
 
     /**
      * Saves last unanswered questions.
+     *
      * @param question
      */
     public void saveQuestionResponse(Question question) {
@@ -54,6 +54,7 @@ public class QuestionPreference {
 
     /**
      * Returns last saved question.
+     *
      * @return
      */
     public Question readQuestionResponse() {
@@ -62,6 +63,7 @@ public class QuestionPreference {
 
     /**
      * Saves result of last answered question.
+     *
      * @param response
      */
     public void saveResultResponse(ResultResponse response) {
@@ -70,6 +72,7 @@ public class QuestionPreference {
 
     /**
      * Returns result of last answered question.
+     *
      * @return
      */
     public ResultResponse readResultResponse() {
@@ -79,6 +82,7 @@ public class QuestionPreference {
     /**
      * Saves primary/first question Id.
      * On the basis of first question, other question will be displayed.
+     *
      * @param id
      */
     public void savePrimaryQuestionId(int id) {
@@ -87,6 +91,7 @@ public class QuestionPreference {
 
     /**
      * Returns primary question Id.
+     *
      * @return
      */
     public int readPrimaryQuestionId() {
@@ -95,6 +100,7 @@ public class QuestionPreference {
 
     /**
      * Saves id of answer selected.
+     *
      * @param id
      */
     public void saveOptionSelected(int id) {
@@ -103,6 +109,7 @@ public class QuestionPreference {
 
     /**
      * Returns id of last answer selected.
+     *
      * @return
      */
     public int readOptionSelected() {

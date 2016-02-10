@@ -1,8 +1,9 @@
 package com.mtvindia.connect.util.social;
 
 /**
- * Created by Sibi on 26/10/15.
+ * @author Aaditya Deowanshi.
  */
+
 public class AuthUser {
 
     private String socialId;

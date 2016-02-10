@@ -34,27 +34,26 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by Sibi on 13/10/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Navigation drawer fragment, which displays navigation drawer.
  */
+
 public class NavigationDrawerFragment extends BaseFragment implements NavigationCallBack {
 
     @Inject UserPreference userPreference;
 
-    @Bind(R.id.recycler_view)
-    RecyclerView drawerList;
-    @Bind(R.id.img_dp)
-    ImageView imgDp;
-    @Bind(R.id.txt_item_name)
-    UbuntuTextView txtItemName;
-
-    private View fragmentContainerView;
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
-
-    private List<NavigationItem> drawerItems;
-    private NavigationCallBack navigationCallBack;
+    @Bind(R.id.recycler_view) RecyclerView drawerList;
+    @Bind(R.id.img_dp) ImageView imgDp;
+    @Bind(R.id.txt_item_name) UbuntuTextView txtItemName;
 
     private User user;
+
+    private NavigationCallBack navigationCallBack;
+
+    private DrawerLayout drawerLayout;
+    private View fragmentContainerView;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,7 +75,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
 
         user = userPreference.readUser();
 
-        drawerItems = Arrays.asList(NavigationItem.values());
+        List<NavigationItem> drawerItems = Arrays.asList(NavigationItem.values());
         drawerList.setLayoutManager(layoutManager);
         drawerList.setHasFixedSize(true);
 
@@ -86,6 +85,28 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(drawerItems);
         adapter.setNavigationCallbacks(this);
         drawerList.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        return (actionBarDrawerToggle.onOptionsItemSelected(item));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        user = userPreference.readUser();
+
+        txtItemName.setText(user.getFullName());
+        Picasso.with(getContext()).load(user.getProfilePic()).fit().into(imgDp);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     @Override
@@ -102,58 +123,6 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     public void onDetach() {
         super.onDetach();
         navigationCallBack = null;
-    }
-
-
-    public void initDrawer(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
-        fragmentContainerView = getActivity().findViewById(fragmentId);
-        this.drawerLayout = drawerLayout;
-
-
-        actionBarDrawerToggle = new ActionBarDrawerToggle(getActivity(), NavigationDrawerFragment.this.drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                getActivity().invalidateOptionsMenu();
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-
-                user = userPreference.readUser();
-
-                txtItemName.setText(user.getFullName());
-                Picasso.with(getContext()).load(user.getProfilePic()).fit().into(imgDp);
-                getActivity().invalidateOptionsMenu();
-            }
-        };
-
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
-        this.drawerLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                actionBarDrawerToggle.syncState();
-            }
-        });
-    }
-
-    public void closeDrawer() {
-        drawerLayout.closeDrawer(fragmentContainerView);
-    }
-
-    public boolean isDrawerOpen() {
-        return drawerLayout != null && drawerLayout.isDrawerOpen(fragmentContainerView);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     @Override
@@ -175,22 +144,61 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
         ((NavigationDrawerAdapter) drawerList.getAdapter()).setSelectedItem(item);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    /**
+     * Initializing Navigation drawer.
+     * @param fragmentId
+     * @param drawerLayout
+     * @param toolbar
+     */
+    public void initializeDrawer(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
+        fragmentContainerView = getActivity().findViewById(fragmentId);
+        this.drawerLayout = drawerLayout;
 
-        user = userPreference.readUser();
+        actionBarDrawerToggle = new ActionBarDrawerToggle(getActivity(), NavigationDrawerFragment.this.drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                getActivity().invalidateOptionsMenu();
+            }
 
-        txtItemName.setText(user.getFullName());
-        Picasso.with(getContext()).load(user.getProfilePic()).fit().into(imgDp);
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                user = userPreference.readUser();
+                txtItemName.setText(user.getFullName());
+                Picasso.with(getContext()).load(user.getProfilePic()).fit().into(imgDp);
+                getActivity().invalidateOptionsMenu();
+            }
+        };
+
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        this.drawerLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                actionBarDrawerToggle.syncState();
+            }
+        });
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
+    /**
+     * Method to close navigation drawer.
+     */
+    public void closeDrawer() {
+        drawerLayout.closeDrawer(fragmentContainerView);
     }
 
+    /**
+     * Checking whether drawer is open or not.
+     * @return
+     */
+    public boolean isDrawerOpen() {
+        return drawerLayout != null && drawerLayout.isDrawerOpen(fragmentContainerView);
+    }
+
+    /**
+     * Toggling the visibility of navigation drawer.
+     * @param isEnable
+     */
     public void setActionBarDrawerToggleEnabled(boolean isEnable) {
         actionBarDrawerToggle.setDrawerIndicatorEnabled(isEnable);
     }

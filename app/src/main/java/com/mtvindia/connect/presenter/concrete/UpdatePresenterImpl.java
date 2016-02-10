@@ -14,13 +14,15 @@ import rx.Observable;
 import timber.log.Timber;
 
 /**
- * Created by Sibi on 28/10/15.
+ * @author Aaditya Deowanshi
+ *
+ *         UpdatePresenter to update details about user.
  */
+
 public class UpdatePresenterImpl extends BaseNetworkPresenter<UpdateViewInteractor> implements UpdatePresenter {
 
     @Inject MtvConnectApi mtvConnectApi;
-    @Inject
-    Gson gson;
+    @Inject Gson gson;
 
     public UpdatePresenterImpl() {
         injectDependencies();
@@ -53,7 +55,6 @@ public class UpdatePresenterImpl extends BaseNetworkPresenter<UpdateViewInteract
     @Override
     public void update(User user) {
         viewInteractor.showProgress();
-
         Timber.e(gson.toJson(user));
 
         Observable<User> resultObservable = mtvConnectApi.update(user, user.getAuthHeader());

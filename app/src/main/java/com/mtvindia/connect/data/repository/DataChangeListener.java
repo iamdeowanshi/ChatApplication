@@ -3,11 +3,13 @@ package com.mtvindia.connect.data.repository;
 import java.util.List;
 
 /**
- * Created by Sibi on 10/12/15.
+ * @author Aaditya Deowanshi
  */
+
 public interface DataChangeListener<T> {
 
-    void onChange(List<T> updatedData);
+    void onRealmDataChange(List<T> updatedData);
 
-    void onStatusChanged(String status);
+    void onStatusChange(String status);
+
 }

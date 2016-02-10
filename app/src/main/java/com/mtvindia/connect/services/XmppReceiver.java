@@ -33,15 +33,20 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 /**
- * Created by Sibi on 09/12/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Xmpp receiver class to send and receive messages.
  */
-public class XmppReciever extends BroadcastReceiver implements AboutUserViewInteractor {
+
+public class XmppReceiver extends BroadcastReceiver implements AboutUserViewInteractor {
 
     @Inject ChatMessageRepository chatMessageRepository;
     @Inject ChatListRepository chatListRepository;
     @Inject UserPreference userPreference;
     @Inject AboutUserPresenter aboutUserPresenter;
     @Inject ChatListPresenter chatListPresenter;
+
+    private static final int MY_NOTIFICATION_ID = 1;
 
     private int userId;
     private String from;
@@ -52,12 +57,9 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
     private ChatList chatList = new ChatList();
     private ChatMessage chatMessage = new ChatMessage();
 
-    private static final int MY_NOTIFICATION_ID = 1;
-
-    private NotificationManager mNotificationManager;
     private PendingIntent contentIntent;
     private NotificationCompat.Builder mBuilder;
-
+    private NotificationManager mNotificationManager;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -67,7 +69,7 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
         user = userPreference.readUser();
         aboutUserPresenter.setViewInteractor(this);
 
-        if(user == null) return;
+        if (user == null) return;
 
         switch (action) {
             case SmackService.NEW_MESSAGE:
@@ -78,9 +80,8 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
                 break;
             case SmackService.NEW_ROSTER:
                 ArrayList<String> roster = intent.getStringArrayListExtra(SmackService.BUNDLE_ROSTER);
-                if (roster == null) {
-                    return;
-                }
+                if (roster == null) return;
+
                 for (String s : roster) {
                     Timber.d(s);
                     try {
@@ -94,23 +95,51 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
                 }
                 break;
         }
-
     }
 
+    // About user view interactor methods.
+    @Override
+    public void showProgress() {}
+
+    @Override
+    public void hideProgress() {}
+
+    @Override
+    public void onError(Throwable throwable) {}
+
+    @Override
+    public void aboutUser(AboutUser aboutUser) {
+        chatList.setUserId(aboutUser.getId());
+        chatList.setImage(aboutUser.getProfilePic());
+        chatList.setName(aboutUser.getFullName());
+        chatList.setLogedinUser(user.getId());
+        chatListRepository.reInitialize();
+        chatListRepository.save(chatList);
+        chatListPresenter.addUser(userPreference.readUser().getId(), chatList.getUserId(), userPreference.readUser().getAuthHeader());
+        chatListRepository.updateTime(userId, userPreference.readUser().getId(), DateTime.now().toString());
+        createNotification();
+    }
+
+    /**
+     * Method to show notification.
+     */
     private void showNotification() {
-        if (userId != userPreference.readSelectedUser()) {
-            chatList = chatListRepository.getUser(userId, user.getId());
+        if (userId == userPreference.readSelectedUser()) return;
 
-            String title = (chatList == null) ? "New message" : chatList.getName().split(" ")[0];
+        chatList = chatListRepository.getUser(userId, user.getId());
 
-            if (chatList != null) {
-                createNotification();
-            } else {
-                aboutUserPresenter.getAboutUser(userId, user.getAuthHeader());
-            }
+        if (chatList != null) {
+            createNotification();
+
+            return;
         }
+
+        aboutUserPresenter.getAboutUser(userId, user.getAuthHeader());
     }
 
+    /**
+     * Method to create notification.
+     */
     private void createNotification() {
         String title = chatList.getName().split(" ")[0];
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
@@ -143,12 +172,21 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
         mNotificationManager.notify(MY_NOTIFICATION_ID, mBuilder.build());
     }
 
+    /**
+     * Returns notification icon depending upon android version.
+     * @return
+     */
     private int getNotificationIcon() {
         boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
+
         return useWhiteIcon ? R.drawable.ic_stat_gamethrive_default : R.drawable.icon_launcher;
     }
 
-
+    /**
+     * Saves messages to realm database.
+     * @param from
+     * @param message
+     */
     private void saveToDB(String from, String message) {
         time = DateTime.now();
         this.from = from.split("@")[0];
@@ -161,47 +199,26 @@ public class XmppReciever extends BroadcastReceiver implements AboutUserViewInte
         chatMessage.setUserId(userId);
         chatMessageRepository.reInitialize();
         chatMessageRepository.save(chatMessage);
-        if(userPresent(userId)) {
+
+        if (userPresent(userId)) {
             chatListRepository.reInitialize();
             chatListRepository.updateTime(userId, userPreference.readUser().getId(), DateTime.now().toString());
         }
     }
 
+    /**
+     * Checking whether user is present in database.
+     * @param userId
+     * @return
+     */
     private boolean userPresent(int userId) {
-        if ( ! chatListRepository.searchUser(userId, user.getId())) {
+        if (!chatListRepository.searchUser(userId, user.getId())) {
             aboutUserPresenter.getAboutUser(userId, user.getAuthHeader());
+
             return false;
         }
 
         return true;
-    }
-
-    @Override
-    public void showProgress() {
-
-    }
-
-    @Override
-    public void hideProgress() {
-
-    }
-
-    @Override
-    public void onError(Throwable throwable) {
-
-    }
-
-    @Override
-    public void aboutUser(AboutUser aboutUser) {
-        chatList.setUserId(aboutUser.getId());
-        chatList.setImage(aboutUser.getProfilePic());
-        chatList.setName(aboutUser.getFullName());
-        chatList.setLogedinUser(user.getId());
-        chatListRepository.reInitialize();
-        chatListRepository.save(chatList);
-        chatListPresenter.addUser(userPreference.readUser().getId(), chatList.getUserId(), userPreference.readUser().getAuthHeader());
-        chatListRepository.updateTime(userId, userPreference.readUser().getId(), DateTime.now().toString());
-        createNotification();
     }
 
 }

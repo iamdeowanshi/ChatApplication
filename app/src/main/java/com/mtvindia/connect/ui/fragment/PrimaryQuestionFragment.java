@@ -40,34 +40,27 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
- * Created by Sibi on 21/10/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Primary question screen, which displays first high level question.
  */
+
 public class PrimaryQuestionFragment extends BaseFragment implements QuestionViewInteractor, ResultViewInteractor{
 
     @Inject UserPreference userPreference;
     @Inject QuestionPreference questionPreference;
     @Inject QuestionRequestPresenter questionRequestPresenter;
-    @Inject
-    ResultPresenter resultPresenter;
+    @Inject ResultPresenter resultPresenter;
 
-    @Bind(R.id.img_dp)
-    ImageView userPic;
-    @Bind(R.id.img_dp_big_1)
-    ImageView picOption1;
-    @Bind(R.id.img_dp_big_2)
-    ImageView picOption2;
-    @Bind(R.id.progress)
-    ProgressBar progress;
-    @Bind(R.id.txt_hello)
-    UbuntuTextView txtHello;
-    @Bind(R.id.txt_option_1)
-    UbuntuTextView txtOption1;
-    @Bind(R.id.txt_option_2)
-    UbuntuTextView txtOption2;
-    @Bind(R.id.txt_prim_quest)
-    UbuntuTextView txtPrimQuest;
-    @Bind(R.id.view)
-    View view;
+    @Bind(R.id.img_dp) ImageView userPic;
+    @Bind(R.id.img_dp_big_1) ImageView picOption1;
+    @Bind(R.id.img_dp_big_2) ImageView picOption2;
+    @Bind(R.id.progress) ProgressBar progress;
+    @Bind(R.id.txt_hello) UbuntuTextView txtHello;
+    @Bind(R.id.txt_option_1) UbuntuTextView txtOption1;
+    @Bind(R.id.txt_option_2) UbuntuTextView txtOption2;
+    @Bind(R.id.txt_prim_quest) UbuntuTextView txtPrimQuest;
+    @Bind(R.id.view) View view;
 
     private User user;
     private Question question;
@@ -82,10 +75,7 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.primary_question_fragment, container, false);
-
-        ButterKnife.bind(this, view);
-        return view;
+        return inflater.inflate(R.layout.primary_question_fragment, container, false);
     }
 
     @Override
@@ -97,6 +87,7 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         Window window = getActivity().getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(getActivity().getResources().getColor(R.color.darkYellow));
         }
@@ -107,36 +98,21 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         user = userPreference.readUser();
 
         questionRequestPresenter.getPrimaryQuestion(user.getAuthHeader());
-
-        questionPreference.savePrimaryQuestionId(0);
-
-        txtHello.setText("Hello " + user.getFirstName() + "!");
-
-        Picasso.with(getContext()).load(user.getProfilePic()).fit().into(userPic);
-
-
+        loadUserDetails(user);
     }
 
-    @OnClick(R.id.img_dp_big_1)
-    void option1() {
-        optionSelected(option.get(0).getOptionId());
-        questionPreference.saveOptionSelected(1);
+    @Override
+    public void onResume() {
+        super.onResume();
+        questionRequestPresenter.resume();
+        resultPresenter.resume();
     }
 
-    @OnClick(R.id.img_dp_big_2)
-    void option2() {
-        optionSelected(option.get(1).getOptionId());
-        questionPreference.saveOptionSelected(2);
-    }
-
-    void optionSelected(int option) {
-        question.setIsAnswered(true);
-        questionPreference.saveQuestionResponse(question);
-        questionPreference.saveQuestionCount(1);
-        resultRequest.setPrimaryQuestionId(0);
-        resultRequest.setOptionId(option);
-
-        resultPresenter.requestResult(resultRequest, user.getAuthHeader());
+    @Override
+    public void onPause() {
+        super.onPause();
+        questionRequestPresenter.pause();
+        resultPresenter.pause();
     }
 
     @Override
@@ -158,7 +134,6 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         navigationActivity.addFragment(fragment);
     }
 
-
     @Override
     public void showQuestion(Question response) {
         question = response;
@@ -166,7 +141,6 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         questionPreference.savePrimaryQuestionId(question.getQuestionId());
 
         resultRequest.setQuestionId(question.getQuestionId());
-
         option = question.getOptions();
 
         txtPrimQuest.setText(question.getQuestion());
@@ -179,7 +153,6 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         picOption1.setVisibility(View.VISIBLE);
         Picasso.with(getContext()).load(option.get(1).getOptionUrl()).fit().into(picOption2);
         picOption2.setVisibility(View.VISIBLE);
-
     }
 
     @Override
@@ -189,26 +162,40 @@ public class PrimaryQuestionFragment extends BaseFragment implements QuestionVie
         toastShort("Error: " + throwable);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        questionRequestPresenter.resume();
-        resultPresenter.resume();
+    @OnClick(R.id.img_dp_big_1)
+    void option1() {
+        optionSelected(option.get(0).getOptionId());
+        questionPreference.saveOptionSelected(1);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        questionRequestPresenter.pause();
-        resultPresenter.pause();
+    @OnClick(R.id.img_dp_big_2)
+    void option2() {
+        optionSelected(option.get(1).getOptionId());
+        questionPreference.saveOptionSelected(2);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
+    /**
+     * Method to make api call for secondary question on the basis of primary question selected.
+     * @param option
+     */
+    private void optionSelected(int option) {
+        question.setIsAnswered(true);
+        questionPreference.saveQuestionResponse(question);
+        questionPreference.saveQuestionCount(1);
+        resultRequest.setPrimaryQuestionId(0);
+        resultRequest.setOptionId(option);
+
+        resultPresenter.requestResult(resultRequest, user.getAuthHeader());
     }
 
+    /**
+     * Load user details.
+     * @param user
+     */
+    private void loadUserDetails(User user) {
+        txtHello.setText("Hello " + user.getFirstName() + "!");
+        Picasso.with(getContext()).load(user.getProfilePic()).fit().into(userPic);
+    }
 
     public static Fragment getInstance(Bundle bundle) {
         PrimaryQuestionFragment primaryQuestionFragment = new PrimaryQuestionFragment();

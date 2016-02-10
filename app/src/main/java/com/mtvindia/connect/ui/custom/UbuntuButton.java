@@ -5,10 +5,9 @@ import android.util.AttributeSet;
 import android.widget.Button;
 
 /**
- * Created by Sibi on 23/10/15.
+ * @author Aaditya Deowanshi
  */
 public class UbuntuButton extends Button {
-
 
     public UbuntuButton(Context context, AttributeSet attrs) {
         super(context, attrs);

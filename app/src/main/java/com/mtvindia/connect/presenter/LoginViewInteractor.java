@@ -4,8 +4,9 @@ import com.mtvindia.connect.app.base.ViewInteractor;
 import com.mtvindia.connect.data.model.User;
 
 /**
- * @author Farhan Ali
+ * @author Aaditya Deowanshi
  */
+
 public interface LoginViewInteractor extends ViewInteractor {
 
     void showProgress();

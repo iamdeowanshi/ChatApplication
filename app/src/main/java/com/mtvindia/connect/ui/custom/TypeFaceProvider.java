@@ -7,7 +7,9 @@ import android.widget.TextView;
 import java.util.Hashtable;
 
 /**
- * Created by Sibi on 23/10/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Typeface provide class for custom fonts.
  */
 public class TypeFaceProvider {
 
@@ -16,7 +18,6 @@ public class TypeFaceProvider {
 
     public final static String UBUNTU_BOLD = "Ubuntu-B";
     public final static String UBUNTU_REGULAR = "Ubuntu-L";
-    public final static String UBUNTU_LIGHT = "Ubuntu-R";
     public final static String UBUNTU_MEDIUM = "Ubuntu-M";
 
 

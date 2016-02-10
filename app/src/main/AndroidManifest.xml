@@ -99,26 +99,13 @@
             </intent-filter>
         </receiver>
 
-        <!--
-            <receiver
-            android:name=".ui.custom.pushNotification.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
-                <category android:name="com.mtvindia.connect" />
-            </intent-filter>
-        </receiver>
-        -->
-
-        <receiver android:name=".services.XmppReciever">
+        <receiver android:name=".services.XmppReceiver">
             <intent-filter>
                 <action android:name="com.mtvindia.connect.newmessage"/>
                 <action android:name="com.mtvindia.connect.newroster"/>
             </intent-filter>
         </receiver>
 
-        <service android:name=".ui.custom.pushNotification.GcmIntentService"/>
         <service
             android:name=".services.SmackService"
             android:enabled="true"

@@ -10,6 +10,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * @author Farhan Ali
  */
+
 public class RxUtil {
 
     public static void subscribeForNetwork(CompositeSubscription subscription, Observable observable, Observer observer) {

@@ -6,8 +6,9 @@ import com.mtvindia.connect.data.model.User;
 import java.util.List;
 
 /**
- * Created by Sibi on 05/11/15.
+ * @author Aaditya Deowanshi
  */
+
 public interface FindMatchViewInteractor extends ViewInteractor{
 
     void showProgress();
@@ -17,4 +18,5 @@ public interface FindMatchViewInteractor extends ViewInteractor{
     void showUsers(List<User> users);
 
     void onError(Throwable throwable);
+
 }

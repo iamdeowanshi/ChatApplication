@@ -4,8 +4,9 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Sibi on 01/12/15.
+ * @author Aaditya Deowanshi
  */
+
 public class ChatMessage extends RealmObject {
 
     @PrimaryKey
@@ -75,4 +76,5 @@ public class ChatMessage extends RealmObject {
     public void setTo(String to) {
         this.to = to;
     }
+
 }

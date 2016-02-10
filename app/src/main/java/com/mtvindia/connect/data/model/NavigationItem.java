@@ -3,8 +3,9 @@ package com.mtvindia.connect.data.model;
 import com.mtvindia.connect.R;
 
 /**
- * Created by Sibi on 13/10/15.
+ * @author Aaditya Deowanshi
  */
+
 public enum NavigationItem {
 
     FIND_PEOPLE("Find more people", R.drawable.icon_find),

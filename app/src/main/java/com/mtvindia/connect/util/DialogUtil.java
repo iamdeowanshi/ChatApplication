@@ -6,17 +6,16 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 
 /**
- * Created by Sibi on 05/11/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Utility class that provides Alert Dialog box to display pop up and set actions for each buttons.
  */
 
-/**
- * Utility class that provides Alert Dialog box to display pop up and set actions for each
- * buttons.
- */
 public class DialogUtil {
 
     /**
      * Returns alert dialog.
+     *
      * @param activity
      * @param title
      * @param message
@@ -24,7 +23,7 @@ public class DialogUtil {
      * @param negativeMessage
      * @return
      */
-    public Dialog createAlertDialog(final Activity activity, String title, String message,String positiveMessage, String negativeMessage) {
+    public Dialog createAlertDialog(final Activity activity, String title, String message, String positiveMessage, String negativeMessage) {
         final AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle(title)
                 .setMessage(message)

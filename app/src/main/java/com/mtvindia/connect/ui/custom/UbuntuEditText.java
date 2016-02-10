@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.EditText;
 
 /**
- * Created by Sibi on 23/10/15.
+ * @author Aaditya Deowanshi
  */
 public class UbuntuEditText extends EditText {
 

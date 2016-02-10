@@ -17,7 +17,7 @@ import com.mtvindia.connect.presenter.concrete.QuestionRequestPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.ResultPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.UpdatePresenterImpl;
 import com.mtvindia.connect.services.SmackConnection;
-import com.mtvindia.connect.services.XmppReciever;
+import com.mtvindia.connect.services.XmppReceiver;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
 import com.mtvindia.connect.ui.activity.LoginActivity;
@@ -26,7 +26,6 @@ import com.mtvindia.connect.ui.adapter.ChatListAdapter;
 import com.mtvindia.connect.ui.adapter.ChatMessageAdapter;
 import com.mtvindia.connect.ui.adapter.NavigationDrawerAdapter;
 import com.mtvindia.connect.ui.adapter.WalkThroughAdapter;
-import com.mtvindia.connect.ui.custom.pushNotification.GcmIntentService;
 import com.mtvindia.connect.ui.custom.pushNotification.OneSignalBroadCastReceiver;
 import com.mtvindia.connect.ui.fragment.ChatListFragment;
 import com.mtvindia.connect.ui.fragment.ChooseFragment;
@@ -68,10 +67,9 @@ import dagger.Provides;
 
                 //Xmpp
                 SmackConnection.class,
-                XmppReciever.class,
+                XmppReceiver.class,
 
-                //Gcm
-                GcmIntentService.class,
+                //Push Message
                 OneSignalBroadCastReceiver.class,
 
                 //Activities
@@ -121,7 +119,6 @@ import dagger.Provides;
                 QuestionPreference.class,
                 PreferenceUtil.class,
                 PermissionUtil.class
-
         }
 )
 public class RootModule {
@@ -143,6 +140,5 @@ public class RootModule {
     public LayoutInflater provideLayoutInflater() {
         return LayoutInflater.from(context);
     }
-
 
 }

@@ -3,8 +3,9 @@ package com.mtvindia.connect.data.model;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Sibi on 20/11/15.
+ * @author Aaditya Deowanshi
  */
+
 public class AboutUser {
 
     @SerializedName("id")

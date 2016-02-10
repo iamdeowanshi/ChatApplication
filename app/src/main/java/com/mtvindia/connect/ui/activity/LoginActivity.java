@@ -37,6 +37,12 @@ import javax.inject.Inject;
 import butterknife.OnClick;
 import timber.log.Timber;
 
+/**
+ * @author Aaditya Deowanshi
+ *
+ *         Login screen, where user can proceedToLogin to their MtvConnect account using facebook or google plus accounts.
+ */
+
 public class LoginActivity extends BaseActivity implements SocialAuthCallback, LoginViewInteractor, ActivityCompat.OnRequestPermissionsResultCallback {
 
     @Inject LoginPresenter presenter;
@@ -50,7 +56,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
 
     private final static int ACCOUNT_REQUEST_CODE = 0;
 
-    private static String[] ACCOUNT_PERMISSION = { Manifest.permission.GET_ACCOUNTS};
+    private static String[] ACCOUNT_PERMISSION = {Manifest.permission.GET_ACCOUNTS};
 
     private ProgressDialog progressDialog;
     private SocialAuth socialAuth;
@@ -75,30 +81,27 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         presenter.setViewInteractor(this);
     }
 
-    /**
-     * Facebook login button.
-     */
-    @OnClick(R.id.btn_fb)
-    void facebookLogin() {
-        if( ! networkUtil.isOnline()) {
-            displayInternetAlert();
-        } else {
-            button = R.id.btn_fb;
-            login();
-        }
-    }
+    @Override
+    public void onBackPressed() {
+        // Dialog to confirm exit.
+        final AlertDialog alertDialog = (AlertDialog) dialogUtil.createAlertDialog(this, "Exit", "Do you want to exit", "Yes", "No");
+        alertDialog.show();
+        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        Button negativeButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 
-    /**
-     * Google Plus login button.
-     */
-    @OnClick(R.id.btn_gPlus)
-    void gPlusLogin() {
-        if( ! networkUtil.isOnline()) {
-            displayInternetAlert();
-        } else {
-            button = R.id.btn_gPlus;
-            checkAccount();
-        }
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        negativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -107,18 +110,9 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         socialAuth.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
     /**
-     * After successful login on facebook or google.
+     * After successful proceedToLogin on facebook or google.
+     *
      * @param authResult
      */
     @Override
@@ -131,7 +125,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         loginRequest.setDeviceToken(deviceToken);
         loginRequest.setPlayerId(playerId);
 
-        // making api call to server for login.
+        // making api call to server for Login.
         presenter.login(loginRequest);
     }
 
@@ -148,7 +142,7 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     }
 
     /**
-     * Progress Dialog to show login process.
+     * Progress Dialog to show proceedToLogin process.
      */
     @Override
     public void showProgress() {
@@ -167,7 +161,8 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     /**
      * Checking for registration and
      * saving user details to shared preferences.
-     * @param response contains the user details.
+     *
+     * @param response   contains the user details.
      * @param isRegister will be false if user is present otherwise true for new User registration.
      */
     @Override
@@ -186,79 +181,84 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode == ACCOUNT_REQUEST_CODE) {
-            if (permissionUtil.verifyPermissions(grantResults)) {
-                login();
-            } else {
-                /*bakery.snack(getContentView(), "Contact permission are required for Login", Snackbar.LENGTH_INDEFINITE, "Try Again", new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        ActivityCompat.requestPermissions(LoginActivity.this, ACCOUNT_PERMISSION, ACCOUNT_REQUEST_CODE);
-                    }
-                });*/
-                bakery.snackShort(getContentView(), "Permissions were not granted");
-            }
+        if (permissionUtil.verifyPermissions(grantResults)) {
+            proceedToLogin();
+
+            return;
         }
+
+        bakery.snackShort(getContentView(), "Permissions were not granted");
     }
 
-    @Override
-    public void onBackPressed() {
-        // Dialog to confirm exit.
-        final AlertDialog alertDialog = (AlertDialog) dialogUtil.createAlertDialog(this, "Exit", "Do you want to exit", "Yes", "No");
-        alertDialog.show();
-        Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        Button negativeButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        negativeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
-    }
-
-    private void checkAccount() {
-        if (ActivityCompat.checkSelfPermission(this, ACCOUNT_PERMISSION[0]) != PackageManager.PERMISSION_GRANTED) {
-            requestAccountPermission();
+    /**
+     * Facebook proceedToLogin button.
+     */
+    @OnClick(R.id.btn_fb)
+    void facebookLogin() {
+        if (!networkUtil.isOnline()) {
+            displayInternetAlert();
         } else {
-            login();
-        }
-    }
-
-    private void requestAccountPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, ACCOUNT_PERMISSION[0])) {
-            bakery.snack(getContentView(), "Contact permission are required for Login", Snackbar.LENGTH_INDEFINITE,  "Try Again", new View.OnClickListener() {
-                @Override public void onClick(View view) {
-                    ActivityCompat.requestPermissions(LoginActivity.this, ACCOUNT_PERMISSION, ACCOUNT_REQUEST_CODE);
-                }
-            });
-        } else {
-            ActivityCompat.requestPermissions(this, ACCOUNT_PERMISSION, ACCOUNT_REQUEST_CODE);
+            button = R.id.btn_fb;
+            proceedToLogin();
         }
     }
 
     /**
-     * Fetching playersId from OneSignal Server.
+     * Google Plus proceedToLogin button.
+     */
+    @OnClick(R.id.btn_gPlus)
+    void gPlusLogin() {
+        if (!networkUtil.isOnline()) {
+            displayInternetAlert();
+
+            return;
+        }
+
+        button = R.id.btn_gPlus;
+        checkAccount();
+    }
+
+    /**
+     * Checking for Account Permission, applicable from Android 6 and above.
+     */
+    private void checkAccount() {
+        if (ActivityCompat.checkSelfPermission(this, ACCOUNT_PERMISSION[0]) != PackageManager.PERMISSION_GRANTED) {
+            requestAccountPermission();
+
+            return;
+        }
+
+        proceedToLogin();
+    }
+
+    /**
+     * Requesting for runtime permission, applicable from Android 6 and above.
+     */
+    private void requestAccountPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, ACCOUNT_PERMISSION[0])) {
+            bakery.snack(getContentView(), "Contact permission are required for Login", Snackbar.LENGTH_INDEFINITE, "Try Again", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ActivityCompat.requestPermissions(LoginActivity.this, ACCOUNT_PERMISSION, ACCOUNT_REQUEST_CODE);
+                }
+            });
+
+            return;
+        }
+
+        ActivityCompat.requestPermissions(this, ACCOUNT_PERMISSION, ACCOUNT_REQUEST_CODE);
+    }
+
+    /**
+     * Fetching playerId from OneSignal Server.
      */
     private void setPlayerId() {
         OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
             @Override
             public void idsAvailable(String userId, String registrationId) {
                 playerId = userId;
-                Log.d("debug", "User:" + userId);
-                if (registrationId != null)
-                    Log.d("debug", "registrationId:" + registrationId);
             }
         });
     }
@@ -272,32 +272,40 @@ public class LoginActivity extends BaseActivity implements SocialAuthCallback, L
         alertDialog.show();
         Button positiveButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
         Button negativeButton = (Button) alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
+
         negativeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!networkUtil.isOnline()) {
+                if (!networkUtil.isOnline()) {
                     dialogUtil.createAlertDialog(LoginActivity.this, "No Internet", "Seems like device is not connected to internet. Try again with active internet connection", "Exit", "Try Again");
-                } else {
-                    alertDialog.dismiss();
+
+                    return;
                 }
+
+                alertDialog.dismiss();
             }
         });
     }
 
-    private void login() {
+    /**
+     * Fetching account details from facebook or google.
+     */
+    private void proceedToLogin() {
         showProgress();
+
         switch (button) {
-            case R.id.btn_fb :
-                socialAuth.login(SocialAuth.SocialType.FACEBOOK );
+            case R.id.btn_fb:
+                socialAuth.login(SocialAuth.SocialType.FACEBOOK);
                 break;
-            case R.id.btn_gPlus :
-                socialAuth.login(SocialAuth.SocialType.GOOGLE );
+            case R.id.btn_gPlus:
+                socialAuth.login(SocialAuth.SocialType.GOOGLE);
                 break;
         }
     }

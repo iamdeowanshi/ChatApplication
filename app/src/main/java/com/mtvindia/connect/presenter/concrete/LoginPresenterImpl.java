@@ -17,8 +17,11 @@ import rx.Observable;
 import timber.log.Timber;
 
 /**
- * @author Farhan Ali
+ * @author Aaditya Deowanshi
+ *
+ *         Login presenter to connect to mtv server.
  */
+
 public class LoginPresenterImpl extends BaseNetworkPresenter<LoginViewInteractor>
         implements LoginPresenter {
 
@@ -35,13 +38,9 @@ public class LoginPresenterImpl extends BaseNetworkPresenter<LoginViewInteractor
             viewInteractor.hideProgress();
 
             boolean isRegister = response.getStatus() == 201;
-
             String userJson = new String(((TypedByteArray) response.getBody()).getBytes());
-
             Timber.d(userJson);
-
             User user = gson.fromJson(userJson, User.class);
-
             viewInteractor.loginDone(user, isRegister);
         }
 
@@ -55,7 +54,6 @@ public class LoginPresenterImpl extends BaseNetworkPresenter<LoginViewInteractor
     @Override
     public void login(LoginRequest request) {
         viewInteractor.showProgress();
-
         Observable<Response> resultObservable = mtvConnectApi.login(request);
         Timber.d(gson.toJson(request));
 

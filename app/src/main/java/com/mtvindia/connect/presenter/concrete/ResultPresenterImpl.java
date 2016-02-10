@@ -13,8 +13,11 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * Created by Sibi on 04/11/15.
+ * @author Aaditya Deowanshi.
+ *
+ *         AnswerPresenter to fetch details about selected answer from server.
  */
+
 public class ResultPresenterImpl extends BaseNetworkPresenter<ResultViewInteractor> implements ResultPresenter {
 
     @Inject MtvConnectApi mtvConnectApi;
@@ -43,4 +46,5 @@ public class ResultPresenterImpl extends BaseNetworkPresenter<ResultViewInteract
 
         subscribeForNetwork(resultObservable, apiObserver);
     }
+
 }
