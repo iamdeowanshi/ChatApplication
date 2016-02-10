@@ -119,7 +119,6 @@ import dagger.Provides;
                 QuestionPreference.class,
                 PreferenceUtil.class,
                 PermissionUtil.class
-
         }
 )
 public class RootModule {
@@ -141,6 +140,5 @@ public class RootModule {
     public LayoutInflater provideLayoutInflater() {
         return LayoutInflater.from(context);
     }
-
 
 }

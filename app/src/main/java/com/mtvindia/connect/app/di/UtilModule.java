@@ -22,6 +22,7 @@ import dagger.Provides;
         complete = false,
         library = true
 )
+
 public class UtilModule {
 
     @Provides
@@ -61,6 +62,5 @@ public class UtilModule {
     PermissionUtil providePermissionUtil() {
         return new PermissionUtil();
     }
-
 
 }

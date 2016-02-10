@@ -34,7 +34,6 @@ public class Config {
     // User agent - must required for some api
     public static final String USER_AGENT           = "MtvConnect-Android-App";
 
-
     //--------------------------------------------------------------------------------
     // Database related constants/configurations - used in OrmModule
     //--------------------------------------------------------------------------------
