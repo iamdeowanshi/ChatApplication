@@ -31,10 +31,12 @@ import java.util.Arrays;
 import timber.log.Timber;
 
 /**
- * Created by Sibi on 26/10/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Socail Authentication class.
  */
-public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+
+public class SocialAuth implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     public enum SocialType {
         GOOGLE,
@@ -44,10 +46,9 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
     private static final int RC_SIGN_IN = 0;
     private static final int REQ_SIGN_IN_REQUIRED = 55664;
 
-    private GoogleApiClient googleApiClient;
     private boolean isResolving = false;
     private boolean shouldResolve = false;
-
+    private GoogleApiClient googleApiClient;
     private CallbackManager fbCallbackManager;
 
     private Activity activity;
@@ -60,6 +61,58 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
         initFacebookClient();
     }
 
+    // Google Api callbacks
+    @Override
+    public void onConnected(Bundle bundle) {
+        shouldResolve = false;
+        try {
+            new RetrieveTokenTask(Plus.PeopleApi.getCurrentPerson(googleApiClient).toString(), Plus.AccountApi.getAccountName(googleApiClient))
+                    .execute(Plus.AccountApi.getAccountName(googleApiClient));
+        } catch (NullPointerException e) {
+            callback.onError(e);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {}
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        if (isResolving && shouldResolve) return;
+
+        if (connectionResult.hasResolution()) {
+            try {
+                connectionResult.startResolutionForResult(activity, RC_SIGN_IN);
+                isResolving = true;
+            } catch (IntentSender.SendIntentException e) {
+                isResolving = false;
+                callback.onError(e);
+            }
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode != Activity.RESULT_OK) {
+                shouldResolve = false;
+            }
+
+            isResolving = false;
+            googleApiClient.connect();
+        }
+
+        if (requestCode == REQ_SIGN_IN_REQUIRED && resultCode == Activity.RESULT_OK) {
+            // Retrieving access token after sign in.
+            new RetrieveTokenTask(Plus.PeopleApi.getCurrentPerson(googleApiClient).toString(), Plus.AccountApi.getAccountName(googleApiClient))
+                    .execute(Plus.AccountApi.getAccountName(googleApiClient));
+        }
+
+        if (fbCallbackManager.onActivityResult(requestCode, resultCode, data)) return;
+    }
+
+    /**
+     * Initializing Google.
+     */
     private void initGoogleClient() {
         googleApiClient = new GoogleApiClient.Builder(activity)
                 .addConnectionCallbacks(this)
@@ -69,6 +122,9 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
                 .build();
     }
 
+    /**
+     * Initializing Facebook.
+     */
     private void initFacebookClient() {
         FacebookSdk.sdkInitialize(activity);
         fbCallbackManager = CallbackManager.Factory.create();
@@ -109,6 +165,11 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
         this.callback = callback;
     }
 
+    /**
+     * Login to Facebook or google.
+     *
+     * @param type
+     */
     public void login(SocialType type) {
         this.socialType = type;
         switch (socialType) {
@@ -122,79 +183,32 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
         }
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_SIGN_IN) {
-            if (resultCode != Activity.RESULT_OK) {
-                shouldResolve = false;
-            }
-
-            isResolving = false;
-            googleApiClient.connect();
-        }
-
-        if (requestCode == REQ_SIGN_IN_REQUIRED && resultCode == Activity.RESULT_OK) {
-            // We had to sign in - now we can finish off the token request.
-            new RetrieveTokenTask(Plus.PeopleApi.getCurrentPerson(googleApiClient).toString(), Plus.AccountApi.getAccountName(googleApiClient))
-                    .execute(Plus.AccountApi.getAccountName(googleApiClient));
-        }
-
-        if (fbCallbackManager.onActivityResult(requestCode, resultCode, data)) {
-            return;
-        }
-    }
-
+    /**
+     * Disconnect from facebook or google.
+     */
     public void disconnect() {
-        if(socialType == SocialType.GOOGLE) {
+        if (socialType == SocialType.GOOGLE) {
             googleApiClient.disconnect();
             Timber.d("google logout");
-        } else if(socialType == SocialType.FACEBOOK) {
+        } else if (socialType == SocialType.FACEBOOK) {
             LoginManager.getInstance().logOut();
             Timber.d("facebook logout");
         }
     }
 
-    // google api callbacks
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        shouldResolve = false;
-        try {
-            new RetrieveTokenTask(Plus.PeopleApi.getCurrentPerson(googleApiClient).toString(), Plus.AccountApi.getAccountName(googleApiClient))
-                    .execute(Plus.AccountApi.getAccountName(googleApiClient));
-        } catch (NullPointerException e) {
-            callback.onError(e);
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {}
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        if (!isResolving && shouldResolve) {
-            if (connectionResult.hasResolution()) {
-                try {
-                    connectionResult.startResolutionForResult(activity, RC_SIGN_IN);
-                    isResolving = true;
-                } catch (IntentSender.SendIntentException e) {
-                    isResolving = false;
-                    callback.onError(e);
-                }
-            }
-        }
-    }
-
+    /**
+     * Retrieving access token from google.
+     */
     private class RetrieveTokenTask extends AsyncTask<String, Void, String> {
 
         String jsonData;
         String email;
 
-        public RetrieveTokenTask() {}
-
         public RetrieveTokenTask(String jsonData, String email) {
             this.jsonData = jsonData;
             this.email = email;
         }
+
         @Override
         protected String doInBackground(String... params) {
             String accountName = params[0];
@@ -209,19 +223,19 @@ public class SocialAuth implements GoogleApiClient.ConnectionCallbacks,
             } catch (GoogleAuthException e) {
                 callback.onError(e);
             }
+
             return token;
         }
 
         @Override
         protected void onPostExecute(String token) {
-            if(token != null) {
+            if (token != null) {
                 AuthResult result = new AuthResult(jsonData, SocialType.GOOGLE);
                 result.getAuthUser().setAccessToken(token);
                 result.getAuthUser().setEmail(email);
                 callback.onSuccess(result);
             }
         }
-
     }
 
 }

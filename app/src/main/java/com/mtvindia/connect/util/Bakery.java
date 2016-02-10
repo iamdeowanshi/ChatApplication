@@ -10,8 +10,11 @@ import com.mtvindia.connect.app.di.Injector;
 import javax.inject.Inject;
 
 /**
- * @author Farhan Ali
+ * @author Aaditya Deowanshi
+ *
+ *         Utility class to show popup messages.
  */
+
 public class Bakery {
 
     @Inject Context context;
@@ -93,6 +96,7 @@ public class Bakery {
 
     /**
      * Shows a  snack message with action.
+     *
      * @param view
      * @param message
      * @param length

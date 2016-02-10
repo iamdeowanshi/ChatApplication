@@ -8,12 +8,10 @@ import com.mtvindia.connect.app.di.Injector;
 import javax.inject.Inject;
 
 /**
- * Created by Sibi on 02/11/15.
+ * @author Aaditya Deowanshi
+ *         Utility class that checks for internet connectivity.
  */
 
-/**
- * Utility class that checks for internet connectivity.
- */
 public class NetworkUtil {
 
     @Inject Context context;
@@ -24,10 +22,11 @@ public class NetworkUtil {
 
     /**
      * Checks for internet connectivity.
+     *
      * @return true if connected else false.
      */
     public Boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE );
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         boolean isConnected = cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
 
         return isConnected;

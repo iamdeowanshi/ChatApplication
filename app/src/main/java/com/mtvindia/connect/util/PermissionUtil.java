@@ -5,13 +5,10 @@ import android.content.pm.PackageManager;
 import com.mtvindia.connect.app.di.Injector;
 
 /**
- * Created by Sibi on 14/01/16.
+ * @author Aaditya Deowanshi
+ *         Utility class that wraps access to the runtime permissions API in M and provides basic helper methods.
  */
 
-/**
- * Utility class that wraps access to the runtime permissions API in M and provides basic helper
- * methods.
- */
 public class PermissionUtil {
 
     public PermissionUtil() {
@@ -20,7 +17,7 @@ public class PermissionUtil {
 
     public static boolean verifyPermissions(int[] grantResults) {
         // At least one result must be checked.
-        if(grantResults.length < 1){
+        if (grantResults.length < 1) {
             return false;
         }
 
@@ -30,6 +27,8 @@ public class PermissionUtil {
                 return false;
             }
         }
+
         return true;
     }
+
 }

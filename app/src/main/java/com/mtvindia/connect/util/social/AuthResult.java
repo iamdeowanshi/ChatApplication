@@ -4,8 +4,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by Sibi on 26/10/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Class which saves data received from social login to auth user model class.
  */
+
 public class AuthResult {
 
     private AuthUser authUser;
@@ -41,6 +44,9 @@ public class AuthResult {
         }
     }
 
+    /**
+     * Method to load google data.
+     */
     private void loadGoogleUserData() {
         try {
             JSONObject jsonObject = new JSONObject(data);
@@ -56,7 +62,12 @@ public class AuthResult {
         }
     }
 
-
+    /**
+     * Method to get google profile picture.
+     *
+     * @param jsonObject
+     * @return
+     */
     private String getGoogleProfileUrl(JSONObject jsonObject) {
         try {
             return jsonObject.getString("url");
@@ -67,6 +78,12 @@ public class AuthResult {
         return "";
     }
 
+    /**
+     * Method to get name through google.
+     *
+     * @param authUser
+     * @param jsonObject
+     */
     private void loadGoogleName(AuthUser authUser, JSONObject jsonObject) {
         try {
             authUser.setFirstName(jsonObject.getString("givenName"));
@@ -76,6 +93,9 @@ public class AuthResult {
         }
     }
 
+    /**
+     * Method to load data from facebook.
+     */
     private void loadFbUserData() {
         try {
             JSONObject jsonObject = new JSONObject(data);
@@ -91,6 +111,12 @@ public class AuthResult {
         }
     }
 
+    /**
+     * Method to get profile picture from facebook.
+     *
+     * @param jsonObject
+     * @return
+     */
     private String getFbProfileUrl(JSONObject jsonObject) {
         try {
             JSONObject dataJsonObject = jsonObject.getJSONObject("data");

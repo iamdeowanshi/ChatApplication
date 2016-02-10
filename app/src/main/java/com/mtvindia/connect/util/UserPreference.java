@@ -12,19 +12,16 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Created by Sibi on 06/11/15.
+ * @author Aaditya Deowanshi
+ *         Utility class that which saves user related data to shared preferences and make use of Preference util class.
  */
 
-/**
- * Utility class that which saves user related data to shared preferences and make use of Preference
- * util class.
- */
 public class UserPreference {
 
     @Inject PreferenceUtil preferenceUtil;
     @Inject Gson gson;
 
-    public static final String USER = "_USER" ;
+    public static final String USER = "_USER";
     public static final String IS_IN_REGISTRATION = "_IS_REGISTERED";
     public static final String MATCHED_USER = "_MATCHED_USER";
     public static final String DEVICE_TOKEN = "_DEVICE_TOKEN";
@@ -37,6 +34,7 @@ public class UserPreference {
 
     /**
      * Saves user object.
+     *
      * @param user
      */
     public void saveUser(User user) {
@@ -54,6 +52,7 @@ public class UserPreference {
 
     /**
      * Returns User object.
+     *
      * @return
      */
     public User readUser() {
@@ -62,6 +61,7 @@ public class UserPreference {
 
     /**
      * Saves status whether it is login or registration.
+     *
      * @param status
      */
     public void saveLoginStatus(boolean status) {
@@ -70,6 +70,7 @@ public class UserPreference {
 
     /**
      * Returns status whether it is login or registration.
+     *
      * @return
      */
     public boolean readLoginStatus() {
@@ -78,6 +79,7 @@ public class UserPreference {
 
     /**
      * Save matched user to shared preference temporarily.
+     *
      * @param users
      */
     public void saveMatchedUser(List<User> users) {
@@ -88,18 +90,21 @@ public class UserPreference {
 
     /**
      * Returns the list of matched user.
+     *
      * @return
      */
     public List<User> readMatchedUser() {
         String usersJson = preferenceUtil.readString(MATCHED_USER, "[]");
 
-        Type listType = new TypeToken<List<User>>() {}.getType();
+        Type listType = new TypeToken<List<User>>() {
+        }.getType();
 
         return gson.fromJson(usersJson, listType);
     }
 
     /**
      * Saves device Token.
+     *
      * @param token
      */
     public void saveDeviceToken(String token) {
@@ -108,6 +113,7 @@ public class UserPreference {
 
     /**
      * Returns device token.
+     *
      * @return
      */
     public String readDeviceToken() {
@@ -116,6 +122,7 @@ public class UserPreference {
 
     /**
      * Saves push messages to shared preferences.
+     *
      * @param message
      */
     public void savePushMessage(List<PushMessage> message) {
@@ -126,18 +133,21 @@ public class UserPreference {
 
     /**
      * Returns push messages from shared preferences.
+     *
      * @return
      */
     public List<PushMessage> readPushMessage() {
         String pushMessage = preferenceUtil.readString(PUSH_NOTIFICATION, "[]");
 
-        Type listType = new TypeToken<List<PushMessage>>() {}.getType();
+        Type listType = new TypeToken<List<PushMessage>>() {
+        }.getType();
 
         return gson.fromJson(pushMessage, listType);
     }
 
     /**
      * Saves id of selected user from chat list.
+     *
      * @param id
      */
     public void saveSelectedUser(int id) {
@@ -146,6 +156,7 @@ public class UserPreference {
 
     /**
      * Returns id of selected user with whom user is currently chatting.
+     *
      * @return
      */
     public int readSelectedUser() {
@@ -158,6 +169,7 @@ public class UserPreference {
     public void removeSelectedUser() {
         preferenceUtil.remove(SELECTED_USER);
     }
+
     /**
      * Clears shared preferences.
      */
