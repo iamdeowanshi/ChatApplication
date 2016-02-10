@@ -211,6 +211,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
     }
 
 }

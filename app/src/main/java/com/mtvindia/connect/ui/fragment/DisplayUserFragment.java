@@ -80,9 +80,7 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dispaly_user_fragment, container, false);
-
-        return view;
+        return inflater.inflate(R.layout.dispaly_user_fragment, container, false);
     }
 
     @Override
@@ -145,30 +143,28 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
 
     @OnClick(R.id.img_smiley)
     void onClickSmiley() {
-
-        if (!popup.isShowing()) {
-
-            //If keyboard is visible, simply show the emoji popup
-            if (popup.isKeyBoardOpen()) {
-                popup.showAtBottom();
-                toggleEmojiconKeyboard(imgSmiley, R.drawable.icon_keyboard);
-            }
-
-            //else, open the text keyboard first and immediately after that show the emoji popup
-            else {
-                edtMessage.setFocusableInTouchMode(true);
-                edtMessage.requestFocus();
-                popup.showAtBottomPending();
-                final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.showSoftInput(edtMessage, InputMethodManager.SHOW_IMPLICIT);
-                toggleEmojiconKeyboard(imgSmiley, R.drawable.icon_keyboard);
-            }
-        }
-
         //If popup is showing, simply dismiss it to show the undelying text keyboard
-        else {
+        if (popup.isShowing()) {
             popup.dismiss();
             toggleEmojiconKeyboard(imgSmiley, R.drawable.icon_smiley);
+
+            return;
+        }
+
+        //If keyboard is visible, simply show the emoji popup
+        if (popup.isKeyBoardOpen()) {
+            popup.showAtBottom();
+            toggleEmojiconKeyboard(imgSmiley, R.drawable.icon_keyboard);
+        }
+
+        //else, open the text keyboard first and immediately after that show the emoji popup
+        else {
+            edtMessage.setFocusableInTouchMode(true);
+            edtMessage.requestFocus();
+            popup.showAtBottomPending();
+            final InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.showSoftInput(edtMessage, InputMethodManager.SHOW_IMPLICIT);
+            toggleEmojiconKeyboard(imgSmiley, R.drawable.icon_keyboard);
         }
     }
 
@@ -195,6 +191,7 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
 
     /**
      * Send message to chat server.
+     *
      * @param message
      */
     private void sendToChatServer(String message) {
@@ -226,7 +223,8 @@ public class DisplayUserFragment extends BaseFragment implements AboutUserViewIn
 
         popup.setOnSoftKeyboardOpenCloseListener(new EmojiconsPopup.OnSoftKeyboardOpenCloseListener() {
             @Override
-            public void onKeyboardOpen(int keyBoardHeight) {}
+            public void onKeyboardOpen(int keyBoardHeight) {
+            }
 
             @Override
             public void onKeyboardClose() {

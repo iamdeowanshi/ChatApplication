@@ -47,7 +47,6 @@ public class FindMatchPresenterImpl extends BaseNetworkPresenter<FindMatchViewIn
         Observable<List<User>> observable = mtvConnectApi.matchUser(header);
 
         subscribeForNetwork(observable, apiObserver);
-
     }
 
 }

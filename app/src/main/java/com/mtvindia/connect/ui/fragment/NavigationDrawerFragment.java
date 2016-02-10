@@ -49,7 +49,6 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
 
     private User user;
 
-    private List<NavigationItem> drawerItems;
     private NavigationCallBack navigationCallBack;
 
     private DrawerLayout drawerLayout;
@@ -76,7 +75,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
 
         user = userPreference.readUser();
 
-        drawerItems = Arrays.asList(NavigationItem.values());
+        List<NavigationItem> drawerItems = Arrays.asList(NavigationItem.values());
         drawerList.setLayoutManager(layoutManager);
         drawerList.setHasFixedSize(true);
 
@@ -91,9 +90,7 @@ public class NavigationDrawerFragment extends BaseFragment implements Navigation
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
-        return (actionBarDrawerToggle.onOptionsItemSelected(item))
-                ? true
-                : false;
+        return (actionBarDrawerToggle.onOptionsItemSelected(item));
     }
 
     @Override

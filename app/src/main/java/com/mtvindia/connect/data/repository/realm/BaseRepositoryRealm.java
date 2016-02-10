@@ -14,7 +14,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmObject;
 
 /**
@@ -49,6 +48,7 @@ public abstract class BaseRepositoryRealm<T extends RealmObject> implements Base
 
     /**
      * Returns the last key value in database.
+     *
      * @return
      */
     @Override
@@ -71,14 +71,6 @@ public abstract class BaseRepositoryRealm<T extends RealmObject> implements Base
         realm.beginTransaction();
         find(id, userId).removeFromRealm();
         realm.commitTransaction();
-    }
-
-    @Override
-    public void setDataChangeListener(DataChangeListener changeListener) {
-    }
-
-    @Override
-    public void removeDataChangeListener() {
     }
 
     @Override

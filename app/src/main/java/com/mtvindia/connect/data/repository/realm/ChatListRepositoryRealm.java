@@ -18,7 +18,6 @@ import io.realm.RealmResults;
 
 public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> implements ChatListRepository {
 
-
     private DataChangeListener dataChangeListener;
     private RealmChangeListener realmListener;
     private ChatMessage chatMessage;
@@ -39,6 +38,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     /**
      * Saves chat list object to database.
+     *
      * @param chatList
      */
     @Override
@@ -56,6 +56,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     /**
      * Returns the last message for a particular user in chat list.
+     *
      * @param chatUserId
      * @param userId
      * @return
@@ -83,6 +84,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     /**
      * Sorting chat list on the basis of last interacted time.
+     *
      * @param userId
      * @return
      */
@@ -99,6 +101,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     /**
      * Returns size of chat list.
+     *
      * @return
      */
     @Override
@@ -108,6 +111,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     /**
      * Updates the last interacted time for a cha
+     *
      * @param id
      * @param userId
      * @param time
@@ -122,16 +126,20 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     /**
      * Searching for a users in database.
+     *
      * @param id
      * @return
      */
     @Override
     public ChatList searchUser(long id) {
-        return realm.where(modelType).equalTo("logedinUser", id).findFirst();
+        return realm.where(modelType)
+                .equalTo("logedinUser", id)
+                .findFirst();
     }
 
     /**
      * Returns  chat list object of a user.
+     *
      * @param id
      * @param userId
      * @return
@@ -139,9 +147,9 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     @Override
     public ChatList getUser(int id, int userId) {
         return realm.where(modelType)
-                            .equalTo("userId", id)
-                            .equalTo("logedinUser", userId)
-                            .findFirst();
+                .equalTo("userId", id)
+                .equalTo("logedinUser", userId)
+                .findFirst();
     }
 
     @Override
@@ -154,6 +162,7 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     /**
      * Checking whether user is presetn in database or not
+     *
      * @param userId
      * @param logedinUser
      * @return
@@ -167,13 +176,17 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     /**
      * Returns the status of user : offline or online.
+     *
      * @param id
      * @param userId
      * @return
      */
     @Override
     public String getStatus(int id, int userId) {
-        ChatList chatList = realm.where(modelType).equalTo("userId", id).equalTo("logedinUser", userId).findFirst();
+        ChatList chatList = realm.where(modelType)
+                .equalTo("userId", id)
+                .equalTo("logedinUser", userId)
+                .findFirst();
 
         if (chatList == null) return "offline";
 
@@ -182,13 +195,14 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     /**
      * Updates status of user.
+     *
      * @param id
      * @param userId
      * @param status
      */
     @Override
     public void updateStatus(int id, int userId, String status) {
-      realm.beginTransaction();
+        realm.beginTransaction();
         ChatList item = find(id, userId);
 
         if (item != null) {
@@ -208,7 +222,6 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
 
     @Override
     public void removeDataChangeListener() {
-        super.removeDataChangeListener();
         realm.removeChangeListener(realmListener);
     }
 

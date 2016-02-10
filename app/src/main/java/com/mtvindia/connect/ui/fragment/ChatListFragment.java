@@ -59,10 +59,7 @@ public class ChatListFragment extends BaseFragment implements ChatCallBack, Data
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.chat_list_fragment, container, false);
-        ButterKnife.bind(this, view);
-
-        return view;
+        return inflater.inflate(R.layout.chat_list_fragment, container, false);
     }
 
     @Override

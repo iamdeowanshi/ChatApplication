@@ -24,6 +24,7 @@ import butterknife.OnClick;
  *
  *         Adapter class to hold and display walk through screen.
  */
+
 public class WalkThroughAdapter extends PagerAdapter {
 
     @Inject Context context;
@@ -88,7 +89,6 @@ public class WalkThroughAdapter extends PagerAdapter {
                 walkThroughClickListener.onCloseClicked(position);
             }
         }
-
     }
 
     /**
@@ -97,5 +97,6 @@ public class WalkThroughAdapter extends PagerAdapter {
     public interface WalkThroughClickListener {
 
         void onCloseClicked(int position);
+
     }
 }

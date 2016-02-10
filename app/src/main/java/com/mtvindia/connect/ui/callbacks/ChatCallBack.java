@@ -7,6 +7,7 @@ import com.mtvindia.connect.data.model.ChatList;
  *
  *         Listener interface for chat list items.
  */
+
 public interface ChatCallBack {
 
     void onItemSelected(ChatList chatList);

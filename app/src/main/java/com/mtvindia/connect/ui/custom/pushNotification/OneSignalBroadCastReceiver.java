@@ -36,6 +36,7 @@ import timber.log.Timber;
  *
  *         OneSignal Broadcast receiver to display push messages.
  */
+
 public class OneSignalBroadCastReceiver extends BroadcastReceiver implements OneSignal.NotificationOpenedHandler {
 
     @Inject UserPreference userPreference;
@@ -91,7 +92,6 @@ public class OneSignalBroadCastReceiver extends BroadcastReceiver implements One
                 Intent intent = new Intent(context, LaunchActivity.class);
                 stackBuilder.addParentStack(LaunchActivity.class);
                 stackBuilder.addNextIntent(intent);
-                //contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, LaunchActivity.class), 0);
             } else if (conversation.size() > 1) {
                 Intent intent = new Intent(context, NavigationActivity.class);
                 stackBuilder.addParentStack(NavigationActivity.class);

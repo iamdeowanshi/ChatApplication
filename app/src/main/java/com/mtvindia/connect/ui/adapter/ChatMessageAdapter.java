@@ -52,9 +52,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0) {
-            return TYPE_HEADER;
-        }
+        if (position == 0) return TYPE_HEADER;
 
         DateTime currentDateTime = DateTime.parse(chatMessages.get(position - 1).getCreatedTime());
         DateTime messageDateTime = DateTime.parse(chatMessages.get(position).getCreatedTime());
@@ -201,8 +199,8 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      */
     private String getMessageTime(String time) {
         DateTime dateTime = DateTime.parse(time);
-        return dateTime.toString("hh:mm a");
 
+        return dateTime.toString("hh:mm a");
     }
 
     @Override
@@ -247,6 +245,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
     }
 
 }

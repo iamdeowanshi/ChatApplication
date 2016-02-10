@@ -71,7 +71,6 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
     private User user;
     private ChatMessage chatMessage = new ChatMessage();
 
-    private ArrayList<String> userList;
     private BroadcastReceiver receiver;
     private XMPPTCPConnection connection;
 
@@ -151,17 +150,15 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
      * Building roster, list of users connected to a particular user.
      */
     private void rebuildRoster() {
-        userList = new ArrayList<>();
+        ArrayList<String> userList = new ArrayList<>();
         String status;
 
         if (connection == null) return;
 
         for (RosterEntry entry : connection.getRoster().getEntries()) {
-            if (connection.getRoster().getPresence(entry.getUser()).isAvailable()) {
-                status = "Online";
-            } else {
-                status = "Offline";
-            }
+            status = (connection.getRoster().getPresence(entry.getUser()).isAvailable())
+                    ? "Online"
+                    : "Offline";
 
             userList.add(entry.getUser() + ": " + status);
         }
@@ -186,9 +183,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
             Chat chat = ChatManager.getInstanceFor(connection).createChat(message.getTo() + "@" + Config.CHAT_SERVER, this);
             try {
                 chat.sendMessage(message.getBody());
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
+            } catch (XMPPException | SmackException.NotConnectedException e) {
                 e.printStackTrace();
             }
         }
@@ -241,10 +236,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
             e.printStackTrace();
             chatMessage.setStatus(ChatActivity.MessageState.Sending.toString());
             toast("send failed");
-        } catch (SmackException.NotLoggedInException e) {
-            chatMessage.setStatus(ChatActivity.MessageState.Sending.toString());
-            e.printStackTrace();
-        } catch (SmackException.NoResponseException e) {
+        } catch (SmackException.NotLoggedInException | SmackException.NoResponseException e) {
             chatMessage.setStatus(ChatActivity.MessageState.Sending.toString());
             e.printStackTrace();
         }

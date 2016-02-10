@@ -60,9 +60,7 @@ public class PreferenceFragment extends BaseFragment implements UpdateViewIntera
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.preference_fragment, container, false);
-
-        return view;
+        return inflater.inflate(R.layout.preference_fragment, container, false);
     }
 
     @Override

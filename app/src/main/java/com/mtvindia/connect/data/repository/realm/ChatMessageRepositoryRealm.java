@@ -38,6 +38,7 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
 
     /**
      * Removes all messages from database for particular user.
+     *
      * @param from
      * @param to
      */
@@ -52,18 +53,20 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
 
     /**
      * Returns all unsent messages.
+     *
      * @return
      */
     @Override
     public List<ChatMessage> unsentMessages() {
         return realm.where(modelType)
-                    .equalTo("status", "Sending")
-                    .equalTo("userId", userPreference.readUser().getId())
-                    .findAll();
+                .equalTo("status", "Sending")
+                .equalTo("userId", userPreference.readUser().getId())
+                .findAll();
     }
 
     /**
      * Saves messages to the database.
+     *
      * @param obj
      */
     @Override
@@ -81,6 +84,7 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
 
     /**
      * Returns all messages for a particular user.
+     *
      * @param from
      * @param to
      * @return
@@ -103,7 +107,6 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
 
     @Override
     public void removeDataChangeListener() {
-        super.removeDataChangeListener();
         realm.removeChangeListener(realmListener);
     }
 

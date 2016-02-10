@@ -87,10 +87,7 @@ public class SecondaryQuestionFragment extends BaseFragment implements QuestionV
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.secondary_question_fragment, container, false);
-
-        ButterKnife.bind(this, view);
-        return view;
+        return inflater.inflate(R.layout.secondary_question_fragment, container, false);
     }
 
     @Override
