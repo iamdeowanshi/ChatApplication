@@ -5,8 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Created by Sibi on 02/11/15.
+ * @author Aaditya Deowanshi
  */
+
 public class Question {
     @SerializedName("questionId")
     private int questionId;
@@ -48,4 +49,5 @@ public class Question {
     public void setIsAnswered(boolean isAnswered) {
         this.isAnswered = isAnswered;
     }
+
 }

@@ -4,8 +4,9 @@ import com.google.gson.annotations.SerializedName;
 import com.mtvindia.connect.util.social.AuthResult;
 
 /**
- * Created by Sibi on 28/10/15.
+ * @author Aaditya Deowanshi
  */
+
 public class LoginRequest {
 
     @SerializedName("firstName")
@@ -30,9 +31,6 @@ public class LoginRequest {
     private int certificateType;
     @SerializedName("playerId")
     private String playerId;
-
-    public LoginRequest() {
-    }
 
     public LoginRequest(AuthResult authResult) {
         firstName = authResult.getAuthUser().getFirstName();
@@ -131,4 +129,5 @@ public class LoginRequest {
     public void setPlayerId(String playerId) {
         this.playerId = playerId;
     }
+
 }

@@ -3,9 +3,11 @@ package com.mtvindia.connect.data.model;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Sibi on 02/11/15.
+ * @author Aaditya Deowanshi
  */
+
 public class MatchUserResponse {
+
     @SerializedName("Id")
     private int id;
     @SerializedName("firstName")
@@ -52,4 +54,5 @@ public class MatchUserResponse {
 
         return name;
     }
+
 }

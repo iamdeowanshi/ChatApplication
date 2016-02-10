@@ -4,11 +4,10 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Sibi on 26/11/15.
+ * @author Aaditya Deowanshi
  */
 
 public class ChatList extends RealmObject {
-
 
     @PrimaryKey
     private int id;

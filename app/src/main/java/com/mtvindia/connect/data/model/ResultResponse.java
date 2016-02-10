@@ -3,9 +3,11 @@ package com.mtvindia.connect.data.model;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Sibi on 02/11/15.
+ * @author Aaditya Deowanshi
  */
+
 public class ResultResponse {
+
     @SerializedName("questionId")
     private int questionId;
     @SerializedName("question")
@@ -46,4 +48,5 @@ public class ResultResponse {
     public void setMatchingUserCount(int matchingUserCount) {
         this.matchingUserCount = matchingUserCount;
     }
+
 }

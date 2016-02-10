@@ -1,7 +1,8 @@
 package com.mtvindia.connect.data.model;
 
 /**
- * @author Farhan Ali
+ * @author Aaditya Deowanshi
  */
+
 public abstract class BaseModel {
 }
