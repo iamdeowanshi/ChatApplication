@@ -3,8 +3,9 @@ package com.mtvindia.connect.data.repository;
 import java.util.List;
 
 /**
- * @author Farhan Ali
+ * @author Aaditya Deowanshi
  */
+
 public interface BaseRepository<T> {
 
     void save(T obj);

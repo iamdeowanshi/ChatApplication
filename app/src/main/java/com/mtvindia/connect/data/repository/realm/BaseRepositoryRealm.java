@@ -17,19 +17,22 @@ import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmObject;
 
+/**
+ * @author Aaditya Deowanshi
+ *
+ *         BaseRepositoryRealm class to perform basic CRUD operation on realm database.
+ */
+
 public abstract class BaseRepositoryRealm<T extends RealmObject> implements BaseRepository<T> {
 
     @Inject Realm realm;
     @Inject Context context;
 
     protected Class<T> modelType;
-    private RealmChangeListener realmListener;
-    private DataChangeListener dataChangeListener;
 
     public BaseRepositoryRealm(final Class<T> modelType) {
         this.modelType = modelType;
         Injector.instance().inject(this);
-        //setDataChangeListener();
     }
 
     @Override
@@ -72,21 +75,15 @@ public abstract class BaseRepositoryRealm<T extends RealmObject> implements Base
 
     @Override
     public void setDataChangeListener(DataChangeListener changeListener) {
-        //this.dataChangeListener = changeListener;
     }
 
     @Override
     public void removeDataChangeListener() {
-        //realm.removeChangeListener(realmListener);
     }
 
     @Override
     public void reInitialize() {
         realm = new OrmModule().provideRealm(context);
-        /*if (realm != null) {
-            realm.close();
-            realm = new OrmModule().provideRealm(context);
-        }*/
     }
 
 }

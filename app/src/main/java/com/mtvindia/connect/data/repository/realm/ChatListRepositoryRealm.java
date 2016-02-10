@@ -12,7 +12,10 @@ import io.realm.RealmResults;
 
 /**
  * @author Aaditya Deowanshi
+ *
+ *         Chat list repository class to save list of active chat users.
  */
+
 public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> implements ChatListRepository {
 
 
@@ -51,7 +54,6 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
         realm.addChangeListener(realmListener);
     }
 
-
     /**
      * Returns the last message for a particular user in chat list.
      * @param chatUserId
@@ -72,11 +74,11 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
             chatMessage = new ChatMessage();
             chatMessage.setBody("");
             chatMessage.setCreatedTime("");
-        } else {
-            chatMessage = chatMessages.get(chatMessages.size() - 1);
+
+            return chatMessage;
         }
 
-        return chatMessage;
+        return chatMessage = chatMessages.get(chatMessages.size() - 1);
     }
 
     /**
@@ -116,7 +118,6 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
         ChatList item = find(userId, id);
         item.setTime(time);
         realm.commitTransaction();
-
     }
 
     /**
@@ -127,7 +128,6 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     @Override
     public ChatList searchUser(long id) {
         return realm.where(modelType).equalTo("logedinUser", id).findFirst();
-
     }
 
     /**
@@ -190,11 +190,13 @@ public class ChatListRepositoryRealm extends BaseRepositoryRealm<ChatList> imple
     public void updateStatus(int id, int userId, String status) {
       realm.beginTransaction();
         ChatList item = find(id, userId);
+
         if (item != null) {
             item.setStatus(status);
             realm.copyToRealmOrUpdate(item);
             this.status = status;
         }
+
         realm.commitTransaction();
         realm.addChangeListener(realmListener);
     }

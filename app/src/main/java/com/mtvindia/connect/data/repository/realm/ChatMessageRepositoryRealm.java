@@ -13,11 +13,14 @@ import io.realm.RealmChangeListener;
 
 /**
  * @author Aaditya Deowanshi
+ *
+ *         ChatMessageRepository to save all sent and received messages.
  */
 
 public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage> implements ChatMessageRepository {
 
     @Inject UserPreference userPreference;
+
     private RealmChangeListener realmListener;
     private DataChangeListener dataChangeListener;
 
@@ -66,9 +69,11 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
     @Override
     public void save(ChatMessage obj) {
         realm.beginTransaction();
+
         if (realm.where(modelType).count() != 0) {
             obj.setId((int) (getNextKey() + 1));
         }
+
         realm.copyToRealmOrUpdate(obj);
         realm.commitTransaction();
         realm.addChangeListener(realmListener);
@@ -101,4 +106,5 @@ public class ChatMessageRepositoryRealm extends BaseRepositoryRealm<ChatMessage>
         super.removeDataChangeListener();
         realm.removeChangeListener(realmListener);
     }
+
 }
