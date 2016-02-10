@@ -13,12 +13,13 @@ import retrofit.mime.TypedFile;
 import rx.Observable;
 
 /**
- * Created by Sibi on 21/11/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Presenter class to update profile picture.
  */
 public class ProfilePicUpdatePresenterImpl extends BaseNetworkPresenter<PictureUpdateViewInteractor> implements ProfilePicUpdatePresenter {
 
-    @Inject
-    MtvConnectApi mtvConnectApi;
+    @Inject MtvConnectApi mtvConnectApi;
 
     public ProfilePicUpdatePresenterImpl() {
         injectDependencies();
@@ -36,6 +37,7 @@ public class ProfilePicUpdatePresenterImpl extends BaseNetworkPresenter<PictureU
             viewInteractor.onPicUpdateError(e);
         }
     };
+
     @Override
     public void updateProfilePic(int id, TypedFile file, String header) {
         viewInteractor.showPicUpdateProgress();
@@ -43,4 +45,5 @@ public class ProfilePicUpdatePresenterImpl extends BaseNetworkPresenter<PictureU
 
         subscribeForNetwork(resultObservable, apiObserver);
     }
+
 }

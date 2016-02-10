@@ -18,8 +18,11 @@ import rx.Observable;
 import timber.log.Timber;
 
 /**
- * Created by Sibi on 24/12/15.
+ * @author Aaditya Deowanshi
+ *
+ *         ChatListPresenter to save user's chat list on server, delete users and to retrieve list of users.
  */
+
 public class ChatListPresenterImpl extends BaseNetworkPresenter implements ChatListPresenter {
 
     @Inject MtvConnectApi mtvConnectApi;
@@ -83,12 +86,14 @@ public class ChatListPresenterImpl extends BaseNetworkPresenter implements ChatL
     @Override
     public void addUser(int id, int chatUserId, String header) {
         Observable<Response> responseObservable = mtvConnectApi.addUser(id, chatUserId, header);
+
         subscribeForNetwork(responseObservable, addUserResponse);
     }
 
     @Override
     public void removeUser(int chatUserId, String header) {
         Observable<Response> responseObservable = mtvConnectApi.removeUser(chatUserId, header);
+
         subscribeForNetwork(responseObservable, deleteUserResponse);
     }
 
@@ -98,4 +103,5 @@ public class ChatListPresenterImpl extends BaseNetworkPresenter implements ChatL
 
         subscribeForNetwork(resultObservable, getListObservable);
     }
+
 }

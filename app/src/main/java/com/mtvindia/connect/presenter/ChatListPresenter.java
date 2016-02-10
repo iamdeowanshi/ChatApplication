@@ -1,8 +1,9 @@
 package com.mtvindia.connect.presenter;
 
 /**
- * Created by Sibi on 24/12/15.
+ * @author Aaditya Deowanshi
  */
+
 public interface ChatListPresenter {
 
     void addUser(int id, int chatUserId, String header);
@@ -10,6 +11,5 @@ public interface ChatListPresenter {
     void removeUser(int chatUserId, String header);
 
     void getChatUsers(String header);
-
 
 }

@@ -4,8 +4,9 @@ import com.mtvindia.connect.app.base.ViewInteractor;
 import com.mtvindia.connect.data.model.User;
 
 /**
- * Created by Sibi on 21/11/15.
+ * @author Aaditya Deowanshi
  */
+
 public interface PictureUpdateViewInteractor extends ViewInteractor{
 
     void showPicUpdateProgress();
@@ -15,4 +16,5 @@ public interface PictureUpdateViewInteractor extends ViewInteractor{
     void onPicUpdateError(Throwable throwable);
 
     void showUpdatedPic(User user );
+
 }

@@ -4,8 +4,9 @@ import com.mtvindia.connect.app.base.ViewInteractor;
 import com.mtvindia.connect.data.model.Question;
 
 /**
- * Created by Sibi on 02/11/15.
+ * @author Aaditya Deowanshi
  */
+
 public interface QuestionViewInteractor extends ViewInteractor {
 
     void showProgress();

@@ -14,12 +14,14 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * Created by Sibi on 05/11/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Find match presenter class to get matches after answering 10 questions.
  */
+
 public class FindMatchPresenterImpl extends BaseNetworkPresenter<FindMatchViewInteractor> implements FindMatchPresenter {
 
-    @Inject
-    MtvConnectApi mtvConnectApi;
+    @Inject MtvConnectApi mtvConnectApi;
 
     public FindMatchPresenterImpl() {
         injectDependencies();
@@ -42,7 +44,6 @@ public class FindMatchPresenterImpl extends BaseNetworkPresenter<FindMatchViewIn
     @Override
     public void findMatches(String header) {
         viewInteractor.showProgress();
-
         Observable<List<User>> observable = mtvConnectApi.matchUser(header);
 
         subscribeForNetwork(observable, apiObserver);

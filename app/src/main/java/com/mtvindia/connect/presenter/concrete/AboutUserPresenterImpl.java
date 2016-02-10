@@ -12,12 +12,14 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * Created by Sibi on 20/11/15.
+ * @author Aaditya Deowanshi
+ *
+ *         About user presenter class to fetch details about user.
  */
+
 public class AboutUserPresenterImpl extends BaseNetworkPresenter<AboutUserViewInteractor> implements AboutUserPresenter {
 
-    @Inject
-    MtvConnectApi mtvConnectApi;
+    @Inject MtvConnectApi mtvConnectApi;
 
     public AboutUserPresenterImpl() {
         injectDependencies();
@@ -36,6 +38,7 @@ public class AboutUserPresenterImpl extends BaseNetworkPresenter<AboutUserViewIn
             viewInteractor.onError(e);
         }
     };
+
     @Override
     public void getAboutUser(int id, String header) {
         viewInteractor.showProgress();
@@ -43,4 +46,5 @@ public class AboutUserPresenterImpl extends BaseNetworkPresenter<AboutUserViewIn
 
         subscribeForNetwork(resultObservable, apiObserver);
     }
+
 }

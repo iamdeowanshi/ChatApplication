@@ -14,13 +14,15 @@ import rx.Observable;
 import timber.log.Timber;
 
 /**
- * Created by Sibi on 02/11/15.
+ * @author Aaditya Deowanshi
+ *
+ *         Question presenter to fetch question from server.
  */
+
 public class QuestionRequestPresenterImpl extends BaseNetworkPresenter<QuestionViewInteractor> implements QuestionRequestPresenter {
 
     @Inject MtvConnectApi mtvConnectApi;
-    @Inject
-    Gson gson;
+    @Inject Gson gson;
 
     public QuestionRequestPresenterImpl() {
         injectDependencies();
