@@ -99,7 +99,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".services.XmppReciever">
+        <receiver android:name=".services.XmppReceiver">
             <intent-filter>
                 <action android:name="com.mtvindia.connect.newmessage"/>
                 <action android:name="com.mtvindia.connect.newroster"/>

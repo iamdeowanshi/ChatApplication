@@ -17,7 +17,7 @@ import com.mtvindia.connect.presenter.concrete.QuestionRequestPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.ResultPresenterImpl;
 import com.mtvindia.connect.presenter.concrete.UpdatePresenterImpl;
 import com.mtvindia.connect.services.SmackConnection;
-import com.mtvindia.connect.services.XmppReciever;
+import com.mtvindia.connect.services.XmppReceiver;
 import com.mtvindia.connect.ui.activity.ChatActivity;
 import com.mtvindia.connect.ui.activity.LaunchActivity;
 import com.mtvindia.connect.ui.activity.LoginActivity;
@@ -67,7 +67,7 @@ import dagger.Provides;
 
                 //Xmpp
                 SmackConnection.class,
-                XmppReciever.class,
+                XmppReceiver.class,
 
                 //Push Message
                 OneSignalBroadCastReceiver.class,

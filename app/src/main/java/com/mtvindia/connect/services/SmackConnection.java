@@ -44,6 +44,12 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
+/**
+ * @author Aaditya Deowanshi
+ *
+ *         Smack class used to connect to xmpp server to send and receive messages.
+ */
+
 public class SmackConnection implements ConnectionListener, ChatManagerListener,
         RosterListener, ChatMessageListener, PingFailedListener {
 
@@ -52,7 +58,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
 
     private Roster roster;
 
-    public static enum ConnectionState {
+    public enum ConnectionState {
         CONNECTED, CONNECTING, RECONNECTING, DISCONNECTED;
     }
 
@@ -61,12 +67,13 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
     private final String password;
     private final String username;
     private final String serviceName;
+
     private User user;
     private ChatMessage chatMessage = new ChatMessage();
 
-    private XMPPTCPConnection connection;
     private ArrayList<String> userList;
     private BroadcastReceiver receiver;
+    private XMPPTCPConnection connection;
 
     public SmackConnection(Context pContext) {
         Injector.instance().inject(this);
@@ -78,6 +85,13 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         password = new StringBuilder(username).reverse().toString();
     }
 
+    /**
+     * Method to create connection to xmpp server.
+     *
+     * @throws IOException
+     * @throws XMPPException
+     * @throws SmackException
+     */
     public void connect() throws IOException, XMPPException, SmackException {
         Log.i(TAG, "connect()");
 
@@ -85,7 +99,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
 
         builder.setServiceName(serviceName);
         builder.setResource("SmackAndroidTestClient");
-        builder.setUsernameAndPassword(username , password);
+        builder.setUsernameAndPassword(username, password);
         builder.setRosterLoadedAtLogin(true);
         builder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
 
@@ -112,12 +126,15 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         connection.getRoster().addRosterListener(this);
     }
 
+    /**
+     * Method to disconnect to xmpp server.
+     */
     public void disconnect() {
-        Log.i(TAG, "disconnect()");
         if (receiver != null) {
             context.unregisterReceiver(receiver);
             receiver = null;
         }
+
         try {
             if (connection != null) {
                 connection.disconnect();
@@ -130,16 +147,22 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         connection = null;
     }
 
+    /**
+     * Building roster, list of users connected to a particular user.
+     */
     private void rebuildRoster() {
         userList = new ArrayList<>();
-        if(connection == null) return;
         String status;
+
+        if (connection == null) return;
+
         for (RosterEntry entry : connection.getRoster().getEntries()) {
             if (connection.getRoster().getPresence(entry.getUser()).isAvailable()) {
                 status = "Online";
             } else {
                 status = "Offline";
             }
+
             userList.add(entry.getUser() + ": " + status);
         }
 
@@ -149,11 +172,15 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         }
+
         context.sendBroadcast(intent);
     }
 
+    /**
+     * Method to resend unsent messages.
+     */
     private void resendMessage() {
-        List<ChatMessage> unsentMessages= chatMessageRepository.unsentMessages();
+        List<ChatMessage> unsentMessages = chatMessageRepository.unsentMessages();
 
         for (ChatMessage message : unsentMessages) {
             Chat chat = ChatManager.getInstanceFor(connection).createChat(message.getTo() + "@" + Config.CHAT_SERVER, this);
@@ -167,6 +194,9 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         }
     }
 
+    /**
+     * Receiver to send messages.
+     */
     private void setupSendMessageReceiver() {
         receiver = new BroadcastReceiver() {
             @Override
@@ -183,11 +213,17 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
         context.registerReceiver(receiver, filter);
     }
 
+    /**
+     * Method to send messages to xmpp server.
+     *
+     * @param body
+     * @param toJid
+     */
     private void sendMessage(String body, String toJid) {
-        int userId = Integer.parseInt(toJid.split("@")[0].split("user")[1]);
-        Log.i(TAG, "sendMessage()");
         DateTime time = DateTime.now();
+        int userId = Integer.parseInt(toJid.split("@")[0].split("user")[1]);
         Chat chat = ChatManager.getInstanceFor(connection).createChat(toJid, this);
+
         chatMessage.setCreatedTime(time.toString());
         chatMessage.setBody(body);
         chatMessage.setFrom("webuser" + user.getId());
@@ -200,7 +236,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
             Presence presence = new Presence(Presence.Type.subscribe);
             presence.setTo(toJid);
             connection.sendPacket(presence);
-            roster.createEntry(toJid.split("/")[0],toJid.split("/")[0],null);
+            roster.createEntry(toJid.split("/")[0], toJid.split("/")[0], null);
         } catch (SmackException.NotConnectedException | XMPPException e) {
             e.printStackTrace();
             chatMessage.setStatus(ChatActivity.MessageState.Sending.toString());
@@ -212,6 +248,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
             chatMessage.setStatus(ChatActivity.MessageState.Sending.toString());
             e.printStackTrace();
         }
+
         chatMessageRepository.reInitialize();
         chatMessageRepository.save(chatMessage);
     }
@@ -236,19 +273,8 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                     intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
                 }
-                /*try {
-                    roster.createEntry(message.getFrom().split("/")[0], message.getFrom().split("/")[0],null);
-                } catch (SmackException.NotLoggedInException e) {
-                    e.printStackTrace();
-                } catch (SmackException.NoResponseException e) {
-                    e.printStackTrace();
-                } catch (XMPPException.XMPPErrorException e) {
-                    e.printStackTrace();
-                } catch (SmackException.NotConnectedException e) =
-                    e.printStackTrace();
-                }*/
+
                 context.sendBroadcast(intent);
-                Log.i(TAG, "processMessage() BroadCast send");
             }
         }
     }
@@ -258,7 +284,7 @@ public class SmackConnection implements ConnectionListener, ChatManagerListener,
     public void connected(XMPPConnection connection) {
         SmackService.connectionState = ConnectionState.CONNECTED;
         Timber.d("Connected");
-       // resendMessage();
+        // resendMessage();
     }
 
     @Override
