@@ -10,10 +10,10 @@ public class Config {
     //--------------------------------------------------------------------------------
     // API related constants/configurations - used in ApiModule
     //--------------------------------------------------------------------------------
-    public static final String BASE_URL_PRODUCTION  = "http://52.77.226.166:1337";
-    public static final String BASE_URL_DEVELOP     = "http://52.77.226.166:1337";
+    public static final String BASE_URL_PRODUCTION  = "http://52.77.58.59:1337";
+    public static final String BASE_URL_DEVELOP     = "http://52.77.58.59:1337";
     public static final String BASE_URL_MOCK        = "http://mtvconnect.getsandbox.com";
-    public static final String CHAT_SERVER          = "52.77.226.166";
+    public static final String CHAT_SERVER          = "52.77.58.59";
     public static final int PORT                    = 1337;
 
     // Active base url

@@ -75,6 +75,8 @@ public class LaunchActivity extends BaseActivity implements ActivityCompat.OnReq
         if (checkPlayServices()) {
             getRegId();
             checkLocation();
+
+            return;
         }
 
         googleServicesError();
