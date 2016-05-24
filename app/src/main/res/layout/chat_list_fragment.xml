@@ -31,5 +31,4 @@
         android:alpha=".6"
         android:src="@drawable/img_no_chat" />
 
-
 </RelativeLayout>
