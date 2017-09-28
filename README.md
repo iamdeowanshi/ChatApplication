@@ -28,10 +28,7 @@ MtvConnect is an android application to find people with common interest and cha
  <img src="https://s19.postimg.org/pl8qcquwz/img_walkthrough_1.png">
  <img src="https://s19.postimg.org/5clcr0vlv/img_walkthrough_2.png">
  <img src="https://s19.postimg.org/72zsernr7/img_walkthrough_3.png">
- </p>
-![ScreenShot1](https://s19.postimg.org/pl8qcquwz/img_walkthrough_1.png)
-![ScreenShot2](https://s19.postimg.org/5clcr0vlv/img_walkthrough_2.png)
-![ScreenShot3](https://s19.postimg.org/72zsernr7/img_walkthrough_3.png)
+</p>
 
 License
 ----
