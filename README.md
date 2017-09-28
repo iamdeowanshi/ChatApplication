@@ -34,4 +34,3 @@ License
 ----
 
 MIT
-terests.
